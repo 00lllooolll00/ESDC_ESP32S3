@@ -3,6 +3,7 @@ set(src_dirs
             bsp_led
             bsp_exio
             bsp_i2c
+            bsp_lcd
 )
 
 # 头文件
@@ -10,11 +11,15 @@ set(include_dirs
             bsp_led
             bsp_exio
             bsp_i2c
+            bsp_lcd
 )
 
 # 依赖项
 set(requires
             driver
+            esp_lcd
+            esp_psram
+
             common
             middlewares
 )
