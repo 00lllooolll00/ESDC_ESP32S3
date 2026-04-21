@@ -1,6 +1,6 @@
 #include "bsp_exio.h"
 #include "bsp_i2c.h"
-#include "ek_def.h"
+#include "ek_export.h"
 
 static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size);
 static esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size);
@@ -41,6 +41,8 @@ void bsp_exio_init(void)
 
     // bsp_exio_set_directoin(BSP_EXIO_DEFAULT_CONFIG);
 }
+
+EK_EXPORT_EARLIEST(bsp_exio_init);
 
 /**
  * @brief 使能XL9555中断功能
