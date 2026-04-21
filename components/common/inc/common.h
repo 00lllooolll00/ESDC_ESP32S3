@@ -6,8 +6,10 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <assert.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
