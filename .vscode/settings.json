@@ -7,8 +7,15 @@
     "idf.toolsPathWin": "d:\\Soft_APP\\ESP_IDF\\tools",
     "files.autoGuessEncoding": true,
     "idf.portWin": "COM33",
-    "idf.flashType": "UART",
+    "idf.flashType": "JTAG",
     "idf.port": "/dev/ttyUSB0",
-    "idf.espIdfPath": "/root/esp/v5.4/esp-idf",
-    "idf.toolsPath": "/root/.espressif"
+    "idf.espIdfPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-idf",
+    "idf.toolsPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools",
+    "idf.pythonInstallPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools/python_env/idf5.5_py3.11_env/bin/python",
+    "clangd.path": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd",
+    "clangd.arguments": [
+        "--background-index",
+        "--query-driver=**",
+        "--compile-commands-dir=/home/n1netynine99/WorkSpace/Embedded/ESP32/project/esp32s3_main/build"
+    ]
 }
