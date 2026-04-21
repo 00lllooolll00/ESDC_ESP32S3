@@ -1,9 +1,7 @@
 alias b := build
 alias c := clean
-alias fu := flash-by-usb
-alias fs := flash-by-serial
-alias ru := run-by-usb
-alias rs := run-by-serial
+alias f := flash-by-usb
+alias r := run-by-usb
 alias cfg := menuconfig
 alias m := monitor
 
@@ -13,11 +11,13 @@ build:
 clean:
     idf.py clean
 
-flash-by-serial:
+flash-by-serial:build
     idf.py flash -p /dev/ttyUSB0 
+    idf.py monitor
 
-flash-by-usb:
+flash-by-usb:build
     idf.py flash -p /dev/ttyACM0 
+    idf.py monitor
 
 monitor:
     idf.py monitor
