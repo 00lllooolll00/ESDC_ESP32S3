@@ -1,11 +1,15 @@
 # 源文件
 set(src_dirs
-            stumb
+            ek_utils/src
+            ek_utils/third_party/tlsf
+            ek_utils/third_party/lwprintf
 )
 
 # 头文件
 set(include_dirs
-            stumb
+            ek_utils/inc
+            ek_utils/third_party/tlsf
+            ek_utils/third_party/lwprintf/inc
 )
 
 # 依赖项
