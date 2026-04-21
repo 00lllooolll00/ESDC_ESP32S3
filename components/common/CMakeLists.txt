@@ -1,3 +1,13 @@
+# 头文件
+set(include_dirs
+        inc
+)
+
+# 依赖项
+set(requires
+)
+
 idf_component_register(
-    INCLUDE_DIRS "inc"
+            INCLUDE_DIRS ${include_dirs}
+            REQUIRES ${requires}
 )
