@@ -1,4 +1,5 @@
 #include "bsp_led.h"
+#include "ek_export.h"
 
 static const char *TAG = "bsp_led.c";
 
@@ -20,6 +21,8 @@ void bsp_led_init(void)
     }
     bsp_led_set(0);
 }
+
+EK_EXPORT_HARDWARE(bsp_led_init);
 
 void bsp_led_set(uint8_t value)
 {
