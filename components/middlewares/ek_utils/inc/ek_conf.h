@@ -19,18 +19,19 @@
  * - EK_HEAP_NO_TLSF: 设置为1表示不使用TLSF内存池，需自定义实现具体API查看 ek_mem.h
  * - EK_HEAP_SIZE: heap的默认大小（字节）
  * ======================================================================== */
-#define EK_HEAP_NO_TLSF (0)
+#define EK_HEAP_NO_TLSF (1)
 #define EK_HEAP_SIZE    (0)
 
 /* ========================================================================
  * IO库配置
  * -EK_IO_NO_LWPRTF : IO库不使用lwprintf
  * ======================================================================== */
-#define EK_IO_NO_LWPRTF (0)
+#define EK_IO_NO_LWPRTF (1)
 
 /* ========================================================================
  * 模块功能开关
  * - EK_EXPORT_ENABLE: 使能自动初始化
+ * - EK_ASSERT_ENABLE: 断言
  * - EK_STR_ENABLE: 使能字符串处理模块
  * - EK_LOG_ENABLE: 使能日志模块
  * - EK_LIST_ENABLE: 使能链表模块
@@ -41,6 +42,7 @@
  * - EK_EVOKE_ENABLE: 使能事件驱动模块
  * ======================================================================== */
 #define EK_EXPORT_ENABLE       (0)
+#define EK_ASSERT_ENABLE       (0)
 #define EK_STR_ENABLE          (0)
 #define EK_LOG_ENABLE          (0)
 #define EK_LIST_ENABLE         (0)
