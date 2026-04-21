@@ -1,8 +1,8 @@
 #ifndef BSP_LED_H
 #define BSP_LED_H
 
+#include "common.h"
 #include "driver/gpio.h"
-#include "esp_log.h"
 
 #define BSP_LED_GPIO_PIN GPIO_NUM_1
 
