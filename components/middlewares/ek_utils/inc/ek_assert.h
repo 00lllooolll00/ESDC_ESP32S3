@@ -41,7 +41,8 @@
  * @note 代码体积小，适用于资源受限环境
  * @warning 断言失败会导致程序卡死在此处
  */
-#    define ek_assert_tiny(expr) while ((expr) == 0)
+#    define ek_assert_tiny(expr) \
+        if ((expr) == 0) exti()
 
 /**
  * @brief 完整断言（表达式为假时调用 ek_assert_fault）
@@ -78,6 +79,10 @@ void ek_assert_fault(const char *file, uint32_t line, const char *expr);
 #    ifdef __cplusplus
 }
 #    endif
+#else
+#    include <assert.h>
+
+#    define ek_assert_param(expr) assert(expr)
 
 #endif // EK_ASSERT_ENABLE
 
