@@ -10,6 +10,7 @@ set(include_dirs
 
 # 依赖项
 set(requires
+            common
 )
 
 # 注册到 idf

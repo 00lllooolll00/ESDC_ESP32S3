@@ -4,11 +4,10 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#define LED_GPIO_PIN     GPIO_NUM_1
-
-#define BSP_LED_SET(X)   ((X) ? gpio_set_level(LED_GPIO_PIN, 1) : gpio_set_level(LED_GPIO_PIN, 0))
-#define BSP_LED_TOGGLE() (gpio_set_level(LED_GPIO_PIN, !gpio_get_level(LED_GPIO_PIN)))
+#define BSP_LED_GPIO_PIN GPIO_NUM_1
 
 void bsp_led_init(void);
+void bsp_led_set(uint8_t value);
+void bsp_led_toggle(void);
 
 #endif // LED_H

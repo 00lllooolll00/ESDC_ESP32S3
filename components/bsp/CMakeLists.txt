@@ -11,6 +11,7 @@ set(include_dirs
 # 依赖项
 set(requires
             driver
+            common
 )
 
 # 注册到 idf

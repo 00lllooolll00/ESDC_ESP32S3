@@ -1,6 +1,6 @@
 #include "bsp_led.h"
 
-static const char *TAG = "led.c";
+static const char *TAG = "bsp_led.c";
 
 void bsp_led_init(void)
 {
@@ -18,6 +18,15 @@ void bsp_led_init(void)
         ESP_LOGE(TAG, "leds failed to initialize");
         while (1);
     }
+    bsp_led_set(0);
+}
 
-    BSP_LED_SET(1);
+void bsp_led_set(uint8_t value)
+{
+    gpio_set_level(BSP_LED_GPIO_PIN, !value);
+}
+
+void bsp_led_toggle(void)
+{
+    gpio_set_level(BSP_LED_GPIO_PIN, !gpio_get_level(BSP_LED_GPIO_PIN));
 }
