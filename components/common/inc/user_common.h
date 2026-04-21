@@ -1,15 +1,12 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef USER_COMMON_H
+#define USER_COMMON_H
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdarg.h>
-#include <stdint.h>
 #include <assert.h>
-#include <string.h>
 #include <errno.h>
 #include <math.h>
+
+#include "ek_def.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -18,4 +15,4 @@
 #include "esp_log.h"
 #include "esp_err.h"
 
-#endif // COMMON_H
+#endif // USER_COMMON_H
