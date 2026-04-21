@@ -3,3 +3,5 @@ build
 .claude
 .codex
 *.old
+managed_components
+.clangd
