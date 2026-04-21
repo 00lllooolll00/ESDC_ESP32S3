@@ -1,17 +1,22 @@
 # 源文件
 set(src_dirs
             bsp_led
+            bsp_exio
+            bsp_i2c
 )
 
 # 头文件
 set(include_dirs
             bsp_led
+            bsp_exio
+            bsp_i2c
 )
 
 # 依赖项
 set(requires
             driver
             common
+            middlewares
 )
 
 # 注册到 idf
