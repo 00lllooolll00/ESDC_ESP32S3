@@ -1,5 +1,4 @@
 #include "bsp_lcd.h"
-#include "bsp_lcd_fonts.h"
 
 typedef struct
 {
