@@ -57,10 +57,38 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(g_lcd_handle, true));
     ESP_ERROR_CHECK(esp_lcd_panel_init(g_lcd_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(g_lcd_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(g_lcd_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_mirror(g_lcd_handle, true, false));
 
+    bsp_lcd_clear(0xFFFF);
     BSP_LCD_PWR(1);
 
     ESP_LOGI(TAG, "bsp lcd init ok");
+}
+
+void bsp_lcd_clear(uint16_t color)
+{
+    uint16_t line = 40;
+    uint16_t *buffer = heap_caps_malloc(BSP_LCD_WIDTH * sizeof(uint16_t) * line, MALLOC_CAP_DMA);
+    uint16_t color_tmp = ((color & 0x00FF) << 8) | ((color & 0xFF00) >> 8);
+    if (NULL == buffer)
+    {
+        ESP_LOGE("TAG", "Memory for bitmap is not enough");
+    }
+    else
+    {
+        for (uint32_t i = 0; i < BSP_LCD_WIDTH * line; i++)
+        {
+            buffer[i] = color_tmp;
+        }
+
+        for (uint16_t y = 0; y < BSP_LCD_HEIGHT; y += line)
+        {
+            esp_lcd_panel_draw_bitmap(g_lcd_handle, 0, y, BSP_LCD_WIDTH, y + line, buffer);
+        }
+    }
+
+    heap_caps_free(buffer);
 }
 
 void bsp_lcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
