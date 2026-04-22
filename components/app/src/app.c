@@ -28,6 +28,6 @@ static void app_gui_task(void *arg)
     while (1)
     {
         uint32_t delay = lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(delay > 0 ? delay : 1));
+        vTaskDelay(delay > 0 ? delay : 5);
     }
 }

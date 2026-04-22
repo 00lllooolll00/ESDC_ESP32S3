@@ -20,6 +20,8 @@ void bsp_led_init(void)
         while (1);
     }
     bsp_led_set(0);
+
+    ESP_LOGI(TAG, "bsp led init ok");
 }
 
 EK_EXPORT_HARDWARE(bsp_led_init);

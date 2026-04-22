@@ -7,6 +7,8 @@ typedef struct
     void *arg;
 } _lcd_cb_data_t;
 
+static const char *TAG = "bsp_lcd.c";
+
 static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg);
 static void _lcd_spi_init(void);
 static void _lcd_exio_pin_init(void);
@@ -58,6 +60,8 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(g_lcd_handle, true));
 
     BSP_LCD_PWR(1);
+
+    ESP_LOGI(TAG, "bsp lcd init ok");
 }
 
 void bsp_lcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
