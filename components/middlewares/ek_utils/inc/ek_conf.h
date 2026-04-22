@@ -41,7 +41,7 @@
  * - EK_STACK_ENABLE: 使能栈模块
  * - EK_EVOKE_ENABLE: 使能事件驱动模块
  * ======================================================================== */
-#define EK_EXPORT_ENABLE       (1)
+#define EK_EXPORT_ENABLE       (0)
 #define EK_ASSERT_ENABLE       (0)
 #define EK_STR_ENABLE          (0)
 #define EK_LOG_ENABLE          (0)

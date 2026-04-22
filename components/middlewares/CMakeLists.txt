@@ -32,4 +32,3 @@ idf_component_register(
 component_compile_options(
 )
 
-target_link_options(${COMPONENT_LIB} INTERFACE "-T${CMAKE_CURRENT_SOURCE_DIR}/ek_utils/ek_export.ld")

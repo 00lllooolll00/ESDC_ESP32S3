@@ -1,6 +1,5 @@
 #include "lv_disp_port.h"
 #include "bsp_lcd.h"
-#include "ek_export.h"
 
 #define LV_PORT_BUF_SIZE (BSP_LCD_BUFFER_SIZE / 10)
 
@@ -27,8 +26,6 @@ void lv_port_disp_init(void)
 
     lv_disp_drv_register(&g_disp_drv);
 }
-
-EK_EXPORT_COMPONENTS(lv_port_disp_init);
 
 static bool _lv_port_trans_done_cb(void *ctx)
 {

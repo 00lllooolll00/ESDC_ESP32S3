@@ -10,6 +10,11 @@ TaskHandle_t g_led_handle;
 
 void app_init(void)
 {
+    bsp_exio_init();
+    bsp_led_init();
+
+    lv_port_disp_init();
+
     xTaskCreate(app_led_task, "app led", 256, NULL, 1, &g_led_handle);
     xTaskCreate(app_gui_task, "gui_task", 4096 * 2, NULL, 5, NULL);
 }

@@ -9,7 +9,7 @@ build:
     idf.py build size
 
 clean:
-    idf.py clean
+    idf.py fullclean
 
 flash-by-serial:build
     idf.py flash -p /dev/ttyUSB0 

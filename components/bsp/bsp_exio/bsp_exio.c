@@ -1,6 +1,5 @@
 #include "bsp_exio.h"
 #include "bsp_i2c.h"
-#include "ek_export.h"
 
 const static char *TAG = "bsp_exio.c";
 
@@ -45,8 +44,6 @@ void bsp_exio_init(void)
 
     ESP_LOGI(TAG, "bsp exio init ok");
 }
-
-EK_EXPORT_EARLIEST(bsp_exio_init);
 
 /**
  * @brief 使能XL9555中断功能
