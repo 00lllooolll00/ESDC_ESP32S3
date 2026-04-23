@@ -19,7 +19,7 @@ void app_init(void)
     app_gui_init();
 
     xTaskCreate(app_led_task, "app led", 1024, NULL, 1, &g_led_handle);
-    xTaskCreate(app_gui_task, "app gui", 4096, NULL, 5, NULL);
+    xTaskCreate(app_gui_task, "app gui", 10240, NULL, 5, NULL);
 }
 
 static void app_led_task(void *arg)
@@ -35,7 +35,7 @@ static void app_gui_task(void *arg)
 {
     while (1)
     {
-        uint32_t delay = lv_timer_handler();
-        vTaskDelay(delay ? delay : 5);
+        uint32_t delay = lv_task_handler();
+        vTaskDelay(delay >= 5 ? delay : 5);
     }
 }

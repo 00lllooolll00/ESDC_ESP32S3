@@ -8,7 +8,7 @@ static void _lv_port_flush_cb(lv_display_t *drv, const lv_area_t *area, uint8_t 
 
 static const char *TAG = "lv_disp_port.c";
 
-static lv_display_t *disp_drv;
+static lv_display_t *g_disp_drv;
 
 void lv_port_disp_init(void)
 {
@@ -17,13 +17,14 @@ void lv_port_disp_init(void)
     lv_color_t *buf2 = heap_caps_malloc(LV_PORT_BUF_SIZE, MALLOC_CAP_DMA);
     assert(buf2);
 
-    disp_drv = lv_display_create(BSP_LCD_WIDTH, BSP_LCD_HEIGHT);
-    assert(disp_drv);
+    g_disp_drv = lv_display_create(BSP_LCD_WIDTH, BSP_LCD_HEIGHT);
+    assert(g_disp_drv);
 
-    lv_display_set_buffers(disp_drv, buf1, buf2, LV_PORT_BUF_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
-    lv_display_set_flush_cb(disp_drv, _lv_port_flush_cb);
+    lv_display_set_color_format(g_disp_drv, LV_COLOR_FORMAT_RGB565_SWAPPED);
+    lv_display_set_buffers(g_disp_drv, buf1, buf2, LV_PORT_BUF_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
+    lv_display_set_flush_cb(g_disp_drv, _lv_port_flush_cb);
 
-    bsp_lcd_init(_lv_port_trans_done_cb, disp_drv);
+    bsp_lcd_init(_lv_port_trans_done_cb, g_disp_drv);
 
     ESP_LOGI(TAG, "lvgl port display driver init");
 }
