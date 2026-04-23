@@ -27,4 +27,4 @@ run-by-usb:build flash-by-usb
 run-by-serial:build flash-by-serial 
     
 menuconfig:
-    idf.py menuconfig --style monochrome
+    idf.py menuconfig 
