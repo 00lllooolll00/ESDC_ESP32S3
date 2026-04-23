@@ -1,12 +1,12 @@
 #include "lv_disp_port.h"
 #include "bsp_lcd.h"
 
+FILE_TAG("lv_disp_prot.c");
+
 #define LV_PORT_BUF_SIZE (BSP_LCD_HEIGHT * BSP_LCD_WIDTH / 10 * sizeof(lv_color_t))
 
 static bool _lv_port_trans_done_cb(void *ctx);
 static void _lv_port_flush_cb(lv_display_t *drv, const lv_area_t *area, uint8_t *color_map);
-
-static const char *TAG = "lv_disp_port.c";
 
 static lv_display_t *g_disp_drv;
 
@@ -26,7 +26,7 @@ void lv_port_disp_init(void)
 
     bsp_lcd_init(_lv_port_trans_done_cb, g_disp_drv);
 
-    ESP_LOGI(TAG, "lvgl port display driver init");
+    LOG_INFO("lvgl port display driver init");
 }
 
 static bool _lv_port_trans_done_cb(void *ctx)

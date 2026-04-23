@@ -4,6 +4,7 @@ set(src_dirs
             bsp_exio
             bsp_i2c
             bsp_lcd
+            bsp_key
 )
 
 # 头文件
@@ -12,6 +13,7 @@ set(include_dirs
             bsp_exio
             bsp_i2c
             bsp_lcd
+            bsp_key
 )
 
 # 依赖项

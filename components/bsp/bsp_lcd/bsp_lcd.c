@@ -1,12 +1,12 @@
 #include "bsp_lcd.h"
 
+FILE_TAG("bsp_lcd.c");
+
 typedef struct
 {
     bsp_lcd_trans_done_cb_t cb;
     void *arg;
 } _lcd_cb_data_t;
-
-static const char *TAG = "bsp_lcd.c";
 
 static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg);
 static void _lcd_spi_init(void);
@@ -63,7 +63,7 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
     bsp_lcd_clear(0xFFFF);
     BSP_LCD_PWR(1);
 
-    ESP_LOGI(TAG, "bsp lcd init ok");
+    LOG_INFO("bsp lcd init ok");
 }
 
 void bsp_lcd_clear(uint16_t color)
