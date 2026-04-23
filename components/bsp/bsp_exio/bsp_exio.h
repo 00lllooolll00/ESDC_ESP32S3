@@ -86,12 +86,16 @@ typedef struct
 void bsp_exio_init(void);
 void bsp_exio_int_enable(void);
 void bsp_exio_int_disable(void);
+
 esp_err_t bsp_exio_set_directoin(uint16_t value);
 esp_err_t bsp_exio_get_directoin(uint16_t *value);
+
 esp_err_t bsp_exio_read(uint16_t *value);
 esp_err_t bsp_exio_write(uint16_t value);
+
 void bsp_exio_conifg_pin(bsp_exio_pin_config_t *config);
 void bsp_exio_write_pin(bsp_exio_pin_num_t pin, uint8_t value);
+
 uint8_t bsp_exio_read_pin(bsp_exio_pin_num_t pin);
 
 #endif // BSP_EXIO_H
