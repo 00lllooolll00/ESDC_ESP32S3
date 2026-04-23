@@ -57,11 +57,18 @@ static void app_key_task(void *arg)
         bsp_key_state_t key_val = key_temp & (key_old ^ key_temp);
         key_old = key_temp;
 
-        if (key_val & BSP_KEY_STATE_BOOT) LOG_INFO("key down:%s", "boot");
-        if (key_val & BSP_KEY_STATE_0) LOG_INFO("key down:%d", 0);
-        if (key_val & BSP_KEY_STATE_1) LOG_INFO("key down:%d", 1);
-        if (key_val & BSP_KEY_STATE_2) LOG_INFO("key down:%d", 2);
-        if (key_val & BSP_KEY_STATE_3) LOG_INFO("key down:%d", 3);
+        if (key_val != BSP_KEY_STATE_NONE)
+        {
+            LOG_INFO("key down:%x", key_val);
+            lv_lock();
+
+            lv_obj_t *label = lv_obj_get_child(lv_screen_active(), -1);
+            assert(label);
+            lv_label_set_text_fmt(label, "%x", key_val);
+            lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
+
+            lv_unlock();
+        }
 
         vTaskDelayUntil(&start_tick, 30);
     }
