@@ -2,10 +2,6 @@
 
 FILE_TAG("bsp_wifi.c");
 
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
-#define WIFI_ESPTOUCH_BIT  BIT2
-
 static void _ap_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
@@ -14,7 +10,16 @@ static void _smart_config_task(void *arg);
 static EventGroupHandle_t g_wifi_event_group_handler;
 static esp_netif_t *g_netif;
 
-void bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
+/**
+ * @brief  初始化 Wi-Fi STA 模式并启动连接。
+ *
+ * 配置 Station 模式，注册 Wi-Fi 和 IP 事件回调，设置 SSID 和密码后启动连接。
+ * 该函数不会阻塞等待连接结果，调用方可自行等待返回的事件组句柄。
+ *
+ * @param[in] sta_cfg  STA 配置，包含 SSID、密码和认证模式。
+ * @return  事件组句柄，可通过 WIFI_CONNECTED_BIT / WIFI_FAIL_BIT 判断连接状态。
+ */
+EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
 {
     assert(sta_cfg);
 
@@ -48,33 +53,28 @@ void bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_cfg));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-    LOG_INFO("bsp wifi stattion mode init ok");
+    LOG_INFO("bsp wifi station mode init ok");
     LOG_INFO("start connecting wifi :\n\tssid:%s\n\tpassword:%s", sta_cfg->ssid, sta_cfg->pswd);
 
-    EventBits_t bits = xEventGroupWaitBits(
-        g_wifi_event_group_handler, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
-
-    if (bits & WIFI_CONNECTED_BIT)
-    {
-        LOG_INFO("successfully connect to the wifi");
-    }
-    else if (bits & WIFI_FAIL_BIT)
-    {
-        LOG_WARN("fail to connect to the wif");
-    }
-    else
-    {
-        LOG_ERROR("unexpected event");
-    }
+    return g_wifi_event_group_handler;
 }
 
+/**
+ * @brief  初始化 Wi-Fi AP（热点）模式。
+ *
+ * 创建一个 Wi-Fi 热点，设备作为 Access Point 等待其他设备连接。
+ * 若密码为空则自动设为开放热点。
+ *
+ * @param[in] ap_cfg          热点配置，包含 SSID、密码和认证模式。
+ * @param[in] max_connections 最大允许的连接数。
+ */
 void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections)
 {
     assert(ap_cfg);
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    (esp_netif_create_default_wifi_ap());
+    (void)esp_netif_create_default_wifi_ap();
 
     wifi_init_config_t init_cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&init_cfg));
@@ -83,8 +83,8 @@ void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections)
     // 配置热点相关信息
     wifi_config_t wifi_cfg = { 0 };
 
-    memcpy(wifi_cfg.sta.ssid, ap_cfg->ssid, 32);
-    memcpy(wifi_cfg.sta.password, ap_cfg->pswd, 64);
+    memcpy(wifi_cfg.ap.ssid, ap_cfg->ssid, 32);
+    memcpy(wifi_cfg.ap.password, ap_cfg->pswd, 64);
     wifi_cfg.ap.ssid_len = strlen((const char *)ap_cfg->ssid);
     wifi_cfg.ap.authmode = ap_cfg->auth_mode;
     wifi_cfg.ap.max_connection = max_connections;
@@ -99,10 +99,17 @@ void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections)
     LOG_INFO("bsp wifi ap mode init ok\n\tssid:%s\n\tpassword:%s", ap_cfg->ssid, ap_cfg->pswd);
 }
 
-void bsp_wifi_smartconfig_init(const bsp_wifi_config_t *smt_cfg)
+/**
+ * @brief  初始化 Wi-Fi SmartConfig（一键配网）模式。
+ *
+ * 启动 SmartConfig 流程，通过手机 App（如 ESPTouch）将 SSID 和密码发送给设备。
+ * 配网成功后自动连接目标 Wi-Fi。
+ */
+void bsp_wifi_smartconfig_init(void)
 {
     ESP_ERROR_CHECK(esp_netif_init());
     g_wifi_event_group_handler = xEventGroupCreate();
+    assert(g_wifi_event_group_handler);
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
     assert(sta_netif);
@@ -120,6 +127,15 @@ void bsp_wifi_smartconfig_init(const bsp_wifi_config_t *smt_cfg)
     LOG_INFO("bsp wifi smart config mode init ok");
 }
 
+/**
+ * @brief  扫描周围 Wi-Fi AP。
+ *
+ * 阻塞式扫描，完成后返回扫描到的 AP 数量并将 AP 记录写入 ap_info。
+ *
+ * @param[out] ap_info         存放 AP 记录的数组。
+ * @param[in]  scan_list_size  数组最大容量。
+ * @return  实际扫描到的 AP 数量。
+ */
 uint16_t bsp_wifi_scan(wifi_ap_record_t *ap_info, uint16_t scan_list_size)
 {
     uint16_t ap_number = 0;
@@ -133,9 +149,12 @@ uint16_t bsp_wifi_scan(wifi_ap_record_t *ap_info, uint16_t scan_list_size)
     return ap_number;
 }
 
+/**
+ * @brief  AP 模式事件回调，处理设备的连接与断开。
+ */
 static void _ap_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
-    if (event_id == WIFI_EVENT_AP_STADISCONNECTED)
+    if (event_id == WIFI_EVENT_AP_STACONNECTED)
     {
         // 有设备连接
         wifi_event_ap_staconnected_t *info = (wifi_event_ap_staconnected_t *)event_data;
@@ -149,6 +168,9 @@ static void _ap_event_handler(void *arg, esp_event_base_t event_base, int32_t ev
     }
 }
 
+/**
+ * @brief  STA 模式事件回调，处理 Wi-Fi 启动、断线重连及 IP 获取。
+ */
 static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     static uint8_t retry_times;
@@ -170,7 +192,7 @@ static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t e
             }
             else
             {
-                xEventGroupSetBits(g_wifi_event_group_handler, WIFI_FAIL_BIT);
+                xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_FAIL_BIT);
             }
             LOG_WARN("fail to connect to the wifi");
         }
@@ -181,14 +203,16 @@ static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t e
         {
             // 被DHCP分配了IP才说明真正的连接成功
             // 给对应的事件组的对应位置1
-            ip_event_got_ip_t *ip = (ip_event_got_ip_t *)event_data;
             LOG_INFO("successfully connected to the wifi");
             retry_times = 0;
-            xEventGroupSetBits(g_wifi_event_group_handler, WIFI_CONNECTED_BIT);
+            xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
         }
     }
 }
 
+/**
+ * @brief  SmartConfig 模式事件回调，处理配网全流程：扫描、获取 SSID/密码、连接。
+ */
 static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
@@ -201,13 +225,13 @@ static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, i
     {
         // 断开链接
         esp_wifi_connect();
-        xEventGroupClearBits(g_wifi_event_group_handler, WIFI_CONNECTED_BIT);
+        xEventGroupClearBits(g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         // 被DCHDP 分配了IP地址
         // 说明确实连接好了
-        xEventGroupSetBits(g_wifi_event_group_handler, WIFI_CONNECTED_BIT);
+        xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE)
     {
@@ -252,10 +276,13 @@ static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, i
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SEND_ACK_DONE)
     {
-        xEventGroupSetBits(g_wifi_event_group_handler, WIFI_ESPTOUCH_BIT);
+        xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_ESPTOUCH_BIT);
     }
 }
 
+/**
+ * @brief  SmartConfig 配网任务，等待手机端通过 ESPTouch 发送 Wi-Fi 凭据。
+ */
 static void _smart_config_task(void *arg)
 {
     EventBits_t uxBits;
@@ -265,10 +292,10 @@ static void _smart_config_task(void *arg)
     while (1)
     {
         uxBits = xEventGroupWaitBits(
-            g_wifi_event_group_handler, WIFI_CONNECTED_BIT | WIFI_ESPTOUCH_BIT, true, false, portMAX_DELAY);
+            g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT | BSP_WIFI_ESPTOUCH_BIT, true, false, portMAX_DELAY);
 
-        if (uxBits & WIFI_CONNECTED_BIT) LOG_INFO("successfully connected to the wifi");
-        if (uxBits & WIFI_ESPTOUCH_BIT)
+        if (uxBits & BSP_WIFI_CONNECTED_BIT) LOG_INFO("successfully connected to the wifi");
+        if (uxBits & BSP_WIFI_ESPTOUCH_BIT)
         {
             LOG_INFO("smart config over");
             esp_smartconfig_stop();

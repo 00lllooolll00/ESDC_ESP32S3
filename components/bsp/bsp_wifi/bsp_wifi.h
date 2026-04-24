@@ -7,7 +7,10 @@
 #include "esp_mac.h"
 #include "esp_smartconfig.h"
 
-#define BSP_WIFI_MAX_RETRY 5
+#define BSP_WIFI_CONNECTED_BIT BIT0
+#define BSP_WIFI_FAIL_BIT      BIT1
+#define BSP_WIFI_ESPTOUCH_BIT  BIT2
+#define BSP_WIFI_MAX_RETRY     5
 
 typedef struct
 {
@@ -16,9 +19,9 @@ typedef struct
     wifi_auth_mode_t auth_mode;
 } bsp_wifi_config_t;
 
-void bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg);
+EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg);
 void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections);
-void bsp_wifi_smartconfig_init(const bsp_wifi_config_t *smt_cfg);
+void bsp_wifi_smartconfig_init(void);
 
 uint16_t bsp_wifi_scan(wifi_ap_record_t *ap_info, uint16_t scan_list_size);
 
