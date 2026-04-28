@@ -1,4 +1,4 @@
-#include "platform.h"
+#include "common_header.h"
 #include "app.h"
 #include "nvs_flash.h"
 #include "lvgl.h"

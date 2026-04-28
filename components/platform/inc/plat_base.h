@@ -1,7 +1,7 @@
 #ifndef PLAT_BASE_H
 #define PLAT_BASE_H
 
-#include "platform.h"
+#include "common_header.h"
 
 typedef struct plat_dev_t plat_dev_t;
 typedef struct plat_dev_ops_t plat_dev_ops_t;
@@ -29,7 +29,7 @@ struct plat_dev_t
 {
     const char *name;
     plat_state_t state;
-    plat_dev_ops_t *base_ops;
+    const plat_dev_ops_t *base_ops;
     void *priv;
     SemaphoreHandle_t lock;
 };

@@ -1,7 +1,7 @@
 #ifndef APP_GUI_H
 #define APP_GUI_H
 
-#include "platform.h"
+#include "common_header.h"
 
 void app_gui_init(void);
 

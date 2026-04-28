@@ -1,7 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
-#include "platform.h"
+#include "common_header.h"
 
 #include "app_gui.h"
 

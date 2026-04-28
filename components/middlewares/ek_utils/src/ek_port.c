@@ -1,4 +1,4 @@
-#include "platform.h"
+#include "common_header.h"
 #include "ek_mem.h"
 
 void *_ek_malloc(size_t size)

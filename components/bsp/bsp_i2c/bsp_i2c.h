@@ -1,7 +1,7 @@
 #ifndef BSP_I2C_H
 #define BSP_I2C_H
 
-#include "platform.h"
+#include "common_header.h"
 
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
