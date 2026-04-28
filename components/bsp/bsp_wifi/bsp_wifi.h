@@ -1,7 +1,7 @@
 #ifndef BSP_WIFI_H
 #define BSP_WIFI_H
 
-#include "user_common.h"
+#include "platform.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "esp_mac.h"

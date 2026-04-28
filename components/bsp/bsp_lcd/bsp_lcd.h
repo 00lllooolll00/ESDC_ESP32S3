@@ -1,7 +1,7 @@
 #ifndef BSP_LCD_H
 #define BSP_LCD_H
 
-#include "user_common.h"
+#include "platform.h"
 #include "bsp_exio.h"
 
 #include "driver/gpio.h"

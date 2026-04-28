@@ -1,7 +1,7 @@
 #ifndef BSP_LED_H
 #define BSP_LED_H
 
-#include "user_common.h"
+#include "platform.h"
 #include "driver/gpio.h"
 
 #define BSP_LED_GPIO_PIN GPIO_NUM_1

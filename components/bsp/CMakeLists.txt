@@ -26,7 +26,7 @@ set(requires
             esp_event
             esp_wifi
 
-            common
+            platform
             middlewares
 )
 

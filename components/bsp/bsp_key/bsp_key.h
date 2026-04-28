@@ -1,7 +1,7 @@
 #ifndef BSP_KEY_H
 #define BSP_KEY_H
 
-#include "user_common.h"
+#include "platform.h"
 #include "driver/gpio.h"
 #include "bsp_exio.h"
 
