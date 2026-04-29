@@ -11,8 +11,8 @@ set(include_dirs
 # 依赖项
 set(requires
             common
-            bsp
             platform
+            impl
             middlewares
 )
 

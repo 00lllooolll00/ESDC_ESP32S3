@@ -1,8 +1,9 @@
 #include "app.h"
-#include "bsp_led.h"
-#include "bsp_exio.h"
-#include "bsp_key.h"
+#include "impl_exio.h"
 #include "lv_disp_port.h"
+#include "impl_lcd.h"
+#include "impl_key.h"
+#include "impl_led.h"
 
 FILE_TAG("app.c");
 
@@ -10,17 +11,25 @@ static void app_led_task(void *arg);
 static void app_gui_task(void *arg);
 static void app_key_task(void *arg);
 
+static plat_lcd_dev_t s_lcd_dev;
+static plat_key_dev_t s_key_dev;
+static plat_led_dev_t s_led_dev;
+
 TaskHandle_t g_led_handle;
 TaskHandle_t g_key_handle;
 
 void app_init(void)
 {
-    bsp_exio_init();
-    bsp_led_init();
-    bsp_key_init();
+    impl_exio_init();
 
-    lv_init();
-    lv_port_disp_init();
+    impl_led_register(&s_led_dev);
+    impl_key_register(&s_key_dev);
+    impl_lcd_register(&s_lcd_dev);
+
+    plat_led_dev_init(&s_led_dev);
+    plat_key_dev_init(&s_key_dev);
+
+    lv_port_disp_init(&s_lcd_dev);
 
     app_gui_init();
 
@@ -33,13 +42,14 @@ static void app_led_task(void *arg)
 {
     while (1)
     {
-        bsp_led_toggle();
+        plat_led_dev_toggle(&s_led_dev);
         vTaskDelay(500);
     }
 }
 
 static void app_gui_task(void *arg)
 {
+    app_gui_init();
     while (1)
     {
         uint32_t delay = lv_task_handler();
@@ -49,25 +59,18 @@ static void app_gui_task(void *arg)
 
 static void app_key_task(void *arg)
 {
-    bsp_key_state_t key_old = BSP_KEY_STATE_NONE;
+    plat_key_state_t key_old = PLAT_KEY_STATE_NONE;
     TickType_t start_tick = xTaskGetTickCount();
     while (1)
     {
-        bsp_key_state_t key_temp = bsp_key_read_raw();
-        bsp_key_state_t key_val = key_temp & (key_old ^ key_temp);
+        plat_key_state_t key_temp;
+        plat_key_dev_read_raw(&s_key_dev, &key_temp);
+        plat_key_state_t key_val = key_temp & (key_old ^ key_temp);
         key_old = key_temp;
 
-        if (key_val != BSP_KEY_STATE_NONE)
+        if (key_val != PLAT_KEY_STATE_NONE)
         {
             LOG_INFO("key down:%x", key_val);
-            lv_lock();
-
-            lv_obj_t *label = lv_obj_get_child(lv_screen_active(), -1);
-            assert(label);
-            lv_label_set_text_fmt(label, "%x", key_val);
-            lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
-
-            lv_unlock();
         }
 
         vTaskDelayUntil(&start_tick, 30);
