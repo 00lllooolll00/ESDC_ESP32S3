@@ -1,5 +1,12 @@
 #include "plat_base.h"
 
+void plat_dev_register(plat_dev_t *dev, const char *name, const plat_dev_ops_t *base_ops, void *priv)
+{
+    dev->name = name;
+    dev->base_ops = base_ops;
+    dev->priv = priv;
+}
+
 int plat_dev_init(plat_dev_t *dev)
 {
     assert(dev);
