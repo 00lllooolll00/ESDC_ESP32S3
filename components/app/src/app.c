@@ -21,6 +21,7 @@ TaskHandle_t g_key_handle;
 void app_init(void)
 {
     impl_exio_init();
+    impl_exio_int_enable();
 
     impl_led_register(&s_led_dev);
     impl_key_register(&s_key_dev);

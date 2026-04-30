@@ -4,5 +4,19 @@
 int impl_exio_init(void)
 {
     bsp_exio_init();
+    bsp_exio_int_enable();
     return 0;
 }
+
+int impl_exio_int_enable(void)
+{
+    bsp_exio_int_enable();
+    return 0;
+}
+
+int impl_exio_int_disable(void)
+{
+    bsp_exio_int_disable();
+    return 0;
+}
+

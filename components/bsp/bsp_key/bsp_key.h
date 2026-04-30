@@ -26,4 +26,6 @@ typedef enum
 void bsp_key_init(void);
 bsp_key_state_t bsp_key_read_raw(void);
 
+void bsp_key_read_int_cb(void);
+
 #endif // BSP_KEY_H

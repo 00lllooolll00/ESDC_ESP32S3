@@ -86,6 +86,7 @@ typedef struct
 void bsp_exio_init(void);
 void bsp_exio_int_enable(void);
 void bsp_exio_int_disable(void);
+void bsp_exio_set_int_cb(void (*cb)(void));
 
 esp_err_t bsp_exio_set_directoin(uint16_t value);
 esp_err_t bsp_exio_get_directoin(uint16_t *value);

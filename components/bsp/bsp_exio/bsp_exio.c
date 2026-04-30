@@ -10,9 +10,7 @@ static void _exio_exti_cb(void *arg);
 static i2c_master_dev_handle_t g_exio_i2c_handle = NULL;
 static TaskHandle_t g_exio_int_task_handle = NULL;
 
-__weak_symbol void bsp_exio_int_cb(void)
-{
-}
+void (*bsp_exio_int_cb)(void);
 
 static void bsp_exio_int_task(void *arg)
 {
@@ -21,7 +19,10 @@ static void bsp_exio_int_task(void *arg)
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         uint16_t value;
         bsp_exio_read(&value); // 读取清除中断标志位
-        bsp_exio_int_cb();
+        if (bsp_exio_int_cb)
+        {
+            bsp_exio_int_cb();
+        }
     }
 }
 
@@ -87,6 +88,16 @@ void bsp_exio_int_disable(void)
         .pin_bit_mask = (1ULL << BSP_EXIO_INT_IO),
     };
     ESP_ERROR_CHECK(gpio_config(&bsp_exio_int_config));
+}
+
+/**
+ * @brief 设置 XL9555 的中断回调函数
+ *
+ * @param cb 中断回调函数
+ */
+void bsp_exio_set_int_cb(void (*cb)(void))
+{
+    bsp_exio_int_cb = cb;
 }
 
 /**
