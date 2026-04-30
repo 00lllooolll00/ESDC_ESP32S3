@@ -25,7 +25,7 @@ int plat_key_dev_cb_register(plat_key_dev_t *key, plat_key_int_read_cb_t cb)
     assert(key);
     PLAT_DEV_CHECK(key);
 
-    key->ops->register_int_cb(key, cb);
+    key->ops->register_int_cb(cb);
 
     return 0;
 }
@@ -35,7 +35,7 @@ int plat_key_dev_enable_int(plat_key_dev_t *key)
     assert(key);
     PLAT_DEV_CHECK(key);
 
-    int err = key->ops->enable_int(key);
+    int err = key->ops->enable_int();
 
     return err;
 }
@@ -45,7 +45,7 @@ int plat_key_dev_disable_int(plat_key_dev_t *key)
     assert(key);
     PLAT_DEV_CHECK(key);
 
-    int err = key->ops->disable_int(key);
+    int err = key->ops->disable_int();
 
     return err;
 }
@@ -54,5 +54,5 @@ int plat_key_dev_read_raw(plat_key_dev_t *key, plat_key_state_t *state)
 {
     assert(key);
     PLAT_DEV_CHECK(key);
-    return key->ops->read_raw(key, state);
+    return key->ops->read_raw(state);
 }

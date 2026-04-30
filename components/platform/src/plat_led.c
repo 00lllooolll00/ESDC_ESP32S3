@@ -23,11 +23,11 @@ int plat_led_dev_deinit(plat_led_dev_t *led)
 int plat_led_dev_set(plat_led_dev_t *led, uint8_t value)
 {
     PLAT_DEV_CHECK(led);
-    return led->ops->set(led, value);
+    return led->ops->set(value);
 }
 
 int plat_led_dev_toggle(plat_led_dev_t *led)
 {
     PLAT_DEV_CHECK(led);
-    return led->ops->toggle(led);
+    return led->ops->toggle();
 }

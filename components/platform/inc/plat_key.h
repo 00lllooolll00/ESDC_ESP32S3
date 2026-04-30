@@ -20,10 +20,10 @@ typedef enum
 
 struct plat_key_ops_t
 {
-    int (*read_raw)(plat_key_dev_t *key, plat_key_state_t *state);
-    int (*register_int_cb)(plat_key_dev_t *key, plat_key_int_read_cb_t cb);
-    int (*enable_int)(plat_key_dev_t *key);
-    int (*disable_int)(plat_key_dev_t *key);
+    int (*read_raw)(plat_key_state_t *);
+    int (*register_int_cb)(plat_key_int_read_cb_t);
+    int (*enable_int)(void);
+    int (*disable_int)(void);
 };
 
 struct plat_key_dev_t

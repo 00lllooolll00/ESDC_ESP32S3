@@ -13,8 +13,8 @@ static const plat_dev_ops_t s_lcd_base_ops = {
     .resume = _lcd_dev_resume,
 };
 
-static int _lcd_clear(plat_lcd_dev_t *lcd, uint16_t color);
-static int _lcd_flush(plat_lcd_dev_t *lcd, int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+static int _lcd_clear(uint16_t color);
+static int _lcd_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
 
 static const plat_lcd_ops_t s_lcd_ops = {
     .clear = _lcd_clear,
@@ -49,13 +49,13 @@ static int _lcd_dev_resume(plat_dev_t *dev)
     return 0;
 }
 
-static int _lcd_clear(plat_lcd_dev_t *lcd, uint16_t color)
+static int _lcd_clear(uint16_t color)
 {
     bsp_lcd_clear(color);
     return 0;
 }
 
-static int _lcd_flush(plat_lcd_dev_t *lcd, int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
+static int _lcd_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
 {
     bsp_lcd_disp_flush(x0, y0, x1, y1, buffer);
     return 0;

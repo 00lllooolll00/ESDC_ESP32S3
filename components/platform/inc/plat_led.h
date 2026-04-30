@@ -7,8 +7,8 @@ typedef struct plat_led_ops_t plat_led_ops_t;
 typedef struct plat_led_dev_t plat_led_dev_t;
 
 struct plat_led_ops_t {
-    int (*set)(plat_led_dev_t *led, uint8_t value);
-    int (*toggle)(plat_led_dev_t *led);
+    int (*set)(uint8_t);
+    int (*toggle)(void);
 };
 
 struct plat_led_dev_t {
