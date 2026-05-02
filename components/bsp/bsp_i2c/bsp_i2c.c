@@ -50,6 +50,7 @@ void bsp_i2c_dev_register(i2c_port_num_t port, uint32_t freq, uint16_t addr, i2c
         .scl_speed_hz = freq,
     };
     ESP_ERROR_CHECK(i2c_master_bus_add_device(*i2c_dev_reg_handle, &_dev_cfg, dev));
+    ESP_ERROR_CHECK(i2c_master_bus_wait_all_done(*i2c_dev_reg_handle, 1000));
 }
 
 /**

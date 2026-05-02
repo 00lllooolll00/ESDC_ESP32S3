@@ -1,4 +1,11 @@
 #include "bsp_lcd.h"
+#include "driver/gpio.h"
+#include "esp_lcd_panel_io.h"
+#include "esp_lcd_panel_interface.h"
+#include "esp_lcd_panel_vendor.h"
+#include "esp_lcd_panel_ops.h"
+#include "esp_lcd_panel_commands.h"
+#include "esp_lcd_panel_st7789.h"
 
 FILE_TAG("bsp_lcd.c");
 

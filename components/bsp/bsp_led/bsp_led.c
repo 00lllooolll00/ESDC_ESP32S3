@@ -1,4 +1,5 @@
 #include "bsp_led.h"
+#include "driver/gpio.h"
 
 FILE_TAG("bsp_led.c");
 

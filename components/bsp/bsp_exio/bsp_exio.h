@@ -2,8 +2,6 @@
 #define BSP_EXIO_H
 
 #include "common_header.h"
-#include "driver/gpio.h"
-#include "driver/i2c_master.h"
 
 // 超时等待时间
 #define BSP_EXIO_TIMEOUT   100

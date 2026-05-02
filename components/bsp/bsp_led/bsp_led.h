@@ -2,7 +2,6 @@
 #define BSP_LED_H
 
 #include "common_header.h"
-#include "driver/gpio.h"
 
 #define BSP_LED_GPIO_PIN GPIO_NUM_1
 

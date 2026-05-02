@@ -4,14 +4,6 @@
 #include "common_header.h"
 #include "bsp_exio.h"
 
-#include "driver/gpio.h"
-#include "esp_lcd_panel_io.h"
-#include "esp_lcd_panel_interface.h"
-#include "esp_lcd_panel_vendor.h"
-#include "esp_lcd_panel_ops.h"
-#include "esp_lcd_panel_commands.h"
-#include "esp_lcd_panel_st7789.h"
-
 #define BSP_LCD_SPI_HOST    SPI2_HOST
 
 #define BSP_LCD_WIDTH       320

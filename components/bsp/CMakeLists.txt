@@ -6,6 +6,7 @@ set(src_dirs
             bsp_lcd
             bsp_key
             bsp_wifi
+            bsp_audio
 )
 
 # 头文件
@@ -16,16 +17,20 @@ set(include_dirs
             bsp_lcd
             bsp_key
             bsp_wifi
+            bsp_audio
 )
 
 # 依赖项
 set(requires
-            driver
+            esp_driver_gpio
+            esp_driver_i2s
+            esp_driver_i2c
+            esp_driver_spi
             esp_lcd
             esp_psram
             esp_event
             esp_wifi
-
+            
             common
             middlewares
 )
