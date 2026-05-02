@@ -7,6 +7,7 @@ set(src_dirs
             bsp_key
             bsp_wifi
             bsp_audio
+            bsp_i2s
 )
 
 # 头文件
@@ -18,6 +19,7 @@ set(include_dirs
             bsp_key
             bsp_wifi
             bsp_audio
+            bsp_i2s
 )
 
 # 依赖项
