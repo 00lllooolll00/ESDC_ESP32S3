@@ -1,4 +1,5 @@
 #include "bsp_lcd.h"
+#include "bsp_spi.h"
 #include "driver/gpio.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_interface.h"
@@ -16,7 +17,6 @@ typedef struct
 } _lcd_cb_data_t;
 
 static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg);
-static void _lcd_spi_init(void);
 static void _lcd_exio_pin_init(void);
 static esp_lcd_panel_handle_t s_lcd_handle;
 
@@ -28,7 +28,7 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
     s_cb_data.arg = arg;
 
     _lcd_exio_pin_init();
-    _lcd_spi_init();
+    bsp_spi_init();
 
     BSP_LCD_RST(0);
     vTaskDelay(100);
@@ -51,7 +51,7 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
         .on_color_trans_done = _lcd_trans_done_cb,
         .user_ctx = &s_cb_data,
     };
-    ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(BSP_LCD_SPI_HOST, &io_config, &io_handle));
+    ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(BSP_SPI_HOST, &io_config, &io_handle));
 
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = GPIO_NUM_NC,
@@ -121,25 +121,6 @@ static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io
     }
 
     return false;
-}
-
-/**
- * @brief       SPI总线初始化
- * @param       无
- * @retval      无
- */
-static void _lcd_spi_init(void)
-{
-    spi_bus_config_t buscfg = {
-        .sclk_io_num = BSP_LCD_SCLK_PIN,
-        .mosi_io_num = BSP_LCD_MOSI_PIN,
-        .miso_io_num = BSP_LCD_MISO_PIN,
-        .quadhd_io_num = -1,
-        .quadwp_io_num = -1,
-        .max_transfer_sz = BSP_LCD_BUFFER_SIZE,
-    };
-
-    ESP_ERROR_CHECK(spi_bus_initialize(BSP_LCD_SPI_HOST, &buscfg, SPI_DMA_CH_AUTO));
 }
 
 /**

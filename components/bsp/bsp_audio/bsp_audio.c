@@ -1,5 +1,4 @@
 #include "bsp_audio.h"
-#include "driver/i2s.h"
 #include "bsp_i2c.h"
 
 FILE_TAG("bsp_audio.c");

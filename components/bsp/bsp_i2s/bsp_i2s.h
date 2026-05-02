@@ -6,17 +6,15 @@
 #include "driver/i2s_std.h"
 
 #define BSP_I2S               (I2S_NUM_0)
-#define BSP_I2S_BCK_IO        (GPIO_NUM_46)
-#define BSP_I2S_WS_IO         (GPIO_NUM_9)
-#define BSP_I2S_DO_IO         (GPIO_NUM_10)
-#define BSP_I2S_DI_IO         (GPIO_NUM_14)
-#define BSP_I2S_MCK_IO        (GPIO_NUM_3)
+#define BSP_I2S_BCK_PIN       (GPIO_NUM_46)
+#define BSP_I2S_WS_PIN        (GPIO_NUM_9)
+#define BSP_I2S_DO_PIN        (GPIO_NUM_10)
+#define BSP_I2S_DI_PIN        (GPIO_NUM_14)
+#define BSP_I2S_MCK_PIN       (GPIO_NUM_3)
+
 #define BSP_I2S_RECV_BUF_SIZE (2400)
 #define BSP_I2S_SAMPLE_RATE   (44100)
 #define BSP_I2S_MCLK_MULTIPLE (384)
-
-extern i2s_chan_handle_t bsp_tx_handle;
-extern i2s_chan_handle_t bsp_rx_handle;
 
 void bsp_i2s_init(void);
 void bsp_i2s_deinit(void);
