@@ -19,9 +19,9 @@ extern i2s_chan_handle_t bsp_tx_handle;
 extern i2s_chan_handle_t bsp_rx_handle;
 
 void bsp_i2s_init(void);
+void bsp_i2s_deinit(void);
 void bsp_i2s_trx_start(void);
 void bsp_i2s_trx_stop(void);
-void bsp_i2s_deinit(void);
 void bsp_i2s_set_samplerate_bits_sample(int samplerate, int bits_sample);
 size_t bsp_i2s_tx_write(uint8_t *buffer, uint32_t frame_size);
 size_t bsp_i2s_rx_read(uint8_t *buffer, uint32_t frame_size);

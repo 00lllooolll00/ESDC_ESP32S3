@@ -54,6 +54,17 @@ void bsp_i2s_init(void)
 }
 
 /**
+ * @brief       I2S卸载
+ * @param       无
+ * @retval      无
+ */
+void bsp_i2s_deinit(void)
+{
+    ESP_ERROR_CHECK(i2s_del_channel(bsp_tx_handle));
+    ESP_ERROR_CHECK(i2s_del_channel(bsp_rx_handle));
+}
+
+/**
  * @brief       I2S TRX启动
  * @param       无
  * @retval      无
@@ -73,17 +84,6 @@ void bsp_i2s_trx_stop(void)
 {
     ESP_ERROR_CHECK(i2s_channel_disable(bsp_tx_handle));
     ESP_ERROR_CHECK(i2s_channel_disable(bsp_rx_handle));
-}
-
-/**
- * @brief       I2S卸载
- * @param       无
- * @retval      无
- */
-void bsp_i2s_deinit(void)
-{
-    ESP_ERROR_CHECK(i2s_del_channel(bsp_tx_handle));
-    ESP_ERROR_CHECK(i2s_del_channel(bsp_rx_handle));
 }
 
 /**
