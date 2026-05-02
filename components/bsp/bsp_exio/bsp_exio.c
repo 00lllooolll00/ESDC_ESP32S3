@@ -7,8 +7,8 @@ static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t si
 static esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size);
 static void _exio_exti_cb(void *arg);
 
-static i2c_master_dev_handle_t g_exio_i2c_handle = NULL;
-static TaskHandle_t g_exio_int_task_handle = NULL;
+static i2c_master_dev_handle_t s_exio_i2c_handle = NULL;
+static TaskHandle_t s_exio_int_task_handle = NULL;
 
 void (*bsp_exio_int_cb)(void);
 
@@ -34,7 +34,7 @@ static void bsp_exio_int_task(void *arg)
 void bsp_exio_init(void)
 {
     bsp_i2c_init(I2C_NUM_0);
-    bsp_i2c_dev_register(I2C_NUM_0, EK_FREQ_K(400), BSP_EXIO_DEV_ADDR, &g_exio_i2c_handle);
+    bsp_i2c_dev_register(I2C_NUM_0, EK_FREQ_K(400), BSP_EXIO_DEV_ADDR, &s_exio_i2c_handle);
 
     // 上电后读取一次清除中断
     uint16_t temp;
@@ -68,7 +68,7 @@ void bsp_exio_int_enable(void)
     {
         ESP_ERROR_CHECK(ret);
     }
-    xTaskCreate(bsp_exio_int_task, "bsp_exio_int", BSP_EXIO_INT_STACK, NULL, 10, &g_exio_int_task_handle);
+    xTaskCreate(bsp_exio_int_task, "bsp_exio_int", BSP_EXIO_INT_STACK, NULL, 10, &s_exio_int_task_handle);
     ESP_ERROR_CHECK(gpio_isr_handler_add(BSP_EXIO_INT_IO, _exio_exti_cb, (void *)BSP_EXIO_INT_IO));
 }
 
@@ -208,8 +208,8 @@ uint8_t bsp_exio_read_pin(bsp_exio_pin_num_t pin)
  */
 static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size)
 {
-    if (g_exio_i2c_handle == NULL) return ESP_ERR_NOT_FOUND;
-    return bsp_i2c_mem_write(g_exio_i2c_handle, reg, txbuffer, size, BSP_EXIO_TIMEOUT);
+    if (s_exio_i2c_handle == NULL) return ESP_ERR_NOT_FOUND;
+    return bsp_i2c_mem_write(s_exio_i2c_handle, reg, txbuffer, size, BSP_EXIO_TIMEOUT);
 }
 
 /**
@@ -222,8 +222,8 @@ static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t si
  */
 static esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size)
 {
-    if (g_exio_i2c_handle == NULL) return ESP_ERR_NOT_FOUND;
-    return bsp_i2c_mem_read(g_exio_i2c_handle, reg, rxbuffer, size, BSP_EXIO_TIMEOUT);
+    if (s_exio_i2c_handle == NULL) return ESP_ERR_NOT_FOUND;
+    return bsp_i2c_mem_read(s_exio_i2c_handle, reg, rxbuffer, size, BSP_EXIO_TIMEOUT);
 }
 
 /**
@@ -236,6 +236,6 @@ static esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size)
 static void _exio_exti_cb(void *arg)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(g_exio_int_task_handle, &xHigherPriorityTaskWoken);
+    vTaskNotifyGiveFromISR(s_exio_int_task_handle, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }

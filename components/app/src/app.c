@@ -15,8 +15,8 @@ static plat_lcd_dev_t s_lcd_dev;
 static plat_key_dev_t s_key_dev;
 static plat_led_dev_t s_led_dev;
 
-TaskHandle_t g_led_handle;
-TaskHandle_t g_key_handle;
+static TaskHandle_t s_led_handle;
+static TaskHandle_t s_key_handle;
 
 void app_init(void)
 {
@@ -34,8 +34,8 @@ void app_init(void)
 
     app_gui_init();
 
-    xTaskCreate(app_led_task, "app led", 1024, NULL, 1, &g_led_handle);
-    xTaskCreate(app_key_task, "app key", 2048, NULL, 2, &g_key_handle);
+    xTaskCreate(app_led_task, "app led", 1024, NULL, 1, &s_led_handle);
+    xTaskCreate(app_key_task, "app key", 2048, NULL, 2, &s_key_handle);
     xTaskCreate(app_gui_task, "app gui", 10240, NULL, 5, NULL);
 }
 

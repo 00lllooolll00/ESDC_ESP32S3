@@ -18,7 +18,7 @@ typedef struct
 static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg);
 static void _lcd_spi_init(void);
 static void _lcd_exio_pin_init(void);
-static esp_lcd_panel_handle_t g_lcd_handle;
+static esp_lcd_panel_handle_t s_lcd_handle;
 
 void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
 {
@@ -59,13 +59,13 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
         .bits_per_pixel = 16,
         .data_endian = LCD_RGB_DATA_ENDIAN_BIG,
     };
-    ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(io_handle, &panel_config, &g_lcd_handle));
-    ESP_ERROR_CHECK(esp_lcd_panel_reset(g_lcd_handle));
-    ESP_ERROR_CHECK(esp_lcd_panel_invert_color(g_lcd_handle, true));
-    ESP_ERROR_CHECK(esp_lcd_panel_init(g_lcd_handle));
-    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(g_lcd_handle, true));
-    ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(g_lcd_handle, true));
-    ESP_ERROR_CHECK(esp_lcd_panel_mirror(g_lcd_handle, true, false));
+    ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(io_handle, &panel_config, &s_lcd_handle));
+    ESP_ERROR_CHECK(esp_lcd_panel_reset(s_lcd_handle));
+    ESP_ERROR_CHECK(esp_lcd_panel_invert_color(s_lcd_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_init(s_lcd_handle));
+    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(s_lcd_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(s_lcd_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_mirror(s_lcd_handle, true, false));
 
     bsp_lcd_clear(0xFFFF);
     BSP_LCD_PWR(1);
@@ -91,7 +91,7 @@ void bsp_lcd_clear(uint16_t color)
 
         for (uint16_t y = 0; y < BSP_LCD_HEIGHT; y += line)
         {
-            esp_lcd_panel_draw_bitmap(g_lcd_handle, 0, y, BSP_LCD_WIDTH, y + line, buffer);
+            esp_lcd_panel_draw_bitmap(s_lcd_handle, 0, y, BSP_LCD_WIDTH, y + line, buffer);
         }
     }
 
@@ -100,7 +100,7 @@ void bsp_lcd_clear(uint16_t color)
 
 void bsp_lcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
 {
-    esp_lcd_panel_draw_bitmap(g_lcd_handle, x0, y0, x1, y1, buffer);
+    esp_lcd_panel_draw_bitmap(s_lcd_handle, x0, y0, x1, y1, buffer);
 }
 
 /**

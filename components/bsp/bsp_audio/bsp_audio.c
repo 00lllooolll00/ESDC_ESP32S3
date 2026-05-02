@@ -7,12 +7,12 @@ FILE_TAG("bsp_audio.c");
 static esp_err_t _write_reg(uint8_t reg_addr, uint8_t data);
 static esp_err_t _read_reg(uint8_t reg_addr, uint8_t *pdata);
 
-static i2c_master_dev_handle_t g_audio_i2c_handle;
+static i2c_master_dev_handle_t s_audio_i2c_handle;
 
 int bsp_audio_init(void)
 {
     bsp_i2c_init(I2C_NUM_0);
-    bsp_i2c_dev_register(I2C_NUM_0, EK_FREQ_K(400), BSP_AUDIO_ADDR, &g_audio_i2c_handle);
+    bsp_i2c_dev_register(I2C_NUM_0, EK_FREQ_K(400), BSP_AUDIO_ADDR, &s_audio_i2c_handle);
 
     uint8_t temp = 0;
     temp |= _write_reg(0, 0x80); /* 软复位ES8388 */
@@ -215,10 +215,10 @@ void bsp_audio_input_cfg(uint8_t in)
 
 static esp_err_t _write_reg(uint8_t reg_addr, uint8_t data)
 {
-    return bsp_i2c_mem_write(g_audio_i2c_handle, reg_addr, &data, 1, BSP_AUDIO_TIMEOUT);
+    return bsp_i2c_mem_write(s_audio_i2c_handle, reg_addr, &data, 1, BSP_AUDIO_TIMEOUT);
 }
 
 static esp_err_t _read_reg(uint8_t reg_addr, uint8_t *pdata)
 {
-    return bsp_i2c_mem_read(g_audio_i2c_handle, reg_addr, pdata, 1, BSP_AUDIO_TIMEOUT);
+    return bsp_i2c_mem_read(s_audio_i2c_handle, reg_addr, pdata, 1, BSP_AUDIO_TIMEOUT);
 }

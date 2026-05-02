@@ -2,8 +2,8 @@
 
 static const char *TAG = "bsp_i2c.c";
 
-static i2c_master_bus_handle_t g_bsp_i2c0_handle = NULL;
-static i2c_master_bus_handle_t g_bsp_i2c1_handle = NULL;
+static i2c_master_bus_handle_t s_bsp_i2c0_handle = NULL;
+static i2c_master_bus_handle_t s_bsp_i2c1_handle = NULL;
 
 /**
  * @brief 初始化I2C主机总线
@@ -14,7 +14,7 @@ static i2c_master_bus_handle_t g_bsp_i2c1_handle = NULL;
  */
 void bsp_i2c_init(i2c_port_num_t port)
 {
-    i2c_master_bus_handle_t *i2c_init_handle = port == I2C_NUM_0 ? &g_bsp_i2c0_handle : &g_bsp_i2c1_handle;
+    i2c_master_bus_handle_t *i2c_init_handle = port == I2C_NUM_0 ? &s_bsp_i2c0_handle : &s_bsp_i2c1_handle;
 
     if (*i2c_init_handle != NULL) return;
 
@@ -42,7 +42,7 @@ void bsp_i2c_init(i2c_port_num_t port)
  */
 void bsp_i2c_dev_register(i2c_port_num_t port, uint32_t freq, uint16_t addr, i2c_master_dev_handle_t *dev)
 {
-    i2c_master_bus_handle_t *i2c_dev_reg_handle = port == I2C_NUM_0 ? &g_bsp_i2c0_handle : &g_bsp_i2c1_handle;
+    i2c_master_bus_handle_t *i2c_dev_reg_handle = port == I2C_NUM_0 ? &s_bsp_i2c0_handle : &s_bsp_i2c1_handle;
 
     i2c_device_config_t _dev_cfg = {
         .dev_addr_length = I2C_ADDR_BIT_LEN_7,

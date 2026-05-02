@@ -7,8 +7,8 @@ static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t e
 static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static void _smart_config_task(void *arg);
 
-static EventGroupHandle_t g_wifi_event_group_handler;
-static esp_netif_t *g_netif;
+static EventGroupHandle_t s_wifi_event_group_handler;
+static esp_netif_t *s_netif;
 
 /**
  * @brief  初始化 Wi-Fi STA 模式并启动连接。
@@ -23,14 +23,14 @@ EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
 {
     assert(sta_cfg);
 
-    g_wifi_event_group_handler = xEventGroupCreate();
-    assert(g_wifi_event_group_handler);
+    s_wifi_event_group_handler = xEventGroupCreate();
+    assert(s_wifi_event_group_handler);
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-    g_netif = esp_netif_create_default_wifi_sta();
-    assert(g_netif);
+    s_netif = esp_netif_create_default_wifi_sta();
+    assert(s_netif);
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -56,7 +56,7 @@ EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
     LOG_INFO("bsp wifi station mode init ok");
     LOG_INFO("start connecting wifi :\n\tssid:%s\n\tpassword:%s", sta_cfg->ssid, sta_cfg->pswd);
 
-    return g_wifi_event_group_handler;
+    return s_wifi_event_group_handler;
 }
 
 /**
@@ -108,8 +108,8 @@ void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections)
 void bsp_wifi_smartconfig_init(void)
 {
     ESP_ERROR_CHECK(esp_netif_init());
-    g_wifi_event_group_handler = xEventGroupCreate();
-    assert(g_wifi_event_group_handler);
+    s_wifi_event_group_handler = xEventGroupCreate();
+    assert(s_wifi_event_group_handler);
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
     assert(sta_netif);
@@ -192,7 +192,7 @@ static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t e
             }
             else
             {
-                xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_FAIL_BIT);
+                xEventGroupSetBits(s_wifi_event_group_handler, BSP_WIFI_FAIL_BIT);
             }
             LOG_WARN("fail to connect to the wifi");
         }
@@ -205,7 +205,7 @@ static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t e
             // 给对应的事件组的对应位置1
             LOG_INFO("successfully connected to the wifi");
             retry_times = 0;
-            xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
+            xEventGroupSetBits(s_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
         }
     }
 }
@@ -225,13 +225,13 @@ static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, i
     {
         // 断开链接
         esp_wifi_connect();
-        xEventGroupClearBits(g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
+        xEventGroupClearBits(s_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         // 被DCHDP 分配了IP地址
         // 说明确实连接好了
-        xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
+        xEventGroupSetBits(s_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT);
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE)
     {
@@ -276,7 +276,7 @@ static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, i
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SEND_ACK_DONE)
     {
-        xEventGroupSetBits(g_wifi_event_group_handler, BSP_WIFI_ESPTOUCH_BIT);
+        xEventGroupSetBits(s_wifi_event_group_handler, BSP_WIFI_ESPTOUCH_BIT);
     }
 }
 
@@ -292,7 +292,7 @@ static void _smart_config_task(void *arg)
     while (1)
     {
         uxBits = xEventGroupWaitBits(
-            g_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT | BSP_WIFI_ESPTOUCH_BIT, true, false, portMAX_DELAY);
+            s_wifi_event_group_handler, BSP_WIFI_CONNECTED_BIT | BSP_WIFI_ESPTOUCH_BIT, true, false, portMAX_DELAY);
 
         if (uxBits & BSP_WIFI_CONNECTED_BIT) LOG_INFO("successfully connected to the wifi");
         if (uxBits & BSP_WIFI_ESPTOUCH_BIT)
