@@ -3,8 +3,8 @@
 
 FILE_TAG("bsp_exio.c");
 
-static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size);
-static esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size);
+FORCE_INLINE_ATTR esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size);
+FORCE_INLINE_ATTR esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size);
 static void _exio_exti_cb(void *arg);
 
 static i2c_master_dev_handle_t s_exio_i2c_handle = NULL;
@@ -63,7 +63,7 @@ void bsp_exio_int_enable(void)
     };
 
     ESP_ERROR_CHECK(gpio_config(&bsp_exio_int_config));
-    esp_err_t ret = gpio_install_isr_service(0);
+    esp_err_t ret = gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
     if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE)
     {
         ESP_ERROR_CHECK(ret);
@@ -206,7 +206,7 @@ uint8_t bsp_exio_read_pin(bsp_exio_pin_num_t pin)
  * @param size 待写入数据长度
  * @return esp_err_t ESP_OK成功，其他值失败
  */
-static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size)
+FORCE_INLINE_ATTR esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size)
 {
     if (s_exio_i2c_handle == NULL) return ESP_ERR_NOT_FOUND;
     return bsp_i2c_mem_write(s_exio_i2c_handle, reg, txbuffer, size, BSP_EXIO_TIMEOUT);
@@ -220,7 +220,7 @@ static esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t si
  * @param size 待读取数据长度
  * @return esp_err_t ESP_OK成功，其他值失败
  */
-static esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size)
+FORCE_INLINE_ATTR esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size)
 {
     if (s_exio_i2c_handle == NULL) return ESP_ERR_NOT_FOUND;
     return bsp_i2c_mem_read(s_exio_i2c_handle, reg, rxbuffer, size, BSP_EXIO_TIMEOUT);
