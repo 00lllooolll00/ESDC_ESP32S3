@@ -5,7 +5,6 @@
 
 typedef struct plat_key_ops_t plat_key_ops_t;
 typedef struct plat_key_dev_t plat_key_dev_t;
-typedef void (*plat_key_int_read_cb_t)(void);
 
 typedef enum
 {
@@ -21,7 +20,7 @@ typedef enum
 struct plat_key_ops_t
 {
     int (*read_raw)(plat_key_state_t *);
-    int (*register_int_cb)(plat_key_int_read_cb_t);
+    int (*register_int_cb)(void (*)(void));
     int (*enable_int)(void);
     int (*disable_int)(void);
 };
@@ -30,14 +29,14 @@ struct plat_key_dev_t
 {
     plat_dev_t base;
     const plat_key_ops_t *ops;
-    plat_key_int_read_cb_t cb;
+    void (*cb)(void);
 };
 
 void plat_key_dev_register(
     plat_key_dev_t *key, const char *name, const plat_dev_ops_t *base_ops, const plat_key_ops_t *ops, void *priv);
 int plat_key_dev_init(plat_key_dev_t *key);
 int plat_key_dev_deinit(plat_key_dev_t *key);
-int plat_key_dev_cb_register(plat_key_dev_t *key, plat_key_int_read_cb_t cb);
+int plat_key_dev_cb_register(plat_key_dev_t *key, void (*cb)(void));
 int plat_key_dev_read_raw(plat_key_dev_t *key, plat_key_state_t *state);
 int plat_key_dev_enable_int(plat_key_dev_t *key);
 int plat_key_dev_disable_int(plat_key_dev_t *key);

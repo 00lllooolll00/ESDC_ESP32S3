@@ -20,7 +20,7 @@ int plat_key_dev_deinit(plat_key_dev_t *key)
     return plat_dev_deinit(PLAT_GET_BASE(key));
 }
 
-int plat_key_dev_cb_register(plat_key_dev_t *key, plat_key_int_read_cb_t cb)
+int plat_key_dev_cb_register(plat_key_dev_t *key, void (*cb)(void))
 {
     assert(key);
     PLAT_DEV_CHECK(key);
