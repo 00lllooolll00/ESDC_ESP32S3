@@ -8,7 +8,7 @@
 #define BSP_EXIO_INT_STACK 2048
 
 // GPIO 映射
-#define BSP_EXIO_INT_IO   GPIO_NUM_5
+#define BSP_EXIO_INT_IO   GPIO_NUM_0
 
 #define BSP_EXIO_DEV_ADDR 0x20
 // 输入寄存器

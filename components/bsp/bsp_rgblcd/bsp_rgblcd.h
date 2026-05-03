@@ -2,10 +2,11 @@
 #define BSP_LCD_H
 
 #include "common_header.h"
+#include "bsp_exio.h"
 #include "driver/gpio.h"
 
-#define BSP_LCD_WIDTH  800
-#define BSP_LCD_HEIGHT 480
+#define BSP_RGBLCD_WIDTH  800
+#define BSP_RGBLCD_HEIGHT 480
 
 // pin
 #define BSP_RGBLCD_DE_PIN    (GPIO_NUM_4)
@@ -31,5 +32,19 @@
 #define BSP_RGBLCD_B5_PIN    (GPIO_NUM_15)
 #define BSP_RGBLCD_B6_PIN    (GPIO_NUM_7)
 #define BSP_RGBLCD_B7_PIN    (GPIO_NUM_6)
+
+#define BSP_RGBLCD_BL_PIN    BSP_EXIO_NUM8
+#define BSP_RGBLCD_BL(x)                                                                         \
+    do                                                                                           \
+    {                                                                                            \
+        x ? bsp_exio_write_pin(BSP_RGBLCD_BL_PIN, 1) : bsp_exio_write_pin(BSP_RGBLCD_BL_PIN, 0); \
+    } while (0)
+
+typedef bool (*bsp_rgblcd_trans_done_cb_t)(void *);
+
+void bsp_rgblcd_init(void);
+void bsp_rgblcd_display_dir(uint8_t dir);
+uint16_t bsp_rgblcd_get_width(void);
+uint16_t bsp_rgblcd_get_height(void);
 
 #endif // BSP_LCD_H

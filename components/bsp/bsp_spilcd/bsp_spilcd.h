@@ -14,12 +14,12 @@
 #define BSP_SPILCD_DC_PIN      GPIO_NUM_40
 #define BSP_SPILCD_CS_PIN      GPIO_NUM_21
 
-typedef bool (*bsp_lcd_trans_done_cb_t)(void *);
+typedef bool (*bsp_spilcd_trans_done_cb_t)(void *);
 
 #define BSP_SPILCD_PWR(x) bsp_exio_write_pin(BSP_SPILCD_PWR_PIN, x)
 #define BSP_SPILCD_RST(x) bsp_exio_write_pin(BSP_SPILCD_RST_PIN, x)
 
-void bsp_spilcd_init(bsp_lcd_trans_done_cb_t cb, void *arg);
+void bsp_spilcd_init(bsp_spilcd_trans_done_cb_t cb, void *arg);
 void bsp_spilcd_clear(uint16_t color);
 void bsp_spilcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
 

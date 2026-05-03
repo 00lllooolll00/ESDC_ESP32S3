@@ -12,22 +12,22 @@ FILE_TAG("bsp_lcd.c");
 
 typedef struct
 {
-    bsp_lcd_trans_done_cb_t cb;
+    bsp_spilcd_trans_done_cb_t cb;
     void *arg;
-} _lcd_cb_data_t;
+} _spilcd_cb_data_t;
 
-static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg);
-static void _lcd_exio_pin_init(void);
+static bool _spilcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg);
+static void _spilcd_exio_pin_init(void);
 static esp_lcd_panel_handle_t s_lcd_handle;
 
-void bsp_spilcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
+void bsp_spilcd_init(bsp_spilcd_trans_done_cb_t cb, void *arg)
 {
-    static _lcd_cb_data_t s_cb_data;
+    static _spilcd_cb_data_t s_cb_data;
 
     s_cb_data.cb = cb;
     s_cb_data.arg = arg;
 
-    _lcd_exio_pin_init();
+    _spilcd_exio_pin_init();
     bsp_spi_init();
 
     BSP_SPILCD_RST(0);
@@ -48,7 +48,7 @@ void bsp_spilcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
 
         // 将参数中的真正的回调函数
         // 传入内部的回调中
-        .on_color_trans_done = _lcd_trans_done_cb,
+        .on_color_trans_done = _spilcd_trans_done_cb,
         .user_ctx = &s_cb_data,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(BSP_SPI_HOST, &io_config, &io_handle));
@@ -80,7 +80,7 @@ void bsp_spilcd_clear(uint16_t color)
     uint16_t color_tmp = ((color & 0x00FF) << 8) | ((color & 0xFF00) >> 8);
     if (NULL == buffer)
     {
-        ESP_LOGE("TAG", "Memory for bitmap is not enough");
+        LOG_ERROR("Memory for bitmap is not enough");
     }
     else
     {
@@ -110,10 +110,10 @@ void bsp_spilcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const
  * @param       arg 用户数据
  * @retval      FreeRTOS中是否有更高优先级任务唤醒
  */
-static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg)
+static bool _spilcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io_event_data_t *edata, void *arg)
 {
     // 获取上层真正需要用的回调函数和参数
-    _lcd_cb_data_t *cb_with_arg = (_lcd_cb_data_t *)arg;
+    _spilcd_cb_data_t *cb_with_arg = (_spilcd_cb_data_t *)arg;
 
     if (cb_with_arg && cb_with_arg->cb)
     {
@@ -128,7 +128,7 @@ static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io
  * @param       无
  * @retval      无
  */
-static void _lcd_exio_pin_init(void)
+static void _spilcd_exio_pin_init(void)
 {
     bsp_exio_pin_config_t exio_lcd_conifg = {
         .mode = BSP_EXIO_PIN_MODE_OUTPUT,
