@@ -4,7 +4,7 @@
 #include "common_header.h"
 
 #include "impl_exio.h"
-#include "impl_lcd.h"
+#include "impl_spilcd.h"
 #include "impl_key.h"
 #include "impl_led.h"
 

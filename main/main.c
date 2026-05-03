@@ -38,7 +38,7 @@ void app_main(void)
 
     impl_led_register(&g_led_dev);
     impl_key_register(&g_key_dev);
-    impl_lcd_register(&g_lcd_dev);
+    impl_spilcd_register(&g_lcd_dev);
 
     plat_led_dev_init(&g_led_dev);
     plat_key_dev_init(&g_key_dev);

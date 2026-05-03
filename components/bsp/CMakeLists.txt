@@ -5,7 +5,8 @@ set(src_dirs
             bsp_spi
             bsp_led
             bsp_exio
-            bsp_lcd
+            bsp_rgblcd
+            bsp_spilcd
             bsp_key
             bsp_wifi
             bsp_audio
@@ -19,7 +20,8 @@ set(include_dirs
             bsp_spi
             bsp_led
             bsp_exio
-            bsp_lcd
+            bsp_rgblcd
+            bsp_spilcd
             bsp_key
             bsp_wifi
             bsp_audio

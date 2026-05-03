@@ -1,4 +1,4 @@
-#include "bsp_lcd.h"
+#include "bsp_spilcd.h"
 #include "bsp_spi.h"
 #include "driver/gpio.h"
 #include "esp_lcd_panel_io.h"
@@ -20,7 +20,7 @@ static bool _lcd_trans_done_cb(esp_lcd_panel_io_handle_t panel, esp_lcd_panel_io
 static void _lcd_exio_pin_init(void);
 static esp_lcd_panel_handle_t s_lcd_handle;
 
-void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
+void bsp_spilcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
 {
     static _lcd_cb_data_t s_cb_data;
 
@@ -30,16 +30,16 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
     _lcd_exio_pin_init();
     bsp_spi_init();
 
-    BSP_LCD_RST(0);
+    BSP_SPILCD_RST(0);
     vTaskDelay(100);
-    BSP_LCD_RST(1);
+    BSP_SPILCD_RST(1);
     vTaskDelay(100);
 
     esp_lcd_panel_io_handle_t io_handle = NULL;
 
     esp_lcd_panel_io_spi_config_t io_config = {
-        .dc_gpio_num = BSP_LCD_DC_PIN,
-        .cs_gpio_num = BSP_LCD_CS_PIN,
+        .dc_gpio_num = BSP_SPILCD_DC_PIN,
+        .cs_gpio_num = BSP_SPILCD_CS_PIN,
         .pclk_hz = EK_FREQ_M(60),
         .lcd_cmd_bits = 8,
         .lcd_param_bits = 8,
@@ -67,16 +67,16 @@ void bsp_lcd_init(bsp_lcd_trans_done_cb_t cb, void *arg)
     ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(s_lcd_handle, true));
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(s_lcd_handle, true, false));
 
-    bsp_lcd_clear(0xFFFF);
-    BSP_LCD_PWR(1);
+    bsp_spilcd_clear(0xFFFF);
+    BSP_SPILCD_PWR(1);
 
     LOG_INFO("bsp lcd init ok");
 }
 
-void bsp_lcd_clear(uint16_t color)
+void bsp_spilcd_clear(uint16_t color)
 {
     uint16_t line = 40;
-    uint16_t *buffer = heap_caps_malloc(BSP_LCD_WIDTH * sizeof(uint16_t) * line, MALLOC_CAP_DMA);
+    uint16_t *buffer = heap_caps_malloc(BSP_SPILCD_WIDTH * sizeof(uint16_t) * line, MALLOC_CAP_DMA);
     uint16_t color_tmp = ((color & 0x00FF) << 8) | ((color & 0xFF00) >> 8);
     if (NULL == buffer)
     {
@@ -84,21 +84,21 @@ void bsp_lcd_clear(uint16_t color)
     }
     else
     {
-        for (uint32_t i = 0; i < BSP_LCD_WIDTH * line; i++)
+        for (uint32_t i = 0; i < BSP_SPILCD_WIDTH * line; i++)
         {
             buffer[i] = color_tmp;
         }
 
-        for (uint16_t y = 0; y < BSP_LCD_HEIGHT; y += line)
+        for (uint16_t y = 0; y < BSP_SPILCD_HEIGHT; y += line)
         {
-            esp_lcd_panel_draw_bitmap(s_lcd_handle, 0, y, BSP_LCD_WIDTH, y + line, buffer);
+            esp_lcd_panel_draw_bitmap(s_lcd_handle, 0, y, BSP_SPILCD_WIDTH, y + line, buffer);
         }
     }
 
     heap_caps_free(buffer);
 }
 
-void bsp_lcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
+void bsp_spilcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
 {
     esp_lcd_panel_draw_bitmap(s_lcd_handle, x0, y0, x1, y1, buffer);
 }
@@ -132,9 +132,9 @@ static void _lcd_exio_pin_init(void)
 {
     bsp_exio_pin_config_t exio_lcd_conifg = {
         .mode = BSP_EXIO_PIN_MODE_OUTPUT,
-        .pin = BSP_LCD_PWR_PIN,
+        .pin = BSP_SPILCD_PWR_PIN,
     };
     bsp_exio_conifg_pin(&exio_lcd_conifg);
-    exio_lcd_conifg.pin = BSP_LCD_RST_PIN;
+    exio_lcd_conifg.pin = BSP_SPILCD_RST_PIN;
     bsp_exio_conifg_pin(&exio_lcd_conifg);
 }
