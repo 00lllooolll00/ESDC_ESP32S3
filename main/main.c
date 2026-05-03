@@ -5,6 +5,7 @@
 
 #include "lvgl.h"
 #include "lv_disp_port.h"
+#include "impl_rgblcd.h"
 
 FILE_TAG("main.c");
 
@@ -34,11 +35,10 @@ void app_main(void)
     lv_tick_set_cb(_lv_port_tick_get_cb);
 
     impl_exio_init();
-    impl_exio_int_enable();
 
     impl_led_register(&g_led_dev);
     impl_key_register(&g_key_dev);
-    impl_spilcd_register(&g_lcd_dev);
+    impl_rgblcd_register(&g_lcd_dev);
 
     plat_led_dev_init(&g_led_dev);
     plat_key_dev_init(&g_key_dev);
