@@ -1,26 +1,12 @@
 # 源文件
-set(src_dirs
+set(bsps
             bsp_i2c
             bsp_i2s
             bsp_spi
             bsp_led
             bsp_exio
             bsp_rgblcd
-            bsp_spilcd
-            bsp_key
-            bsp_wifi
-            bsp_audio
-            bsp_sdcard
-)
-
-# 头文件
-set(include_dirs
-            bsp_i2c
-            bsp_i2s
-            bsp_spi
-            bsp_led
-            bsp_exio
-            bsp_rgblcd
+            bsp_touch
             bsp_spilcd
             bsp_key
             bsp_wifi
@@ -47,8 +33,8 @@ set(requires
 
 # 注册到 idf
 idf_component_register(
-            SRC_DIRS ${src_dirs}
-            INCLUDE_DIRS ${include_dirs}
+            SRC_DIRS ${bsps}
+            INCLUDE_DIRS ${bsps}
             REQUIRES ${requires}
 )
 
