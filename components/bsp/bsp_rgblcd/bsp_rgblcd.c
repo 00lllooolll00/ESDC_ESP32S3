@@ -13,20 +13,20 @@ typedef struct
 static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rgb_panel_event_data_t *edata, void *arg);
 static void _rgblcd_init(void);
 static void _rgblcd_exio_pin_config(void);
+static void _rgblcd_display_dir(uint8_t dir);
 
 static esp_lcd_panel_handle_t s_rgblcd_handle;
 static uint16_t s_width;
 static uint16_t s_height;
 static DRAM_ATTR void *s_lcd_buffer[2];
+static _rgblcd_cb_data_t s_cb_data;
 
-void bsp_rgblcd_int(bsp_rgblcd_trans_done_cb_t cb, void *arg)
+void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
 {
     if (s_rgblcd_handle) return;
 
     s_width = BSP_RGBLCD_WIDTH;
     s_height = BSP_RGBLCD_HEIGHT;
-
-    static _rgblcd_cb_data_t s_cb_data;
 
     s_cb_data.cb = cb;
     s_cb_data.arg = arg;
@@ -37,40 +37,40 @@ void bsp_rgblcd_int(bsp_rgblcd_trans_done_cb_t cb, void *arg)
 
     _rgblcd_init();
 
-    bsp_rgblcd_display_dir(1); /* 设置横屏 */
+    _rgblcd_display_dir(1); /* 设置横屏 */
 
     ESP_ERROR_CHECK(esp_lcd_rgb_panel_get_frame_buffer(s_rgblcd_handle, 2, &s_lcd_buffer[0], &s_lcd_buffer[1]));
 
     const esp_lcd_rgb_panel_event_callbacks_t rgb_cbs = {
-        .on_frame_buf_complete = _rgblcd_trans_done_cb, /* 内部缓冲区刷新完成回调函数 */
+        .on_color_trans_done = _rgblcd_trans_done_cb,
     };
 
-    ESP_ERROR_CHECK(esp_lcd_rgb_panel_register_event_callbacks(s_rgblcd_handle, &rgb_cbs, NULL));
+    ESP_ERROR_CHECK(esp_lcd_rgb_panel_register_event_callbacks(s_rgblcd_handle, &rgb_cbs, &s_cb_data));
 
     BSP_RGBLCD_BL(1);
 }
 
-IRAM_ATTR void lcd_clear(uint16_t color)
+void bsp_rgblcd_clear(uint16_t color)
 {
-    uint16_t *buffer = (uint16_t *)lcd_buffer[buffer_sw]; /* 将 void* 转换为 uint16_t* */
-
-    /* 制定缓存区填充颜色值 */
-    for (uint32_t i = 0; i < lcddev.width * lcddev.height; i++)
+    uint32_t pixel_count = BSP_RGBLCD_WIDTH * BSP_RGBLCD_HEIGHT;
+    for (uint8_t fb = 0; fb < 2; fb++)
     {
-        buffer[i] = color;
+        uint16_t *buffer = (uint16_t *)s_lcd_buffer[fb];
+        if (buffer == NULL)
+        {
+            continue;
+        }
+
+        for (uint32_t i = 0; i < pixel_count; i++)
+        {
+            buffer[i] = color;
+        }
     }
+}
 
-    esp_lcd_panel_draw_bitmap(lcddev.lcd_panel_handle, 0, 0, lcddev.width, lcddev.height, buffer);
-    /* 清除传输完成标志 */
-    refresh_done_flag = 0;
-
-    do
-    {
-        /* 等待内部缓存刷新完成 */
-        vTaskDelay(1);
-    } while (refresh_done_flag != 1);
-    /* 使用异或操作在 0 和 1 之间切换，目的是为了切换另一个缓冲区 */
-    buffer_sw ^= 1;
+void bsp_rgblcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
+{
+    ESP_ERROR_CHECK(esp_lcd_panel_draw_bitmap(s_rgblcd_handle, x0, y0, x1, y1, buffer));
 }
 
 /**
@@ -78,21 +78,21 @@ IRAM_ATTR void lcd_clear(uint16_t color)
  * @param       dir:0,竖屏；1,横屏
  * @retval      无
  */
-void bsp_rgblcd_display_dir(uint8_t dir)
+static void _rgblcd_display_dir(uint8_t dir)
 {
     if (dir == 0)
     {
         s_height = BSP_RGBLCD_WIDTH;
         s_width = BSP_RGBLCD_HEIGHT;
-        esp_lcd_panel_swap_xy(s_rgblcd_handle, true); /* 交换X和Y轴 */
-        esp_lcd_panel_mirror(s_rgblcd_handle, false, true); /* 对屏幕的Y轴进行镜像处理 */
+        ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(s_rgblcd_handle, true)); /* 交换X和Y轴 */
+        ESP_ERROR_CHECK(esp_lcd_panel_mirror(s_rgblcd_handle, false, true)); /* 对屏幕的Y轴进行镜像处理 */
     }
     else if (dir == 1)
     {
         s_width = BSP_RGBLCD_WIDTH;
         s_height = BSP_RGBLCD_HEIGHT;
-        esp_lcd_panel_swap_xy(s_rgblcd_handle, false); /* 不需要交换X和Y轴 */
-        esp_lcd_panel_mirror(s_rgblcd_handle, false, false); /* 对屏幕的XY轴不进行镜像处理 */
+        ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(s_rgblcd_handle, false)); /* 不需要交换X和Y轴 */
+        ESP_ERROR_CHECK(esp_lcd_panel_mirror(s_rgblcd_handle, false, false)); /* 对屏幕的XY轴不进行镜像处理 */
     }
 }
 
@@ -150,9 +150,9 @@ static void _rgblcd_init(void)
             },
         },
         .flags.fb_in_psram = true,                  /* 在PSRAM中分配帧缓冲区 */
-        .bounce_buffer_size_px =  800 * 20,  /* 解决写spiflash时,抖动问题 */
+        .bounce_buffer_size_px =  800 * 10,  /* 解决写spiflash时,抖动问题 */
     };
-    esp_lcd_new_rgb_panel(&panel_config, &s_rgblcd_handle); /* 创建RGB对象 */
+    ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&panel_config, &s_rgblcd_handle)); /* 创建RGB对象 */
 
     ESP_ERROR_CHECK(esp_lcd_panel_reset(s_rgblcd_handle)); /* 复位RGB屏 */
 

@@ -1,5 +1,5 @@
-#include "impl_spilcd.h"
-#include "bsp_spilcd.h"
+#include "impl_rgblcd.h"
+#include "bsp_rgblcd.h"
 
 static int _lcd_dev_init(plat_dev_t *dev);
 static int _lcd_dev_deinit(plat_dev_t *dev);
@@ -21,16 +21,16 @@ static const plat_lcd_ops_t s_lcd_ops = {
     .flush = _lcd_flush,
 };
 
-int impl_spilcd_register(plat_lcd_dev_t *lcd_dev)
+int impl_rgblcd_register(plat_lcd_dev_t *lcd_dev)
 {
-    plat_lcd_dev_register(lcd_dev, "lcd", &s_lcd_base_ops, &s_lcd_ops, BSP_SPILCD_WIDTH, BSP_SPILCD_HEIGHT, NULL);
+    plat_lcd_dev_register(lcd_dev, "lcd", &s_lcd_base_ops, &s_lcd_ops, BSP_RGBLCD_WIDTH, BSP_RGBLCD_HEIGHT, NULL);
     return 0;
 }
 
 static int _lcd_dev_init(plat_dev_t *dev)
 {
     plat_lcd_dev_t *lcd = (plat_lcd_dev_t *)dev;
-    bsp_spilcd_init((bsp_spilcd_trans_done_cb_t)lcd->flush_done_cb, lcd->flush_done_cb_arg);
+    bsp_rgblcd_init((bsp_rgblcd_trans_done_cb_t)lcd->flush_done_cb, lcd->flush_done_cb_arg);
     return 0;
 }
 
@@ -51,12 +51,12 @@ static int _lcd_dev_resume(plat_dev_t *dev)
 
 static int _lcd_clear(uint16_t color)
 {
-    bsp_spilcd_clear(color);
+    bsp_rgblcd_clear(color);
     return 0;
 }
 
 static int _lcd_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer)
 {
-    bsp_spilcd_disp_flush(x0, y0, x1, y1, buffer);
+    bsp_rgblcd_disp_flush(x0, y0, x1, y1, buffer);
     return 0;
 }
