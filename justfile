@@ -14,11 +14,11 @@ clean:
     idf.py fullclean
 
 flash-by-serial:build
-    idf.py flash -p /dev/ttyUSB0 
+    idf.py flash -p /dev/ttyUSB0 -b 2000000  
     idf.py monitor -p /dev/ttyUSB0 
 
 flash-by-usb:build
-    idf.py flash -p /dev/ttyACM0 
+    idf.py flash -p /dev/ttyACM0 -b 2000000 
     idf.py monitor -p /dev/ttyACM0 
 
 monitor:
