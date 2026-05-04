@@ -12,7 +12,7 @@
 #define BSP_TOUCH_INT_PIN   GPIO_NUM_40
 #define BSP_TOUCH_RST_PIN   BSP_EXIO_NUM9
 
-#define BSP_TOUCH_INT_GET() gpio_get_level(BSP_TOUCH_INT_GPIO_PIN)
+#define BSP_TOUCH_INT_GET() gpio_get_level(BSP_TOUCH_INT_PIN)
 #define BSP_TOUCH_CT_RST(x) bsp_exio_write_pin(BSP_TOUCH_RST_PIN, x)
 
 /* GT器件地址及IIC读写命令 */
