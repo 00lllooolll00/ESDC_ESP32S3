@@ -71,3 +71,7 @@ main (入口: app_main → app_init)
 - **Dev Container**：支持 ESP-IDF QEMU 环境（`privileged` 模式）
 - **clangd**：配置了 ESP-specific clangd 路径，compile_commands 指向 build 目录
 - **依赖管理**：通过 ESP-IDF Component Manager 管理 `lvgl/lvgl`（版本 ^9.2.0，实际锁定 9.5.0）
+
+### 语言回答
+
+始终使用**中文**回复
