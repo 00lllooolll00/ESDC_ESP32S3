@@ -19,8 +19,8 @@ typedef enum
 
 struct plat_key_ops_t
 {
-    int (*read_raw)(plat_key_state_t *);
-    int (*register_int_cb)(void (*)(void));
+    int (*read_raw)(plat_key_state_t *state);
+    int (*register_int_cb)(void (*cb)(void));
     int (*enable_int)(void);
     int (*disable_int)(void);
 };

@@ -10,8 +10,8 @@ typedef struct plat_lcd_ops_t plat_lcd_ops_t;
 
 struct plat_lcd_ops_t
 {
-    int (*clear)(uint16_t);
-    int (*flush)(int16_t, int16_t, int16_t, int16_t, const void *);
+    int (*clear)(uint16_t color);
+    int (*flush)(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
 };
 
 struct plat_lcd_dev_t
