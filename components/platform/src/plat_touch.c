@@ -20,11 +20,11 @@ int plat_touch_dev_deinit(plat_touch_dev_t *dev)
     return plat_dev_deinit(PLAT_GET_BASE(dev));
 }
 
-int plat_touch_dev_scan(plat_touch_dev_t *dev, plat_touch_points_t *points)
+int plat_touch_dev_read(plat_touch_dev_t *dev, plat_touch_data_t *data)
 {
     assert(dev);
     PLAT_DEV_CHECK(dev);
-    return dev->ops->scan(points);
+    return dev->ops->read(dev, data);
 }
 
 int plat_touch_dev_cb_register(plat_touch_dev_t *dev, void (*cb)(void))
@@ -32,7 +32,7 @@ int plat_touch_dev_cb_register(plat_touch_dev_t *dev, void (*cb)(void))
     assert(dev);
     PLAT_DEV_CHECK(dev);
 
-    dev->ops->register_int_cb(cb);
+    dev->ops->register_int_cb(dev, cb);
 
     return 0;
 }
@@ -42,7 +42,7 @@ int plat_touch_dev_enable_int(plat_touch_dev_t *dev)
     assert(dev);
     PLAT_DEV_CHECK(dev);
 
-    int err = dev->ops->enable_int();
+    int err = dev->ops->enable_int(dev);
 
     return err;
 }
@@ -52,7 +52,7 @@ int plat_touch_dev_disable_int(plat_touch_dev_t *dev)
     assert(dev);
     PLAT_DEV_CHECK(dev);
 
-    int err = dev->ops->disable_int();
+    int err = dev->ops->disable_int(dev);
 
     return err;
 }
