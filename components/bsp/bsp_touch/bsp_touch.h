@@ -5,7 +5,7 @@
 #include "bsp_exio.h"
 
 #define BSP_TOUCH_TIMEOUT   (100)
-#define BSP_TOUCH_INT_STACK (2048)
+#define BSP_TOUCH_INT_STACK (4 * 1024)
 #define BSP_TOUCH_POINT_NUM (5)
 
 /* 触摸芯片引脚相关定义 */

@@ -72,8 +72,10 @@ void bsp_touch_int_enable(void (*cb)(void))
     ESP_ERROR_CHECK(gpio_install_isr_service(ESP_INTR_FLAG_IRAM));
     ESP_ERROR_CHECK(gpio_isr_handler_add(BSP_TOUCH_INT_PIN, _touch_exti_cb, NULL));
 
-    xTaskCreate(bsp_touch_int_task, "touch int", BSP_TOUCH_INT_STACK, NULL, 10, &s_touch_int_task);
-
+    if (!s_touch_int_task)
+    {
+        xTaskCreate(bsp_touch_int_task, "touch int", BSP_TOUCH_INT_STACK, NULL, 10, &s_touch_int_task);
+    }
     s_touch_int_cb = cb;
 }
 
