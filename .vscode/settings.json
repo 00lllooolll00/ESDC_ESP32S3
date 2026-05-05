@@ -17,5 +17,6 @@
         "--background-index",
         "--query-driver=**",
         "--compile-commands-dir=/home/n1netynine99/WorkSpace/Embedded/ESP32/project/esp32s3_main/build"
-    ]
+    ],
+    "idf.currentSetup": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-idf"
 }
