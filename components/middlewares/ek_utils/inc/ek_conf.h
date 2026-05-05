@@ -47,8 +47,8 @@
 #define EK_LOG_ENABLE          (0)
 #define EK_LIST_ENABLE         (0)
 #define EK_VEC_ENABLE          (0)
-#define EK_RINGBUF_ENABLE      (0)
-#define EK_RINGBUF_SPSC_ENABLE (0)
+#define EK_RINGBUF_ENABLE      (1)
+#define EK_RINGBUF_SPSC_ENABLE (1)
 #define EK_STACK_ENABLE        (0)
 #define EK_EVOKE_ENABLE        (0)
 
