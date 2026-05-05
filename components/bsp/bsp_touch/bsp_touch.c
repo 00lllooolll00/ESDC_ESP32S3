@@ -54,7 +54,7 @@ void bsp_touch_init(void)
     ESP_ERROR_CHECK(_touch_write_reg(BSP_TOUCH_CTRL_REG, temp, 1));
 }
 
-void bsp_touch_int_enable(void (*cb)(void))
+void bsp_touch_register_int_cb(void (*cb)(void))
 {
     if (s_touch_int_cb)
     {
@@ -62,8 +62,17 @@ void bsp_touch_int_enable(void (*cb)(void))
         return;
     }
 
+    s_touch_int_cb = cb;
+    if (!s_touch_int_task)
+    {
+        xTaskCreate(bsp_touch_int_task, "touch int", BSP_TOUCH_INT_STACK, NULL, 10, &s_touch_int_task);
+    }
+}
+
+void bsp_touch_int_enable(void)
+{
     gpio_config_t gpio_init_struct = { 0 };
-    gpio_init_struct.intr_type = GPIO_INTR_ANYEDGE;
+    gpio_init_struct.intr_type = GPIO_INTR_NEGEDGE;
     gpio_init_struct.pull_up_en = GPIO_PULLUP_DISABLE;
     gpio_init_struct.pull_down_en = GPIO_PULLDOWN_DISABLE;
     gpio_init_struct.mode = GPIO_MODE_INPUT;
@@ -71,12 +80,6 @@ void bsp_touch_int_enable(void (*cb)(void))
     ESP_ERROR_CHECK(gpio_config(&gpio_init_struct));
     ESP_ERROR_CHECK(gpio_install_isr_service(ESP_INTR_FLAG_IRAM));
     ESP_ERROR_CHECK(gpio_isr_handler_add(BSP_TOUCH_INT_PIN, _touch_exti_cb, NULL));
-
-    if (!s_touch_int_task)
-    {
-        xTaskCreate(bsp_touch_int_task, "touch int", BSP_TOUCH_INT_STACK, NULL, 10, &s_touch_int_task);
-    }
-    s_touch_int_cb = cb;
 }
 
 void bsp_touch_int_disable(void)
@@ -90,35 +93,51 @@ void bsp_touch_int_disable(void)
     ESP_ERROR_CHECK(gpio_config(&gpio_init_struct));
 }
 
-void bsp_touch_scan(bsp_touch_points_t *points)
+esp_err_t bsp_touch_read(bsp_touch_points_t *points)
 {
     uint8_t buf[8 * BSP_TOUCH_POINT_NUM] = { 0 };
+    esp_err_t err = ESP_OK;
     points->count = 0;
 
-    /* 读取 GSTID 寄存器: bit7=buffer状态, bit3:0=触摸点数 */
-    _touch_read_reg(BSP_TOUCH_GSTID_REG, buf, 1);
+    err = _touch_read_reg(BSP_TOUCH_GSTID_REG, buf, 1);
+    if (err) return err;
+
     uint8_t touch_num = buf[0] & 0x0F;
+    uint8_t buffer_ready = (buf[0] & 0x80) ? 1 : 0;
 
     if (touch_num == 0 || touch_num > BSP_TOUCH_POINT_NUM)
     {
-        goto clear;
+        // 无触摸或异常，直接返回，count = 0
+        // 但需要根据 buffer_ready 决定是否清除 GSTID
+        if (buffer_ready)
+        {
+            buf[0] = 0;
+            _touch_write_reg(BSP_TOUCH_GSTID_REG, buf, 1);
+        }
+        return ESP_OK;
     }
 
-    /* 批量读取所有触摸点数据，每个点8字节 */
-    _touch_read_reg(BSP_TOUCH_TP1_REG, buf, touch_num * 8);
+    if (!buffer_ready)
+    {
+        // 数据未就绪，但触摸点非 0，可等待或返回重试
+        // 此处简单返回 ESP_OK，count=0（也可返回 EBUSY）
+        return EBUSY;
+    }
 
-    /* 解析触摸点: track_id(1) + x_h(1) + x_l(1) + y_h(1) + y_l(1) + size(2) + reserved(1) */
+    err = _touch_read_reg(BSP_TOUCH_TP1_REG, buf, touch_num * 8);
+    if (err) return err;
+
+    points->count = touch_num;
     for (int i = 0; i < touch_num; i++)
     {
-        points->points[i].x = ((uint16_t)buf[i * 8 + 1] << 8) | buf[i * 8 + 2];
-        points->points[i].y = ((uint16_t)buf[i * 8 + 3] << 8) | buf[i * 8 + 4];
+        points->points[i].id = buf[i * 8];
+        points->points[i].x = ((uint16_t)buf[i * 8 + 2] << 8) | buf[i * 8 + 1];
+        points->points[i].y = ((uint16_t)buf[i * 8 + 4] << 8) | buf[i * 8 + 3];
     }
-    points->count = touch_num;
 
-clear:
-    /* 清除 GSTID 寄存器 */
     buf[0] = 0;
     _touch_write_reg(BSP_TOUCH_GSTID_REG, buf, 1);
+    return ESP_OK;
 }
 
 FORCE_INLINE_ATTR esp_err_t _touch_write_reg(uint16_t reg, uint8_t *txdata, uint8_t size)
@@ -150,8 +169,6 @@ static void _touch_exio_rst_pin_config(void)
         .mode = BSP_EXIO_PIN_MODE_OUTPUT,
         .pin = BSP_TOUCH_RST_PIN,
     };
-    bsp_exio_conifg_pin(&exio_lcd_conifg);
-    exio_lcd_conifg.pin = BSP_TOUCH_RST_PIN;
     bsp_exio_conifg_pin(&exio_lcd_conifg);
 }
 

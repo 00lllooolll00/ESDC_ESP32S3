@@ -40,6 +40,7 @@
 
 typedef struct
 {
+    uint8_t id;
     uint16_t x;
     uint16_t y;
 } bsp_touch_pos_t;
@@ -51,8 +52,9 @@ typedef struct
 } bsp_touch_points_t;
 
 void bsp_touch_init(void);
-void bsp_touch_int_enable(void (*cb)(void));
+void bsp_touch_register_int_cb(void (*cb)(void));
+void bsp_touch_int_enable(void);
 void bsp_touch_int_disable(void);
-void bsp_touch_scan(bsp_touch_points_t *points);
+esp_err_t bsp_touch_read(bsp_touch_points_t *points);
 
 #endif // BSP_TOUCH_H

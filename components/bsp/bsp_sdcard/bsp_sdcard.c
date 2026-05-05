@@ -46,7 +46,7 @@ esp_err_t bsp_sdcard_init(void)
             break;
         }
 
-        LOG_WARN("fail to mount: %s", esp_err_to_name(err));
+        LOG_WARN("fail to mount: %s", unified_strerror(err));
 
         if (err == ESP_FAIL)
         {
@@ -59,7 +59,7 @@ esp_err_t bsp_sdcard_init(void)
             }
             else
             {
-                LOG_WARN("fail to format the sd card: %s", esp_err_to_name(err));
+                LOG_WARN("fail to format the sd card: %s", unified_strerror(err));
             }
         }
         else if (err == ESP_ERR_NOT_FOUND)
