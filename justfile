@@ -11,8 +11,8 @@ build:
     idf.py build size
 
 clean:
-    idf.py fullclean
-
+    rm -rf build
+    
 flash-by-serial:build
     idf.py flash -p /dev/ttyUSB0 -b 2000000  
     idf.py monitor -p /dev/ttyUSB0 
