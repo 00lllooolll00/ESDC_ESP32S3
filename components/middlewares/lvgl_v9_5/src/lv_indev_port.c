@@ -45,7 +45,6 @@ static void _lv_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data);
 static plat_touch_dev_t *s_touch_dev;
 static uint8_t s_touch_count;
 static ek_ringbuf_spsc_t **s_touch_rb_spsc;
-static plat_touch_data_t *s_tdatas;
 static lv_indev_t **s_touchs;
 
 void lv_port_touch_init(plat_touch_dev_t *dev, uint8_t count)
@@ -53,17 +52,14 @@ void lv_port_touch_init(plat_touch_dev_t *dev, uint8_t count)
     assert(dev);
     assert(count > 0);
 
-    // s_touch_rb_spsc = calloc((sizeof(*s_touch_rb_spsc)), count);
-    // assert(s_touch_rb_spsc);
+    s_touch_rb_spsc = calloc((sizeof(*s_touch_rb_spsc)), count);
+    assert(s_touch_rb_spsc);
 
-    // for (uint8_t i = 0; i < count; i++)
-    // {
-    //     s_touch_rb_spsc[i] = ek_ringbuf_create_spsc(sizeof(plat_touch_data_t), 5);
-    //     assert(s_touch_rb_spsc[i]);
-    // }
-
-    s_tdatas = calloc(sizeof(plat_touch_data_t), count);
-    assert(s_tdatas);
+    for (uint8_t i = 0; i < count; i++)
+    {
+        s_touch_rb_spsc[i] = ek_ringbuf_create_spsc(sizeof(plat_touch_data_t), 5);
+        assert(s_touch_rb_spsc[i]);
+    }
 
     s_touchs = calloc(sizeof(*s_touchs), count);
     assert(s_touchs);
@@ -98,55 +94,27 @@ static void _plat_touch_isr_cb(void)
 
         if (temp.x <= 0 && temp.y <= 0) continue;
         if (temp.x > lv_obj_get_width(lv_screen_active()) || temp.y > lv_obj_get_height(lv_screen_active())) continue;
-        s_tdatas[i] = temp;
+
+        ek_ringbuf_write_spsc(s_touch_rb_spsc[i], &temp);
     }
-
-    // for (uint8_t i = 0; i < s_touch_count; i++)
-    // {
-    //     plat_touch_data_t temp = { 0 };
-    //     plat_touch_dev_get_tdata(s_touch_dev, i, &temp);
-
-    // if (temp.x <= 0 && temp.y <= 0) continue;
-    // if (temp.x > lv_obj_get_width(lv_screen_active()) || temp.y > lv_obj_get_height(lv_screen_active())) continue;
-
-    //     ek_ringbuf_write_spsc(s_touch_rb_spsc[i], &temp);
-    // }
 }
 
 static void _lv_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data)
 {
     uint8_t idx = (uint8_t)(uintptr_t)lv_indev_get_user_data(indev);
 
-    if (s_tdatas[idx].x <= 0 && s_tdatas[idx].y <= 0)
+    if (!ek_ringbuf_empty_spsc(s_touch_rb_spsc[idx]))
+    {
+        plat_touch_data_t temp = { 0 };
+        ek_ringbuf_read_spsc(s_touch_rb_spsc[idx], &temp);
+        data->state = LV_INDEV_STATE_PRESSED;
+        data->point.x = temp.x;
+        data->point.y = temp.y;
+
+        LOG_INFO("x:%d,y:%d", temp.x, temp.y);
+    }
+    else
     {
         data->state = LV_INDEV_STATE_RELEASED;
-        return;
     }
-    if (s_tdatas[idx].x > lv_obj_get_width(lv_screen_active()) ||
-        s_tdatas[idx].y > lv_obj_get_height(lv_screen_active()))
-    {
-        data->state = LV_INDEV_STATE_RELEASED;
-        return;
-    }
-
-    data->state = LV_INDEV_STATE_PRESSED;
-    data->point.x = s_tdatas[idx].x;
-    data->point.y = s_tdatas[idx].y;
-    s_tdatas[idx].x = 0;
-    s_tdatas[idx].y = 0;
-
-    // if (!ek_ringbuf_empty_spsc(s_touch_rb_spsc[idx]))
-    // {
-    //     plat_touch_data_t temp = { 0 };
-    //     ek_ringbuf_read_spsc(s_touch_rb_spsc[idx], &temp);
-    //     data->state = LV_INDEV_STATE_PRESSED;
-    //     data->point.x = temp.x;
-    //     data->point.y = temp.y;
-
-    //     LOG_INFO("x:%d,y:%d", temp.x, temp.y);
-    // }
-    // else
-    // {
-    //     data->state = LV_INDEV_STATE_RELEASED;
-    // }
 }
