@@ -6,6 +6,7 @@ alias f := flash-by-serial
 alias r := run-by-serial
 alias cfg := menuconfig
 alias m := monitor
+alias fmt := format
 
 build:
     idf.py build size
@@ -30,3 +31,6 @@ run-by-serial:build flash-by-serial
     
 menuconfig:
     idf.py menuconfig 
+
+format:
+    clang-format -i **/*.cpp **/*.h
