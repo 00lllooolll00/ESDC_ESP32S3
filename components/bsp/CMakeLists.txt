@@ -12,6 +12,7 @@ set(bsps
             bsp_wifi
             bsp_audio
             bsp_sdcard
+            bsp_mqtt
 )
 
 # 依赖项
@@ -25,6 +26,8 @@ set(requires
             esp_psram
             esp_event
             esp_wifi
+            esp_netif
+            mqtt
             fatfs            
 
             common
