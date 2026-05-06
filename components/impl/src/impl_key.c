@@ -1,10 +1,10 @@
 #include "impl_key.h"
 #include "bsp_key.h"
 
-static int _key_dev_init(plat_dev_t *dev);
-static int _key_dev_deinit(plat_dev_t *dev);
-static int _key_dev_suspend(plat_dev_t *dev);
-static int _key_dev_resume(plat_dev_t *dev);
+static int _key_dev_init(void);
+static int _key_dev_deinit(void);
+static int _key_dev_suspend(void);
+static int _key_dev_resume(void);
 
 static const plat_dev_ops_t s_key_base_ops = {
     .init = _key_dev_init,
@@ -31,23 +31,23 @@ int impl_key_register(plat_key_dev_t *key_dev)
     return 0;
 }
 
-static int _key_dev_init(plat_dev_t *dev)
+static int _key_dev_init(void)
 {
     bsp_key_init();
     return 0;
 }
 
-static int _key_dev_deinit(plat_dev_t *dev)
+static int _key_dev_deinit(void)
 {
     return 0;
 }
 
-static int _key_dev_suspend(plat_dev_t *dev)
+static int _key_dev_suspend(void)
 {
     return 0;
 }
 
-static int _key_dev_resume(plat_dev_t *dev)
+static int _key_dev_resume(void)
 {
     return 0;
 }

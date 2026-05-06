@@ -19,10 +19,10 @@ typedef enum
 
 struct plat_dev_ops_t
 {
-    int (*init)(plat_dev_t *dev);
-    int (*deinit)(plat_dev_t *dev);
-    int (*suspend)(plat_dev_t *dev);
-    int (*resume)(plat_dev_t *dev);
+    int (*init)(void);
+    int (*deinit)(void);
+    int (*suspend)(void);
+    int (*resume)(void);
 };
 
 struct plat_dev_t

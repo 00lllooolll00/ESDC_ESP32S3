@@ -34,7 +34,7 @@ int plat_lcd_dev_suspend(plat_lcd_dev_t *lcd)
     PLAT_DEV_CHECK(lcd);
     PLAT_DEV_LOCK(lcd);
 
-    int err = PLAT_GET_BASE(lcd)->base_ops->suspend(PLAT_GET_BASE(lcd));
+    int err = PLAT_GET_BASE(lcd)->base_ops->suspend();
 
     PLAT_DEV_UNLOCK(lcd);
     return err;
@@ -45,7 +45,7 @@ int plat_lcd_dev_resume(plat_lcd_dev_t *lcd)
     PLAT_DEV_CHECK(lcd);
     PLAT_DEV_LOCK(lcd);
 
-    int err = PLAT_GET_BASE(lcd)->base_ops->resume(PLAT_GET_BASE(lcd));
+    int err = PLAT_GET_BASE(lcd)->base_ops->resume();
 
     PLAT_DEV_UNLOCK(lcd);
     return err;

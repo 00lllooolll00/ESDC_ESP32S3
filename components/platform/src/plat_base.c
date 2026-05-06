@@ -16,7 +16,7 @@ int plat_dev_init(plat_dev_t *dev)
 
     if (!dev->lock) return ENOMEM;
 
-    int err = dev->base_ops->init(dev);
+    int err = dev->base_ops->init();
 
     if (err) dev->state = PLAT_STATE_ERROR;
     else dev->state = PLAT_STATE_READY;
@@ -31,7 +31,7 @@ int plat_dev_deinit(plat_dev_t *dev)
 
     vSemaphoreDelete(dev->lock);
 
-    int err = dev->base_ops->deinit(dev);
+    int err = dev->base_ops->deinit();
 
     if (err) dev->state = PLAT_STATE_ERROR;
     else dev->state = PLAT_STATE_NONE;

@@ -1,10 +1,10 @@
 #include "impl_led.h"
 #include "bsp_led.h"
 
-static int _led_dev_init(plat_dev_t *dev);
-static int _led_dev_deinit(plat_dev_t *dev);
-static int _led_dev_suspend(plat_dev_t *dev);
-static int _led_dev_resume(plat_dev_t *dev);
+static int _led_dev_init(void);
+static int _led_dev_deinit(void);
+static int _led_dev_suspend(void);
+static int _led_dev_resume(void);
 
 static const plat_dev_ops_t s_led_base_ops = {
     .init    = _led_dev_init,
@@ -27,23 +27,23 @@ int impl_led_register(plat_led_dev_t *led_dev)
     return 0;
 }
 
-static int _led_dev_init(plat_dev_t *dev)
+static int _led_dev_init(void)
 {
     bsp_led_init();
     return 0;
 }
 
-static int _led_dev_deinit(plat_dev_t *dev)
+static int _led_dev_deinit(void)
 {
     return 0;
 }
 
-static int _led_dev_suspend(plat_dev_t *dev)
+static int _led_dev_suspend(void)
 {
     return 0;
 }
 
-static int _led_dev_resume(plat_dev_t *dev)
+static int _led_dev_resume(void)
 {
     return 0;
 }

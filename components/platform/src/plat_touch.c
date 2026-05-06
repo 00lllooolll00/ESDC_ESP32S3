@@ -31,16 +31,21 @@ int plat_touch_dev_read(plat_touch_dev_t *dev)
 {
     assert(dev);
     PLAT_DEV_CHECK(dev);
-    return dev->ops->read(dev);
+    PLAT_DEV_LOCK(dev);
+    int err = dev->ops->read(dev);
+    PLAT_DEV_UNLOCK(dev);
+    return err;
 }
 
 int plat_touch_dev_cb_register(plat_touch_dev_t *dev, void (*cb)(void))
 {
     assert(dev);
     PLAT_DEV_CHECK(dev);
+    PLAT_DEV_LOCK(dev);
 
     dev->ops->register_int_cb(cb);
 
+    PLAT_DEV_UNLOCK(dev);
     return 0;
 }
 
@@ -48,9 +53,11 @@ int plat_touch_dev_enable_int(plat_touch_dev_t *dev)
 {
     assert(dev);
     PLAT_DEV_CHECK(dev);
+    PLAT_DEV_LOCK(dev);
 
     int err = dev->ops->enable_int();
 
+    PLAT_DEV_UNLOCK(dev);
     return err;
 }
 
@@ -58,9 +65,11 @@ int plat_touch_dev_disable_int(plat_touch_dev_t *dev)
 {
     assert(dev);
     PLAT_DEV_CHECK(dev);
+    PLAT_DEV_LOCK(dev);
 
     int err = dev->ops->disable_int();
 
+    PLAT_DEV_UNLOCK(dev);
     return err;
 }
 
@@ -68,10 +77,12 @@ int plat_touch_dev_get_tdata(plat_touch_dev_t *dev, uint8_t idx, plat_touch_data
 {
     assert(dev);
     PLAT_DEV_CHECK(dev);
+    PLAT_DEV_LOCK(dev);
 
     if (idx > dev->t_count) return EINVAL;
 
     *tdata = dev->t_data[idx];
 
+    PLAT_DEV_UNLOCK(dev);
     return 0;
 }

@@ -1,10 +1,10 @@
 #include "impl_touch.h"
 #include "bsp_touch.h"
 
-static int _touch_dev_init(plat_dev_t *dev);
-static int _touch_dev_deinit(plat_dev_t *dev);
-static int _touch_dev_suspend(plat_dev_t *dev);
-static int _touch_dev_resume(plat_dev_t *dev);
+static int _touch_dev_init(void);
+static int _touch_dev_deinit(void);
+static int _touch_dev_suspend(void);
+static int _touch_dev_resume(void);
 
 static const plat_dev_ops_t s_touch_base_ops = {
     .init = _touch_dev_init,
@@ -37,23 +37,23 @@ int impl_touch_register(plat_touch_dev_t *dev, uint8_t count)
     return 0;
 }
 
-static int _touch_dev_init(plat_dev_t *dev)
+static int _touch_dev_init(void)
 {
     bsp_touch_init();
     return 0;
 }
 
-static int _touch_dev_deinit(plat_dev_t *dev)
+static int _touch_dev_deinit(void)
 {
     return 0;
 }
 
-static int _touch_dev_suspend(plat_dev_t *dev)
+static int _touch_dev_suspend(void)
 {
     return 0;
 }
 
-static int _touch_dev_resume(plat_dev_t *dev)
+static int _touch_dev_resume(void)
 {
     return 0;
 }
