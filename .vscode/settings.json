@@ -11,7 +11,7 @@
     "idf.port": "/dev/ttyUSB0",
     "idf.espIdfPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-idf",
     "idf.toolsPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools",
-    "idf.pythonInstallPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools/python_env/idf5.5_py3.11_env/bin/python",
+    "idf.pythonInstallPath": "/home/nn99/WorkSpace/Embedded/ESP32/esp-tools/python_env/idf5.5_py3.14_env/bin/python",
     "clangd.path": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd",
     "clangd.arguments": [
         "--background-index",
