@@ -37,7 +37,7 @@ void lv_port_disp_init(plat_lcd_dev_t *lcd_dev)
     // 通过 platform 层初始化 LCD（触发 impl -> bsp 的 init 链路）
     plat_lcd_dev_init(lcd_dev);
 
-    LOG_INFO("lvgl port display driver init");
+    LOG_INFO("lvgl port display driver init ok");
 }
 
 static bool _lv_port_trans_done_cb(void *ctx)

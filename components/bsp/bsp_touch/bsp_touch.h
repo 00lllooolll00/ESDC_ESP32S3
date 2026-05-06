@@ -27,7 +27,7 @@
 #define BSP_TOUCH_PID_REG   (0X8140) /* GT9XXX产品ID寄存器 */
 
 #define BSP_TOUCH_GSTID_REG (0X814E) /* GT9XXX当前检测到的触摸情况 */
-#define BSP_TOUCH_TP1_REG   (0X8150) /* 第一个触摸点数据地址 */
+#define BSP_TOUCH_TP1_REG   (0X814F) /* 第一个触摸点数据地址 */
 #define BSP_TOUCH_TP2_REG   (0X8158) /* 第二个触摸点数据地址 */
 #define BSP_TOUCH_TP3_REG   (0X8160) /* 第三个触摸点数据地址 */
 #define BSP_TOUCH_TP4_REG   (0X8168) /* 第四个触摸点数据地址 */

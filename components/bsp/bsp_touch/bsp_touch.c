@@ -73,7 +73,7 @@ void bsp_touch_int_enable(void)
 {
     gpio_config_t gpio_init_struct = { 0 };
     gpio_init_struct.intr_type = GPIO_INTR_NEGEDGE;
-    gpio_init_struct.pull_up_en = GPIO_PULLUP_DISABLE;
+    gpio_init_struct.pull_up_en = GPIO_PULLUP_ENABLE;
     gpio_init_struct.pull_down_en = GPIO_PULLDOWN_DISABLE;
     gpio_init_struct.mode = GPIO_MODE_INPUT;
     gpio_init_struct.pin_bit_mask = 1ull << BSP_TOUCH_INT_PIN;
@@ -174,7 +174,10 @@ static void _touch_exio_rst_pin_config(void)
 
 static void IRAM_ATTR _touch_exti_cb(void *arg)
 {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(s_touch_int_task, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    if (s_touch_int_task)
+    {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        vTaskNotifyGiveFromISR(s_touch_int_task, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
 }
