@@ -5,7 +5,6 @@ void plat_key_dev_register(
 {
     plat_dev_register(PLAT_GET_BASE(key), name, base_ops, priv);
     key->ops = ops;
-    key->base.state = PLAT_STATE_NONE;
 }
 
 int plat_key_dev_init(plat_key_dev_t *key)

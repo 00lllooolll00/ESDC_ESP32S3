@@ -5,6 +5,7 @@ void plat_dev_register(plat_dev_t *dev, const char *name, const plat_dev_ops_t *
     dev->name = name;
     dev->base_ops = base_ops;
     dev->priv = priv;
+    dev->state = PLAT_STATE_NONE;
 }
 
 int plat_dev_init(plat_dev_t *dev)

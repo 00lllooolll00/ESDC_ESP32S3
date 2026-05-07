@@ -14,7 +14,6 @@ void plat_lcd_dev_register(plat_lcd_dev_t *lcd,
     lcd->height = height;
     lcd->flush_done_cb = NULL;
     lcd->flush_done_cb_arg = NULL;
-    lcd->base.state = PLAT_STATE_NONE;
 }
 
 int plat_lcd_dev_init(plat_lcd_dev_t *lcd)

@@ -10,7 +10,6 @@ void plat_touch_dev_register(plat_touch_dev_t *dev,
     plat_dev_register(PLAT_GET_BASE(dev), name, base_ops, priv);
     dev->ops = ops;
     dev->t_count = count;
-    dev->base.state = PLAT_STATE_NONE;
     dev->t_data = calloc(count, sizeof(plat_touch_data_t));
     assert(dev->t_data);
 }

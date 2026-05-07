@@ -19,13 +19,13 @@ typedef enum
 
 struct plat_mqtt_ops_t
 {
-    int (*start)(plat_mqtt_dev_t *dev);
-    int (*stop)(plat_mqtt_dev_t *dev);
-    int (*reconnect)(plat_mqtt_dev_t *dev);
-    int (*disconnect)(plat_mqtt_dev_t *dev);
-    int (*publish)(plat_mqtt_dev_t *dev, const char *topic, const char *data, int len, int qos);
-    int (*subscribe)(plat_mqtt_dev_t *dev, const char *topic, int qos);
-    int (*unsubscribe)(plat_mqtt_dev_t *dev, const char *topic);
+    int (*start)(void);
+    int (*stop)(void);
+    int (*reconnect)(void);
+    int (*disconnect)(void);
+    int (*publish)(const char *topic, const char *data, int len, int qos);
+    int (*subscribe)(const char *topic, int qos);
+    int (*unsubscribe)(const char *topic);
 };
 
 struct plat_mqtt_dev_t
@@ -38,23 +38,28 @@ struct plat_mqtt_dev_t
     void (*data_cb)(const char *topic, const char *data, int data_len);
 };
 
-void plat_mqtt_dev_register(plat_mqtt_dev_t *dev,
+void plat_mqtt_dev_register(plat_mqtt_dev_t *mqtt,
                             const char *name,
                             const plat_dev_ops_t *base_ops,
                             const plat_mqtt_ops_t *ops,
                             const char *broker_url,
                             void *priv);
-int plat_mqtt_dev_init(plat_mqtt_dev_t *dev);
-int plat_mqtt_dev_deinit(plat_mqtt_dev_t *dev);
-int plat_mqtt_dev_start(plat_mqtt_dev_t *dev);
-int plat_mqtt_dev_stop(plat_mqtt_dev_t *dev);
-int plat_mqtt_dev_reconnect(plat_mqtt_dev_t *dev);
-int plat_mqtt_dev_disconnect(plat_mqtt_dev_t *dev);
-int plat_mqtt_dev_publish(plat_mqtt_dev_t *dev, const char *topic, const char *data, int len, int qos);
-int plat_mqtt_dev_subscribe(plat_mqtt_dev_t *dev, const char *topic, int qos);
-int plat_mqtt_dev_unsubscribe(plat_mqtt_dev_t *dev, const char *topic);
-void plat_mqtt_dev_cb_register(plat_mqtt_dev_t *dev, plat_mqtt_cb_t type, void (*cb)(void));
-void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *dev,
+int plat_mqtt_dev_init(plat_mqtt_dev_t *mqtt);
+int plat_mqtt_dev_deinit(plat_mqtt_dev_t *mqtt);
+int plat_mqtt_dev_suspend(plat_mqtt_dev_t *mqtt);
+int plat_mqtt_dev_resume(plat_mqtt_dev_t *mqtt);
+
+int plat_mqtt_dev_start(plat_mqtt_dev_t *mqtt);
+int plat_mqtt_dev_stop(plat_mqtt_dev_t *mqtt);
+int plat_mqtt_dev_reconnect(plat_mqtt_dev_t *mqtt);
+int plat_mqtt_dev_disconnect(plat_mqtt_dev_t *mqtt);
+
+int plat_mqtt_dev_publish(plat_mqtt_dev_t *mqtt, const char *topic, const char *data, int len, int qos);
+int plat_mqtt_dev_subscribe(plat_mqtt_dev_t *mqtt, const char *topic, int qos);
+int plat_mqtt_dev_unsubscribe(plat_mqtt_dev_t *mqtt, const char *topic);
+
+void plat_mqtt_dev_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_cb_t type, void (*cb)(void));
+void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *mqtt,
                                     void (*cb)(const char *topic, const char *data, int data_len));
 
 #endif // PLAT_MQTT_H

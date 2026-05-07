@@ -17,7 +17,7 @@ static esp_netif_t *s_netif;
  *
  * @param[in] sta_cfg  STA 配置，包含 SSID、密码和认证模式。
  */
-void bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
+void bsp_wifi_sta_start(const bsp_wifi_config_t *sta_cfg)
 {
     assert(sta_cfg);
 
