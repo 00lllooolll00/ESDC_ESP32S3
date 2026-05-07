@@ -2,7 +2,6 @@
 
 FILE_TAG("bsp_wifi.c");
 
-static void _ap_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static void _sta_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static void _smart_confi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static void _smart_config_task(void *arg);
@@ -17,9 +16,8 @@ static esp_netif_t *s_netif;
  * 该函数不会阻塞等待连接结果，调用方可自行等待返回的事件组句柄。
  *
  * @param[in] sta_cfg  STA 配置，包含 SSID、密码和认证模式。
- * @return  事件组句柄，可通过 WIFI_CONNECTED_BIT / WIFI_FAIL_BIT 判断连接状态。
  */
-EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
+void bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
 {
     assert(sta_cfg);
 
@@ -55,48 +53,6 @@ EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg)
 
     LOG_INFO("bsp wifi station mode init ok");
     LOG_INFO("start connecting wifi :\n\tssid:%s\n\tpassword:%s", sta_cfg->ssid, sta_cfg->pswd);
-
-    return s_wifi_event_group_handler;
-}
-
-/**
- * @brief  初始化 Wi-Fi AP（热点）模式。
- *
- * 创建一个 Wi-Fi 热点，设备作为 Access Point 等待其他设备连接。
- * 若密码为空则自动设为开放热点。
- *
- * @param[in] ap_cfg          热点配置，包含 SSID、密码和认证模式。
- * @param[in] max_connections 最大允许的连接数。
- */
-void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections)
-{
-    assert(ap_cfg);
-
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    (void)esp_netif_create_default_wifi_ap();
-
-    wifi_init_config_t init_cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&init_cfg));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, _ap_event_handler, NULL, NULL));
-
-    // 配置热点相关信息
-    wifi_config_t wifi_cfg = { 0 };
-
-    memcpy(wifi_cfg.ap.ssid, ap_cfg->ssid, 32);
-    memcpy(wifi_cfg.ap.password, ap_cfg->pswd, 64);
-    wifi_cfg.ap.ssid_len = strlen((const char *)ap_cfg->ssid);
-    wifi_cfg.ap.authmode = ap_cfg->auth_mode;
-    wifi_cfg.ap.max_connection = max_connections;
-
-    // 如果没有密码说明是开放热点
-    if (strlen((const char *)ap_cfg->pswd) == 0) wifi_cfg.ap.authmode = WIFI_AUTH_OPEN;
-
-    // 配置wifi一些信息
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_cfg));
-    ESP_ERROR_CHECK(esp_wifi_start());
-    LOG_INFO("bsp wifi ap mode init ok\n\tssid:%s\n\tpassword:%s", ap_cfg->ssid, ap_cfg->pswd);
 }
 
 /**
@@ -147,25 +103,6 @@ uint16_t bsp_wifi_scan(wifi_ap_record_t *ap_info, uint16_t scan_list_size)
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&scan_list_size, ap_info));
 
     return ap_number;
-}
-
-/**
- * @brief  AP 模式事件回调，处理设备的连接与断开。
- */
-static void _ap_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
-{
-    if (event_id == WIFI_EVENT_AP_STACONNECTED)
-    {
-        // 有设备连接
-        wifi_event_ap_staconnected_t *info = (wifi_event_ap_staconnected_t *)event_data;
-        LOG_INFO("station " MACSTR " join, AID=%d", MAC2STR(info->mac), info->aid);
-    }
-    else if (event_id == WIFI_EVENT_AP_STADISCONNECTED)
-    {
-        // 设备断开连接
-        wifi_event_ap_stadisconnected_t *info = (wifi_event_ap_stadisconnected_t *)event_data;
-        LOG_INFO("station " MACSTR " disconnect, AID=%d", MAC2STR(info->mac), info->aid);
-    }
 }
 
 /**

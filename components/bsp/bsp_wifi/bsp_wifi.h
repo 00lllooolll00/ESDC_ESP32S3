@@ -19,8 +19,7 @@ typedef struct
     wifi_auth_mode_t auth_mode;
 } bsp_wifi_config_t;
 
-EventGroupHandle_t bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg);
-void bsp_wifi_ap_init(const bsp_wifi_config_t *ap_cfg, uint8_t max_connections);
+void bsp_wifi_sta_init(const bsp_wifi_config_t *sta_cfg);
 void bsp_wifi_smartconfig_init(void);
 
 uint16_t bsp_wifi_scan(wifi_ap_record_t *ap_info, uint16_t scan_list_size);
