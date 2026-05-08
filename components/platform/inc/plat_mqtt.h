@@ -17,6 +17,9 @@ typedef enum
     PLAT_MQTT_CB_MAX,
 } plat_mqtt_cb_t;
 
+typedef void (*plat_mqtt_data_cb_t)(const char *topic, int topic_len,
+                                    const char *data, int data_len);
+
 struct plat_mqtt_ops_t
 {
     int (*start)(void);
@@ -35,7 +38,7 @@ struct plat_mqtt_dev_t
     const char *broker_url;
     void *client;
     void (*cb[PLAT_MQTT_CB_MAX])(void);
-    void (*data_cb)(const char *topic, const char *data, int data_len);
+    plat_mqtt_data_cb_t data_cb;
 };
 
 void plat_mqtt_dev_register(plat_mqtt_dev_t *mqtt,
@@ -59,7 +62,6 @@ int plat_mqtt_dev_subscribe(plat_mqtt_dev_t *mqtt, const char *topic, int qos);
 int plat_mqtt_dev_unsubscribe(plat_mqtt_dev_t *mqtt, const char *topic);
 
 void plat_mqtt_dev_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_cb_t type, void (*cb)(void));
-void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *mqtt,
-                                    void (*cb)(const char *topic, const char *data, int data_len));
+void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_data_cb_t cb);
 
 #endif // PLAT_MQTT_H

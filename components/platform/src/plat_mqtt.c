@@ -69,21 +69,13 @@ int plat_mqtt_dev_stop(plat_mqtt_dev_t *mqtt)
 int plat_mqtt_dev_reconnect(plat_mqtt_dev_t *mqtt)
 {
     assert(mqtt);
-    PLAT_DEV_CHECK(mqtt);
-    PLAT_DEV_LOCK(mqtt);
-    int err = mqtt->ops->reconnect();
-    PLAT_DEV_UNLOCK(mqtt);
-    return err;
+    return mqtt->ops->reconnect();
 }
 
 int plat_mqtt_dev_disconnect(plat_mqtt_dev_t *mqtt)
 {
     assert(mqtt);
-    PLAT_DEV_CHECK(mqtt);
-    PLAT_DEV_LOCK(mqtt);
-    int err = mqtt->ops->disconnect();
-    PLAT_DEV_UNLOCK(mqtt);
-    return err;
+    return mqtt->ops->disconnect();
 }
 
 int plat_mqtt_dev_publish(plat_mqtt_dev_t *mqtt, const char *topic, const char *data, int len, int qos)
@@ -114,8 +106,7 @@ void plat_mqtt_dev_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_cb_t type, void 
     mqtt->cb[type] = cb;
 }
 
-void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *mqtt,
-                                    void (*cb)(const char *topic, const char *data, int data_len))
+void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_data_cb_t cb)
 {
     assert(mqtt);
     mqtt->data_cb = cb;

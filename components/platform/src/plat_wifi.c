@@ -1,11 +1,16 @@
 #include "plat_wifi.h"
 
-void plat_wifi_dev_register(
-    plat_wifi_dev_t *wifi, const char *name, const plat_dev_ops_t *base_ops, const plat_wifi_ops_t *ops, void *priv)
+void plat_wifi_dev_register(plat_wifi_dev_t *wifi,
+                            const char *name,
+                            const plat_dev_ops_t *base_ops,
+                            const plat_wifi_ops_t *ops,
+                            void *priv)
 {
     plat_dev_register(PLAT_GET_BASE(wifi), name, base_ops, priv);
     wifi->ops = ops;
-    wifi->cur_state = PLAT_WIFI_DISCONNECTED;
+    wifi->state = PLAT_WIFI_DISCONNECTED;
+    wifi->event_cb = NULL;
+    wifi->event_cb_arg = NULL;
 }
 
 int plat_wifi_dev_init(plat_wifi_dev_t *wifi)
@@ -20,92 +25,57 @@ int plat_wifi_dev_deinit(plat_wifi_dev_t *wifi)
     return plat_dev_deinit(PLAT_GET_BASE(wifi));
 }
 
-int plat_wifi_dev_suspend(plat_wifi_dev_t *wifi)
-{
-    PLAT_DEV_CHECK(wifi);
-    PLAT_DEV_LOCK(wifi);
-
-    int err = PLAT_GET_BASE(wifi)->base_ops->suspend();
-
-    PLAT_DEV_UNLOCK(wifi);
-    return err;
-}
-
-int plat_wifi_dev_resume(plat_wifi_dev_t *wifi)
-{
-    PLAT_DEV_CHECK(wifi);
-    PLAT_DEV_LOCK(wifi);
-
-    int err = PLAT_GET_BASE(wifi)->base_ops->resume();
-
-    PLAT_DEV_UNLOCK(wifi);
-    return err;
-}
-
-int plat_wifi_start(plat_wifi_dev_t *wifi, const char *ssid, const char *passswd)
+int plat_wifi_sta_start(plat_wifi_dev_t *wifi, const char *ssid, const char *passwd)
 {
     assert(wifi);
     assert(ssid);
 
     PLAT_DEV_CHECK(wifi);
-    PLAT_DEV_LOCK(wifi);
+    wifi->state = PLAT_WIFI_CONNECTING;
 
-    wifi->cur_state = PLAT_WIFI_CONNECTING;
+    int err = wifi->ops->sta_start(ssid, passwd);
+    if (err) wifi->state = PLAT_WIFI_DISCONNECTED;
 
-    int err = wifi->ops->start(ssid, passswd);
-
-    if (!err)
-    {
-        wifi->cur_state = PLAT_WIFI_CONNECTED;
-        memcpy(wifi->cur_info.ssid, ssid, strlen(ssid));
-        memcpy(wifi->cur_info.passwd, ssid, strlen(passswd));
-    }
-    else
-    {
-        wifi->cur_state = PLAT_WIFI_DISCONNECTED;
-    }
-
-    PLAT_DEV_UNLOCK(wifi);
     return err;
 }
 
-int plat_wifi_stop(plat_wifi_dev_t *wifi)
+int plat_wifi_sta_stop(plat_wifi_dev_t *wifi)
 {
     assert(wifi);
 
     PLAT_DEV_CHECK(wifi);
-    PLAT_DEV_LOCK(wifi);
 
-    int err = wifi->ops->stop();
+    int err = wifi->ops->sta_stop();
+    wifi->state = PLAT_WIFI_DISCONNECTED;
 
-    wifi->cur_state = PLAT_WIFI_DISCONNECTED;
-
-    PLAT_DEV_UNLOCK(wifi);
     return err;
 }
 
-int plat_wifi_reconnect(plat_wifi_dev_t *wifi, const char *ssid, const char *passswd)
+int plat_wifi_scan(plat_wifi_dev_t *wifi, plat_wifi_ap_info_t *ap_info, uint16_t max_count)
 {
     assert(wifi);
+    assert(ap_info);
 
     PLAT_DEV_CHECK(wifi);
-    PLAT_DEV_LOCK(wifi);
+    return wifi->ops->scan(ap_info, max_count);
+}
 
-    wifi->cur_state = PLAT_WIFI_CONNECTING;
+plat_wifi_state_t plat_wifi_get_state(plat_wifi_dev_t *wifi)
+{
+    assert(wifi);
+    return wifi->state;
+}
 
-    int err = wifi->ops->reconnect(ssid, passswd);
+void plat_wifi_register_event_cb(plat_wifi_dev_t *wifi, plat_wifi_event_cb_t cb, void *arg)
+{
+    assert(wifi);
+    wifi->event_cb = cb;
+    wifi->event_cb_arg = arg;
+}
 
-    if (!err)
-    {
-        wifi->cur_state = PLAT_WIFI_CONNECTED;
-        memcpy(wifi->cur_info.ssid, ssid, strlen(ssid));
-        memcpy(wifi->cur_info.passwd, ssid, strlen(passswd));
-    }
-    else
-    {
-        wifi->cur_state = PLAT_WIFI_DISCONNECTED;
-    }
-
-    PLAT_DEV_UNLOCK(wifi);
-    return err;
+void plat_wifi_notify_state(plat_wifi_dev_t *wifi, plat_wifi_state_t state)
+{
+    assert(wifi);
+    wifi->state = state;
+    if (wifi->event_cb) wifi->event_cb(state, wifi->event_cb_arg);
 }
