@@ -13,6 +13,9 @@ set(requires
         common
         platform
         bsp
+        esp_wifi
+        esp_netif
+        mqtt
 )
 
 idf_component_register(
