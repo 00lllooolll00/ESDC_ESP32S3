@@ -8,7 +8,7 @@
 #include "impl_key.h"
 #include "impl_led.h"
 
-#include "app_gui.h"
+#include "ui.h"
 
 void app_led_task(void *arg);
 void app_gui_task(void *arg);

@@ -1,4 +1,4 @@
-#include "app_gui.h"
+#include "ui.h"
 #include "lvgl.h"
 #include "plat_touch.h"
 

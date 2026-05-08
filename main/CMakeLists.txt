@@ -1,11 +1,17 @@
 set(src_dirs
             .
             app/src
+            ui
+            ui/screens
+            ui/components
 )
 
 set(include_dirs
             .
             app/inc
+            ui
+            ui/screens
+            ui/components
 )
 
 idf_component_register(
