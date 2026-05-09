@@ -152,7 +152,7 @@ static void _rgblcd_init(void)
             },
         },
         .flags.fb_in_psram = true,                     /* 在PSRAM中分配帧缓冲区 */
-        .bounce_buffer_size_px =  800 * 4,            /* 解决写spiflash时,抖动问题 */
+        .bounce_buffer_size_px =  800 * 10,            /* 解决写spiflash时,抖动问题 */
     };
 
     ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&panel_config, &s_rgblcd_handle)); /* 创建RGB对象 */

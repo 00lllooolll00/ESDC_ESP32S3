@@ -53,6 +53,9 @@ static int _wifi_dev_init(void)
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
     esp_event_handler_instance_t wifi_instance;
     esp_event_handler_instance_t ip_instance;
     ESP_ERROR_CHECK(

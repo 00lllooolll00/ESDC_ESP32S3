@@ -55,6 +55,7 @@ void app_main(void)
 
     xTaskCreate(app_led_task, "app led", 1024, NULL, 1, &s_led_handle);
     xTaskCreate(app_key_task, "app key", 2048, NULL, 2, &s_key_handle);
+    app_wifi_task_init();
     xTaskCreate(app_gui_task, "app gui", 10240, NULL, 5, NULL);
 }
 
