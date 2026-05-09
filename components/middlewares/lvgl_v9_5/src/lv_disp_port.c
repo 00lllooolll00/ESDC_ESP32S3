@@ -23,12 +23,12 @@ void lv_port_disp_init(plat_lcd_dev_t *lcd_dev)
     // display 创建后，设置回调参数为 display 指针
     lcd_dev->flush_done_cb_arg = s_disp_drv;
 
-    lv_display_set_color_format(s_disp_drv, LV_COLOR_FORMAT_RGB565_SWAPPED);
+    lv_display_set_color_format(s_disp_drv, LV_COLOR_FORMAT_RGB565);
 
     size_t buf_size = lcd_dev->height * lcd_dev->width / 10 * sizeof(lv_color_t);
-    lv_color_t *buf1 = heap_caps_malloc(buf_size, MALLOC_CAP_DMA);
+    lv_color_t *buf1 = malloc(buf_size);
     assert(buf1);
-    lv_color_t *buf2 = heap_caps_malloc(buf_size, MALLOC_CAP_DMA);
+    lv_color_t *buf2 = malloc(buf_size);
     assert(buf2);
     lv_display_set_buffers(s_disp_drv, buf1, buf2, buf_size, LV_DISPLAY_RENDER_MODE_PARTIAL);
 
