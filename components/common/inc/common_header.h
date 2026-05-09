@@ -25,7 +25,7 @@
 #define LOG_WARN(fmt, ...)    ESP_LOGW(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
 #define LOG_ERROR(fmt, ...)   ESP_LOGE(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
 #define LOG_VERBOSE(fmt, ...) ESP_LOGV(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
-#define TODO(...)             LOG_WARN("TODO:%s", __VA_ARGS__)
+#define TODO(fmt, ...)        LOG_WARN("TODO: " fmt, ##__VA_ARGS__)
 
 FORCE_INLINE_ATTR const char *unified_strerror(int err_code)
 {
