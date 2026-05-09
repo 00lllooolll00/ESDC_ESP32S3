@@ -18,7 +18,7 @@ void app_led_task(void *arg)
 
 void app_gui_task(void *arg)
 {
-    app_gui_init();
+    ui_init();
     while (1)
     {
         uint32_t delay = lv_task_handler();

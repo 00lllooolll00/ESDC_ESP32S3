@@ -8,6 +8,7 @@
 #include "lv_indev_port.h"
 #include "impl_rgblcd.h"
 #include "impl_touch.h"
+#include "impl_wifi.h"
 
 FILE_TAG("main.c");
 
@@ -17,6 +18,7 @@ plat_lcd_dev_t g_lcd_dev;
 plat_key_dev_t g_key_dev;
 plat_led_dev_t g_led_dev;
 plat_touch_dev_t g_touch_dev;
+plat_wifi_dev_t g_wifi_dev;
 
 static TaskHandle_t s_led_handle;
 static TaskHandle_t s_key_handle;
@@ -39,6 +41,7 @@ void app_main(void)
     impl_key_register(&g_key_dev);
     impl_rgblcd_register(&g_lcd_dev);
     impl_touch_register(&g_touch_dev, 5);
+    impl_wifi_register(&g_wifi_dev);
 
     plat_led_dev_init(&g_led_dev);
     plat_key_dev_init(&g_key_dev);

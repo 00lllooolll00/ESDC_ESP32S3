@@ -1,4 +1,5 @@
 #include "ui_scrs.h"
+#include "plat_wifi.h"
 
 FILE_TAG("ui_scr_wifi.c");
 
@@ -16,6 +17,8 @@ static lv_obj_t *s_pw_container; // 输入密码的容器
 static lv_obj_t *s_ta_passwd; // 密码输入框
 static lv_obj_t *s_kb; // 键盘
 static char s_cur_ssid[64]; // 当前存储的 ssid
+
+extern plat_wifi_dev_t g_wifi_dev;
 
 void ui_wifi_scr_create(void)
 {
@@ -74,7 +77,8 @@ static void _scan_btn_event_cb(lv_event_t *e)
     // TODO: 触发底层 Wi-Fi 扫描
     // NOTE：如果是阻塞式扫描，不要直接在这里写死，否则会导致 UI 卡顿。
     // SUGGEST：这里发送一个 FreeRTOS 信号量给 Wi-Fi 任务，扫描完成后再通过回调刷新 UI。
-    TODO("调用底层wifi扫描");
+    plat_wifi_ap_info_t info;
+    plat_wifi_scan(&g_wifi_dev, &info, 20);
 
     // 【模拟】扫描完成后刷新列表 (实际应用中应在底层扫描完成后的回调中执行)
     lv_obj_clean(s_wifi_list);
@@ -118,7 +122,7 @@ static void _kb_event_cb(lv_event_t *e)
         const char *password = lv_textarea_get_text(s_ta_passwd);
 
         // TODO:在这里调用 Wi-Fi 连接 API
-        TODO("调用wifi连接");
+        TODO("api:wifi connect");
         LOG_INFO("connecting to %s with password: %s", s_cur_ssid, password);
 
         // 销毁密码界面
