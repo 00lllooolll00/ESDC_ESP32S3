@@ -126,36 +126,37 @@ static void _rgblcd_init(void)
         .psram_trans_align  = 64,                   /* 在PSRAM中分配的缓冲区的对齐 */
         .clk_src            = LCD_CLK_SRC_DEFAULT,  /* RGBLCD外设时钟源 */
         .disp_gpio_num      = GPIO_NUM_NC,          /* 用于显示控制信号,不使用设为-1 */
-        .pclk_gpio_num      = BSP_RGBLCD_PCLK_PIN,        /* PCLK信号引脚 */
+        .pclk_gpio_num      = BSP_RGBLCD_PCLK_PIN,  /* PCLK信号引脚 */
         .hsync_gpio_num     = GPIO_NUM_NC,          /* HSYNC信号引脚,DE模式可不使用 */
         .vsync_gpio_num     = GPIO_NUM_NC,          /* VSYNC信号引脚,DE模式可不使用 */
-        .de_gpio_num        = BSP_RGBLCD_DE_PIN,          /* DE信号引脚 */
-        .data_gpio_nums = {                         /* 数据线引脚 */
+        .de_gpio_num        = BSP_RGBLCD_DE_PIN,    /* DE信号引脚 */
+        .data_gpio_nums = {
+        /* 数据线引脚 */
             BSP_RGBLCD_B3_PIN, BSP_RGBLCD_B4_PIN, BSP_RGBLCD_B5_PIN, BSP_RGBLCD_B6_PIN, BSP_RGBLCD_B7_PIN,
             BSP_RGBLCD_G2_PIN, BSP_RGBLCD_G3_PIN, BSP_RGBLCD_G4_PIN, BSP_RGBLCD_G5_PIN, BSP_RGBLCD_G6_PIN, BSP_RGBLCD_G7_PIN,
             BSP_RGBLCD_R3_PIN, BSP_RGBLCD_R4_PIN, BSP_RGBLCD_R5_PIN, BSP_RGBLCD_R6_PIN, BSP_RGBLCD_R7_PIN,
         },
-        .timings = {                                /* RGBLCD时序参数 */
-            .pclk_hz            = EK_FREQ_M(20),   /* 像素时钟频率 */
+        .timings = {
+        /* RGBLCD时序参数 */
+            .pclk_hz            = EK_FREQ_M(20),       /* 像素时钟频率 */
             .h_res              = BSP_RGBLCD_WIDTH,    /* 水平分辨率,即一行中的像素数 */
             .v_res              = BSP_RGBLCD_HEIGHT,   /* 垂直分辨率,即帧中的行数 */
-            .hsync_back_porch   = 88,       /* 水平后廊,hsync和行活动数据开始之间的PCLK数 */
-            .hsync_front_porch  = 40,       /* 水平前廊,活动数据结束和下一个hsync之间的PCLK数 */
-            .hsync_pulse_width  = 3,       /* 垂直同步宽度,单位:行数 */
-            .vsync_back_porch   = 32,       /* 垂直后廊,vsync和帧开始之间的无效行数 */
-            .vsync_front_porch  = 13,       /* 垂直前廊,帧结束和下一个vsync之间的无效行数 */
-            .vsync_pulse_width  = 48,       /* 水平同步宽度,单位:PCLK周期 */
+            .hsync_back_porch   = 88,                  /* 水平后廊,hsync和行活动数据开始之间的PCLK数 */
+            .hsync_front_porch  = 40,                  /* 水平前廊,活动数据结束和下一个hsync之间的PCLK数 */
+            .hsync_pulse_width  = 3,                   /* 垂直同步宽度,单位:行数 */
+            .vsync_back_porch   = 32,                  /* 垂直后廊,vsync和帧开始之间的无效行数 */
+            .vsync_front_porch  = 13,                  /* 垂直前廊,帧结束和下一个vsync之间的无效行数 */
+            .vsync_pulse_width  = 48,                  /* 水平同步宽度,单位:PCLK周期 */
             .flags = {
-                .pclk_active_neg = true,            /* RGB数据在下降沿计时 */
+                .pclk_active_neg = true,               /* RGB数据在下降沿计时 */
             },
         },
-        .flags.fb_in_psram = true,                  /* 在PSRAM中分配帧缓冲区 */
-        .bounce_buffer_size_px =  800 * 10,  /* 解决写spiflash时,抖动问题 */
+        .flags.fb_in_psram = true,                     /* 在PSRAM中分配帧缓冲区 */
+        .bounce_buffer_size_px =  800 * 4,            /* 解决写spiflash时,抖动问题 */
     };
+
     ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&panel_config, &s_rgblcd_handle)); /* 创建RGB对象 */
-
     ESP_ERROR_CHECK(esp_lcd_panel_reset(s_rgblcd_handle)); /* 复位RGB屏 */
-
     ESP_ERROR_CHECK(esp_lcd_panel_init(s_rgblcd_handle)); /* 初始化RGB */
 }
 
