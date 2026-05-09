@@ -110,8 +110,6 @@ static void _lv_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data)
         data->state = LV_INDEV_STATE_PRESSED;
         data->point.x = temp.x;
         data->point.y = temp.y;
-
-        LOG_INFO("x:%d,y:%d", temp.x, temp.y);
     }
     else
     {
