@@ -1,13 +1,22 @@
+// esp-idf
 #include "nvs_flash.h"
 #include "esp_timer.h"
 
+// app
 #include "app.h"
 
+// lvgl
 #include "lvgl.h"
 #include "lv_disp_port.h"
 #include "lv_indev_port.h"
+
+// impl
 #include "impl_rgblcd.h"
 #include "impl_touch.h"
+#include "impl_wifi.h"
+#include "impl_led.h"
+#include "impl_key.h"
+#include "impl_exio.h"
 #include "impl_wifi.h"
 
 FILE_TAG("main.c");
@@ -19,9 +28,6 @@ plat_key_dev_t g_key_dev;
 plat_led_dev_t g_led_dev;
 plat_touch_dev_t g_touch_dev;
 plat_wifi_dev_t g_wifi_dev;
-
-static TaskHandle_t s_led_handle;
-static TaskHandle_t s_key_handle;
 
 void app_main(void)
 {
@@ -53,10 +59,10 @@ void app_main(void)
     lv_port_disp_init(&g_lcd_dev);
     lv_port_touch_init(&g_touch_dev, 5);
 
-    xTaskCreate(app_led_task, "app led", 1024, NULL, 1, &s_led_handle);
-    xTaskCreate(app_key_task, "app key", 2048, NULL, 2, &s_key_handle);
-    app_wifi_task_init();
-    xTaskCreate(app_gui_task, "app gui", 10240, NULL, 5, NULL);
+    app_wifi_init();
+    app_led_init();
+    app_key_intit();
+    app_ui_init();
 }
 
 static uint32_t _lv_port_tick_get_cb(void)

@@ -1,32 +1,20 @@
-#include "app.h"
-#include "lvgl.h"
+#include "app_key.h"
+#include "plat_key.h"
 
-FILE_TAG("app.c");
+FILE_TAG("app_key.c");
 
-extern plat_lcd_dev_t g_lcd_dev;
 extern plat_key_dev_t g_key_dev;
-extern plat_led_dev_t g_led_dev;
 
-void app_led_task(void *arg)
+static void _app_key_task(void *arg);
+
+TaskHandle_t g_key_handle;
+
+void app_key_intit(void)
 {
-    while (1)
-    {
-        plat_led_dev_toggle(&g_led_dev);
-        vTaskDelay(500);
-    }
+    xTaskCreate(_app_key_task, "app key", 2048, NULL, 2, &g_key_handle);
 }
 
-void app_gui_task(void *arg)
-{
-    ui_init();
-    while (1)
-    {
-        uint32_t delay = lv_task_handler();
-        vTaskDelay(delay >= 5 ? delay : 5);
-    }
-}
-
-void app_key_task(void *arg)
+static void _app_key_task(void *arg)
 {
     plat_key_state_t key_old = PLAT_KEY_STATE_NONE;
     TickType_t start_tick = xTaskGetTickCount();

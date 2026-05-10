@@ -1,24 +1,24 @@
-#include "app_wifi_msg.h"
+#include "app_wifi.h"
 #include "lvgl.h"
 
 FILE_TAG("app_wifi");
 
+static void _wifi_state_cb(plat_wifi_state_t state, void *arg);
+static void _app_wifi_task(void *arg);
+
 extern plat_wifi_dev_t g_wifi_dev;
 
+TaskHandle_t g_wifi_task_handle;
 static QueueHandle_t s_wifi_cmd_queue;
-static TaskHandle_t s_wifi_task_handle;
 static app_wifi_evt_cb_t s_evt_cb;
 static void *s_evt_cb_arg;
 
-static void _wifi_state_cb(plat_wifi_state_t state, void *arg);
-static void app_wifi_task(void *arg);
-
-void app_wifi_task_init(void)
+void app_wifi_init(void)
 {
     s_wifi_cmd_queue = xQueueCreate(WIFI_CMD_QUEUE_LEN, sizeof(app_wifi_cmd_msg_t));
     assert(s_wifi_cmd_queue);
 
-    xTaskCreate(app_wifi_task, "app wifi", 4096, NULL, 3, &s_wifi_task_handle);
+    xTaskCreate(_app_wifi_task, "app wifi", 4096, NULL, 3, &g_wifi_task_handle);
 }
 
 int app_wifi_send_cmd(const app_wifi_cmd_msg_t *msg, TickType_t timeout)
@@ -65,13 +65,13 @@ static void _wifi_state_cb(plat_wifi_state_t state, void *arg)
     }
 }
 
-static void app_wifi_task(void *arg)
+static void _app_wifi_task(void *arg)
 {
     plat_wifi_dev_init(&g_wifi_dev);
     plat_wifi_register_event_cb(&g_wifi_dev, _wifi_state_cb, NULL);
 
     app_wifi_cmd_msg_t msg;
-    while(1)
+    while (1)
     {
         if (xQueueReceive(s_wifi_cmd_queue, &msg, portMAX_DELAY) != pdTRUE)
         {

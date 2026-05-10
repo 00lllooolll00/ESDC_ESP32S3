@@ -3,17 +3,9 @@
 
 #include "common_header.h"
 
-#include "impl_exio.h"
-#include "impl_spilcd.h"
-#include "impl_key.h"
-#include "impl_led.h"
-#include "impl_wifi.h"
-
-#include "ui.h"
-
-void app_led_task(void *arg);
-void app_gui_task(void *arg);
-void app_key_task(void *arg);
-void app_wifi_task_init(void);
+#include "app_key.h"
+#include "app_led.h"
+#include "app_ui.h"
+#include "app_wifi.h"
 
 #endif // APP_H

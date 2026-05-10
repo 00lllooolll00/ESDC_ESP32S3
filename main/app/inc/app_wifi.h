@@ -1,5 +1,5 @@
-#ifndef APP_WIFI_MSG_H
-#define APP_WIFI_MSG_H
+#ifndef APP_WIFI_H
+#define APP_WIFI_H
 
 #include "common_header.h"
 #include "plat_wifi.h"
@@ -29,7 +29,8 @@ typedef struct
     union
     {
         struct
-        { /* scan: no extra params */
+        {
+            /* scan: no extra params */
         } scan;
         struct
         {
@@ -47,9 +48,11 @@ typedef struct
 
 typedef void (*app_wifi_evt_cb_t)(app_wifi_evt_t evt, void *data, void *arg);
 
-void app_wifi_task_init(void);
+extern TaskHandle_t g_wifi_task_handle;
+
+void app_wifi_init(void);
 int app_wifi_send_cmd(const app_wifi_cmd_msg_t *msg, TickType_t timeout);
 void app_wifi_register_evt_cb(app_wifi_evt_cb_t cb, void *arg);
 void app_wifi_unregister_evt_cb(void);
 
-#endif // APP_WIFI_MSG_H
+#endif // APP_WIFI_H

@@ -1,5 +1,5 @@
 #include "ui_scrs.h"
-#include "app_wifi_msg.h"
+#include "app_wifi.h"
 
 FILE_TAG("ui_scr_wifi.c");
 
