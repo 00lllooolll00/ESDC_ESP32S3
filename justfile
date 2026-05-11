@@ -33,4 +33,5 @@ menuconfig:
     idf.py menuconfig 
 
 format:
-    clang-format -i **/*.cpp **/*.h
+    find components/ \( -name '*.c' -o -name '*.h' \) | xargs clang-format -i
+    find main/ \( -name '*.c' -o -name '*.h' \) -not -path 'main/ui/*' | xargs clang-format -i
