@@ -1,6 +1,11 @@
 #ifndef PLAT_WIFI_H
 #define PLAT_WIFI_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "plat_base.h"
 
 typedef struct plat_wifi_ap_info_t plat_wifi_ap_info_t;
@@ -40,11 +45,8 @@ struct plat_wifi_dev_t
     void *event_cb_arg;
 };
 
-void plat_wifi_dev_register(plat_wifi_dev_t *wifi,
-                            const char *name,
-                            const plat_dev_ops_t *base_ops,
-                            const plat_wifi_ops_t *ops,
-                            void *priv);
+void plat_wifi_dev_register(
+    plat_wifi_dev_t *wifi, const char *name, const plat_dev_ops_t *base_ops, const plat_wifi_ops_t *ops, void *priv);
 int plat_wifi_dev_init(plat_wifi_dev_t *wifi);
 int plat_wifi_dev_deinit(plat_wifi_dev_t *wifi);
 
@@ -56,5 +58,9 @@ plat_wifi_state_t plat_wifi_get_state(plat_wifi_dev_t *wifi);
 void plat_wifi_register_event_cb(plat_wifi_dev_t *wifi, plat_wifi_event_cb_t cb, void *arg);
 
 void plat_wifi_notify_state(plat_wifi_dev_t *wifi, plat_wifi_state_t state);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // PLAT_WIFI_H

@@ -1,6 +1,11 @@
 #ifndef PLAT_KEY_H
 #define PLAT_KEY_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "plat_base.h"
 
 typedef struct plat_key_ops_t plat_key_ops_t;
@@ -40,5 +45,9 @@ int plat_key_dev_cb_register(plat_key_dev_t *key, void (*cb)(void));
 int plat_key_dev_read_raw(plat_key_dev_t *key, plat_key_state_t *state);
 int plat_key_dev_enable_int(plat_key_dev_t *key);
 int plat_key_dev_disable_int(plat_key_dev_t *key);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // PLAT_KEY_H

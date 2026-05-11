@@ -9,6 +9,11 @@
 #ifndef EK_LIST_H
 #define EK_LIST_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "ek_conf.h"
 
 #if EK_LIST_ENABLE == 1
@@ -201,5 +206,9 @@ __EK_STATIC_INLINE ek_list_node_t *ek_list_get_last(ek_list_node_t *head)
 }
 
 #endif /* EK_LIST_ENABLE */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EK_LIST_H */

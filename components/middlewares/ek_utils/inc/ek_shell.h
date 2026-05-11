@@ -16,11 +16,16 @@
 #ifndef EK_SHELL_H
 #define EK_SHELL_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "ek_conf.h"
 
 #if EK_SHELL_ENABLE == 1
 
-#include "shell.h"
+#    include "shell.h"
 
 /**
  * @brief 导出整型变量到 Shell
@@ -28,7 +33,7 @@
  * @param variable C 代码中的变量名
  * @param desc 变量描述
  */
-#define EK_SHELL_EXPORT_VAR_INT(var, variable, desc)   SHELL_EXPORT_VAR_INT(var, variable, desc)
+#    define EK_SHELL_EXPORT_VAR_INT(var, variable, desc) SHELL_EXPORT_VAR_INT(var, variable, desc)
 
 /**
  * @brief 导出短整型变量到 Shell
@@ -36,7 +41,7 @@
  * @param variable C 代码中的变量名
  * @param desc 变量描述
  */
-#define EK_SHELL_EXPORT_VAR_SHORT(var, variable, desc) SHELL_EXPORT_VAR_SHORT(var, variable, desc)
+#    define EK_SHELL_EXPORT_VAR_SHORT(var, variable, desc) SHELL_EXPORT_VAR_SHORT(var, variable, desc)
 
 /**
  * @brief 导出字符型变量到 Shell
@@ -44,7 +49,7 @@
  * @param variable C 代码中的变量名
  * @param desc 变量描述
  */
-#define EK_SHELL_EXPORT_VAR_CHAR(var, variable, desc)  SHELL_EXPORT_VAR_CHAR(var, variable, desc)
+#    define EK_SHELL_EXPORT_VAR_CHAR(var, variable, desc) SHELL_EXPORT_VAR_CHAR(var, variable, desc)
 
 /**
  * @brief 导出指针变量到 Shell
@@ -52,7 +57,7 @@
  * @param variable C 代码中的变量名
  * @param desc 变量描述
  */
-#define EK_SHELL_EXPORT_VAR_PTR(var, variable, desc)   SHELL_EXPORT_VAR_POINTER(var, variable, desc)
+#    define EK_SHELL_EXPORT_VAR_PTR(var, variable, desc) SHELL_EXPORT_VAR_POINTER(var, variable, desc)
 
 /**
  * @brief 导出通用变量到 Shell
@@ -60,8 +65,12 @@
  * @param variable C 代码中的变量名
  * @param desc 变量描述
  */
-#define EK_SHELL_EXPORT_VAR(var, variable, desc)       SHELL_EXPORT_VAL(val, value, desc)
+#    define EK_SHELL_EXPORT_VAR(var, variable, desc) SHELL_EXPORT_VAL(val, value, desc)
 
 #endif /* EK_SHELL_ENABLE */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EK_SHELL_H */

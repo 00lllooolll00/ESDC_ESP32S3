@@ -1,6 +1,11 @@
 #ifndef PLAT_BASE_H
 #define PLAT_BASE_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 
 typedef struct plat_dev_t plat_dev_t;
@@ -54,5 +59,9 @@ int plat_dev_init(plat_dev_t *dev);
 int plat_dev_deinit(plat_dev_t *dev);
 int plat_dev_suspend(plat_dev_t *dev);
 int plat_dev_resume(plat_dev_t *dev);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // PLAT_BASE_H

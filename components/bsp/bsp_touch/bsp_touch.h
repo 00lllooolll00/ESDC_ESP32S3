@@ -1,6 +1,11 @@
 #ifndef BSP_TOUCH_H
 #define BSP_TOUCH_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 #include "bsp_exio.h"
 
@@ -56,5 +61,9 @@ void bsp_touch_register_int_cb(void (*cb)(void));
 void bsp_touch_int_enable(void);
 void bsp_touch_int_disable(void);
 esp_err_t bsp_touch_read(bsp_touch_points_t *points);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BSP_TOUCH_H

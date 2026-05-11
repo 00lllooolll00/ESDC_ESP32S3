@@ -1,10 +1,7 @@
 #include "plat_wifi.h"
 
-void plat_wifi_dev_register(plat_wifi_dev_t *wifi,
-                            const char *name,
-                            const plat_dev_ops_t *base_ops,
-                            const plat_wifi_ops_t *ops,
-                            void *priv)
+void plat_wifi_dev_register(
+    plat_wifi_dev_t *wifi, const char *name, const plat_dev_ops_t *base_ops, const plat_wifi_ops_t *ops, void *priv)
 {
     plat_dev_register(PLAT_GET_BASE(wifi), name, base_ops, priv);
     wifi->ops = ops;

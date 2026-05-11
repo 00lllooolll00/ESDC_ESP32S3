@@ -13,10 +13,10 @@ static int _mqtt_dev_suspend(void);
 static int _mqtt_dev_resume(void);
 
 static const plat_dev_ops_t s_mqtt_base_ops = {
-    .init    = _mqtt_dev_init,
-    .deinit  = _mqtt_dev_deinit,
+    .init = _mqtt_dev_init,
+    .deinit = _mqtt_dev_deinit,
     .suspend = _mqtt_dev_suspend,
-    .resume  = _mqtt_dev_resume,
+    .resume = _mqtt_dev_resume,
 };
 
 static int _mqtt_start(void);
@@ -28,12 +28,12 @@ static int _mqtt_subscribe(const char *topic, int qos);
 static int _mqtt_unsubscribe(const char *topic);
 
 static const plat_mqtt_ops_t s_mqtt_ops = {
-    .start       = _mqtt_start,
-    .stop        = _mqtt_stop,
-    .reconnect   = _mqtt_reconnect,
-    .disconnect  = _mqtt_disconnect,
-    .publish     = _mqtt_publish,
-    .subscribe   = _mqtt_subscribe,
+    .start = _mqtt_start,
+    .stop = _mqtt_stop,
+    .reconnect = _mqtt_reconnect,
+    .disconnect = _mqtt_disconnect,
+    .publish = _mqtt_publish,
+    .subscribe = _mqtt_subscribe,
     .unsubscribe = _mqtt_unsubscribe,
 };
 
@@ -124,32 +124,27 @@ static void _mqtt_event_handler(void *handler_args, esp_event_base_t base, int32
     {
         case MQTT_EVENT_CONNECTED:
             LOG_INFO("mqtt connected");
-            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_CONNECTED])
-                s_mqtt_dev->cb[PLAT_MQTT_CB_CONNECTED]();
+            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_CONNECTED]) s_mqtt_dev->cb[PLAT_MQTT_CB_CONNECTED]();
             break;
 
         case MQTT_EVENT_DISCONNECTED:
             LOG_INFO("mqtt disconnected");
-            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_DISCONNECTED])
-                s_mqtt_dev->cb[PLAT_MQTT_CB_DISCONNECTED]();
+            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_DISCONNECTED]) s_mqtt_dev->cb[PLAT_MQTT_CB_DISCONNECTED]();
             break;
 
         case MQTT_EVENT_SUBSCRIBED:
             LOG_INFO("mqtt subscribed, msg_id=%d", event->msg_id);
-            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_SUBSCRIBE])
-                s_mqtt_dev->cb[PLAT_MQTT_CB_SUBSCRIBE]();
+            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_SUBSCRIBE]) s_mqtt_dev->cb[PLAT_MQTT_CB_SUBSCRIBE]();
             break;
 
         case MQTT_EVENT_UNSUBSCRIBED:
             LOG_INFO("mqtt unsubscribed, msg_id=%d", event->msg_id);
-            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_UNSUBSCRIBE])
-                s_mqtt_dev->cb[PLAT_MQTT_CB_UNSUBSCRIBE]();
+            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_UNSUBSCRIBE]) s_mqtt_dev->cb[PLAT_MQTT_CB_UNSUBSCRIBE]();
             break;
 
         case MQTT_EVENT_PUBLISHED:
             LOG_INFO("mqtt published, msg_id=%d", event->msg_id);
-            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_PUBLISH])
-                s_mqtt_dev->cb[PLAT_MQTT_CB_PUBLISH]();
+            if (s_mqtt_dev && s_mqtt_dev->cb[PLAT_MQTT_CB_PUBLISH]) s_mqtt_dev->cb[PLAT_MQTT_CB_PUBLISH]();
             break;
 
         case MQTT_EVENT_DATA:

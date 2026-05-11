@@ -17,10 +17,10 @@ static int _wifi_dev_suspend(void);
 static int _wifi_dev_resume(void);
 
 static const plat_dev_ops_t s_wifi_base_ops = {
-    .init    = _wifi_dev_init,
-    .deinit  = _wifi_dev_deinit,
+    .init = _wifi_dev_init,
+    .deinit = _wifi_dev_deinit,
     .suspend = _wifi_dev_suspend,
-    .resume  = _wifi_dev_resume,
+    .resume = _wifi_dev_resume,
 };
 
 static int _wifi_sta_start(const char *ssid, const char *passwd);
@@ -29,8 +29,8 @@ static int _wifi_scan(plat_wifi_ap_info_t *ap_info, uint16_t max_count);
 
 static const plat_wifi_ops_t s_wifi_ops = {
     .sta_start = _wifi_sta_start,
-    .sta_stop   = _wifi_sta_stop,
-    .scan       = _wifi_scan,
+    .sta_stop = _wifi_sta_stop,
+    .scan = _wifi_scan,
 };
 
 static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
@@ -83,7 +83,7 @@ static int _wifi_dev_resume(void)
 
 static int _wifi_sta_start(const char *ssid, const char *passwd)
 {
-    wifi_config_t wifi_cfg = {0};
+    wifi_config_t wifi_cfg = { 0 };
     strlcpy((char *)wifi_cfg.sta.ssid, ssid, sizeof(wifi_cfg.sta.ssid));
     if (passwd) strlcpy((char *)wifi_cfg.sta.password, passwd, sizeof(wifi_cfg.sta.password));
     wifi_cfg.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;

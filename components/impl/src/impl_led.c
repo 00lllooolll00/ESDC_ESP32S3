@@ -7,17 +7,17 @@ static int _led_dev_suspend(void);
 static int _led_dev_resume(void);
 
 static const plat_dev_ops_t s_led_base_ops = {
-    .init    = _led_dev_init,
-    .deinit  = _led_dev_deinit,
+    .init = _led_dev_init,
+    .deinit = _led_dev_deinit,
     .suspend = _led_dev_suspend,
-    .resume  = _led_dev_resume,
+    .resume = _led_dev_resume,
 };
 
 static int _led_set(uint8_t value);
 static int _led_toggle(void);
 
 static const plat_led_ops_t s_led_ops = {
-    .set    = _led_set,
+    .set = _led_set,
     .toggle = _led_toggle,
 };
 

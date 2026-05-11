@@ -1,6 +1,11 @@
 #ifndef BSP_AUDIO_H
 #define BSP_AUDIO_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 #include "driver/gpio.h"
 
@@ -18,5 +23,9 @@ void bsp_audio_output_cfg(uint8_t o1en, uint8_t o2en);
 void bsp_audio_mic_gain(uint8_t gain);
 void bsp_audio_alc_ctrl(uint8_t sel, uint8_t maxgain, uint8_t mingain);
 void bsp_audio_input_cfg(uint8_t in);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BSP_AUDIO_H

@@ -1,6 +1,11 @@
 #ifndef BSP_EXIO_H
 #define BSP_EXIO_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 
 // 超时等待时间
@@ -96,5 +101,9 @@ void bsp_exio_conifg_pin(bsp_exio_pin_config_t *config);
 void bsp_exio_write_pin(bsp_exio_pin_num_t pin, uint8_t value);
 
 uint8_t bsp_exio_read_pin(bsp_exio_pin_num_t pin);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BSP_EXIO_H

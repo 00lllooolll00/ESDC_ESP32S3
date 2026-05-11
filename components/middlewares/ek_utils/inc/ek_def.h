@@ -15,6 +15,11 @@
 #ifndef EK_DEF_H
 #define EK_DEF_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <inttypes.h>
 #include <string.h>
 #include <stddef.h>
@@ -101,5 +106,9 @@
 #define EK_GET_FILE_NAME(file_path)                            \
     (strrchr((file_path), '/') ? strrchr((file_path), '/') + 1 \
                                : (strrchr((file_path), '\\') ? strrchr((file_path), '\\') + 1 : (file_path)))
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EK_DEF_H */

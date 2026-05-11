@@ -942,7 +942,7 @@ size_t tlsf_block_size(void *ptr)
 int tlsf_check_pool(pool_t pool)
 {
     /* Check that the blocks are physically correct. */
-    integrity_t integ = {0, 0};
+    integrity_t integ = { 0, 0 };
     tlsf_walk_pool(pool, integrity_walker, &integ);
 
     return integ.status;

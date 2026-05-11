@@ -8,6 +8,11 @@
 #ifndef EK_CONF_H
 #define EK_CONF_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* ========================================================================
  * RTOS配置
  * - EK_USE_RTOS: 设置为0表示不用RTOS
@@ -70,5 +75,9 @@
  * ======================================================================== */
 #define EK_ASSERT_USE_TINY (1)
 #define EK_ASSERT_WITH_LOG (0)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // EK_CONF_H

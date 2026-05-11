@@ -1,6 +1,11 @@
 #ifndef BSP_KEY_H
 #define BSP_KEY_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 #include "driver/gpio.h"
 #include "bsp_exio.h"
@@ -27,5 +32,9 @@ void bsp_key_init(void);
 bsp_key_state_t bsp_key_read_raw(void);
 
 void bsp_key_read_int_cb(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BSP_KEY_H

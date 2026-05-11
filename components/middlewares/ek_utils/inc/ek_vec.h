@@ -13,6 +13,11 @@
 #ifndef EK_VEC_H
 #define EK_VEC_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "ek_conf.h"
 
 #if EK_VEC_ENABLE == 1
@@ -211,5 +216,9 @@
         } while (0)
 
 #endif /* EK_VEC_ENABLE */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EK_VEC_H */

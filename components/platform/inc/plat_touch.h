@@ -1,6 +1,11 @@
 #ifndef PLAT_TOUCH_H
 #define PLAT_TOUCH_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "plat_base.h"
 
 typedef struct plat_touch_ops_t plat_touch_ops_t;
@@ -43,5 +48,9 @@ int plat_touch_dev_get_tdata(plat_touch_dev_t *dev, uint8_t idx, plat_touch_data
 int plat_touch_dev_cb_register(plat_touch_dev_t *dev, void (*cb)(void));
 int plat_touch_dev_enable_int(plat_touch_dev_t *dev);
 int plat_touch_dev_disable_int(plat_touch_dev_t *dev);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // PLAT_TOUCH_H

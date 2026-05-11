@@ -1,6 +1,11 @@
 #ifndef BSP_SPI_H
 #define BSP_SPI_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
@@ -13,5 +18,9 @@
 #define BSP_SPI_MAX_BUFF_SIZE (320 * 240 * sizeof(uint16_t))
 
 void bsp_spi_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //  BSP_SPI_H

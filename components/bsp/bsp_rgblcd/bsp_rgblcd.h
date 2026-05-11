@@ -1,6 +1,11 @@
 #ifndef BSP_LCD_H
 #define BSP_LCD_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 #include "bsp_exio.h"
 #include "driver/gpio.h"
@@ -47,5 +52,9 @@ void bsp_rgblcd_clear(uint16_t color);
 void bsp_rgblcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
 uint16_t bsp_rgblcd_get_width(void);
 uint16_t bsp_rgblcd_get_height(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BSP_LCD_H

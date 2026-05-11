@@ -1,6 +1,11 @@
 #ifndef BSP_SPILCD_H
 #define BSP_SPILCD_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 #include "bsp_exio.h"
 
@@ -22,5 +27,9 @@ typedef bool (*bsp_spilcd_trans_done_cb_t)(void *);
 void bsp_spilcd_init(bsp_spilcd_trans_done_cb_t cb, void *arg);
 void bsp_spilcd_clear(uint16_t color);
 void bsp_spilcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // BSP_SPILCD_H

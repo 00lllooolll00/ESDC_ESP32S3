@@ -13,6 +13,11 @@
 #ifndef EK_EVOKE_H
 #define EK_EVOKE_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "ek_conf.h"
 
 #if EK_USE_RTOS == 0 && EK_EVOKE_ENABLE == 1
@@ -281,5 +286,9 @@ void ek_evoke_light_sleep(void);
 void ek_evoke_deep_sleep(void);
 
 #endif // EK_USE_RTOS == 0 && EK_EVOKE_ENABLE == 1
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // EK_EVOKE_H

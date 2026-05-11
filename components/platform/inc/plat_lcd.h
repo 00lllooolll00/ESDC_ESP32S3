@@ -1,6 +1,11 @@
 #ifndef PLAT_LCD_H
 #define PLAT_LCD_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "plat_base.h"
 
 typedef bool (*plat_lcd_flush_done_cb_t)(void *arg);
@@ -37,5 +42,9 @@ int plat_lcd_dev_suspend(plat_lcd_dev_t *lcd);
 int plat_lcd_dev_resume(plat_lcd_dev_t *lcd);
 int plat_lcd_dev_clear(plat_lcd_dev_t *lcd, uint16_t color);
 int plat_lcd_dev_flush(plat_lcd_dev_t *lcd, int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // PLAT_LCD_H

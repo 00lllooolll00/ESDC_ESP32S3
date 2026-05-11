@@ -1,6 +1,11 @@
 #ifndef COMMON_HEADER_H
 #define COMMON_HEADER_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
@@ -45,5 +50,9 @@ FORCE_INLINE_ATTR const char *unified_strerror(int err_code)
 
     return esp_err_to_name((esp_err_t)err_code);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // COMMON_HEADER_H

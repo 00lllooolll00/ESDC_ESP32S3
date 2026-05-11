@@ -1,6 +1,11 @@
 #ifndef BSP_I2C_H
 #define BSP_I2C_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "common_header.h"
 
 #include "driver/gpio.h"
@@ -18,5 +23,9 @@ esp_err_t
 bsp_i2c_mem_write(i2c_master_dev_handle_t dev, uint8_t reg, const uint8_t *txbuffer, size_t size, int timeout);
 esp_err_t bsp_i2c_read(i2c_master_dev_handle_t dev, uint8_t *rxbuffer, size_t size, int timeout);
 esp_err_t bsp_i2c_mem_read(i2c_master_dev_handle_t dev, uint8_t reg, uint8_t *rxbuffer, size_t size, int timeout);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //  BSP_I2C_H

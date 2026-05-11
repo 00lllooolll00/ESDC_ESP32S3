@@ -1,6 +1,11 @@
 #ifndef PLAT_MQTT_H
 #define PLAT_MQTT_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "plat_base.h"
 
 typedef struct plat_mqtt_ops_t plat_mqtt_ops_t;
@@ -17,8 +22,7 @@ typedef enum
     PLAT_MQTT_CB_MAX,
 } plat_mqtt_cb_t;
 
-typedef void (*plat_mqtt_data_cb_t)(const char *topic, int topic_len,
-                                    const char *data, int data_len);
+typedef void (*plat_mqtt_data_cb_t)(const char *topic, int topic_len, const char *data, int data_len);
 
 struct plat_mqtt_ops_t
 {
@@ -63,5 +67,9 @@ int plat_mqtt_dev_unsubscribe(plat_mqtt_dev_t *mqtt, const char *topic);
 
 void plat_mqtt_dev_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_cb_t type, void (*cb)(void));
 void plat_mqtt_dev_data_cb_register(plat_mqtt_dev_t *mqtt, plat_mqtt_data_cb_t cb);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // PLAT_MQTT_H
