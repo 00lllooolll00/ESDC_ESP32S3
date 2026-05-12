@@ -57,6 +57,12 @@ int plat_lcd_dev_flush(plat_lcd_dev_t *lcd, int16_t x0, int16_t y0, int16_t x1, 
     return lcd->ops->flush(x0, y0, x1, y1, buffer);
 }
 
+void *plat_lcd_dev_get_fb(plat_lcd_dev_t *lcd, uint8_t index)
+{
+    if (!lcd->ops->get_fb) return NULL;
+    return lcd->ops->get_fb(index);
+}
+
 int plat_lcd_dev_clear(plat_lcd_dev_t *lcd, uint16_t color)
 {
     PLAT_DEV_CHECK(lcd);

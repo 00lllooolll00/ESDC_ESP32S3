@@ -17,10 +17,12 @@ static const plat_dev_ops_t s_lcd_base_ops = {
 
 static int _lcd_clear(uint16_t color);
 static int _lcd_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+static void *_lcd_get_fb(uint8_t index);
 
 static const plat_lcd_ops_t s_lcd_ops = {
     .clear = _lcd_clear,
     .flush = _lcd_flush,
+    .get_fb = _lcd_get_fb,
 };
 
 int impl_rgblcd_register(plat_lcd_dev_t *lcd_dev)
@@ -61,4 +63,9 @@ static int _lcd_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void
 {
     bsp_rgblcd_disp_flush(x0, y0, x1, y1, buffer);
     return 0;
+}
+
+static void *_lcd_get_fb(uint8_t index)
+{
+    return bsp_rgb_get_fb(index);
 }

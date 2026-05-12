@@ -10,8 +10,9 @@ extern "C"
 #include "bsp_exio.h"
 #include "driver/gpio.h"
 
-#define BSP_RGBLCD_WIDTH  800
-#define BSP_RGBLCD_HEIGHT 480
+#define BSP_RGBLCD_FB_COUNT 2
+#define BSP_RGBLCD_WIDTH    800
+#define BSP_RGBLCD_HEIGHT   480
 
 // pin
 #define BSP_RGBLCD_DE_PIN    (GPIO_NUM_4)
@@ -52,6 +53,7 @@ void bsp_rgblcd_clear(uint16_t color);
 void bsp_rgblcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
 uint16_t bsp_rgblcd_get_width(void);
 uint16_t bsp_rgblcd_get_height(void);
+void *bsp_rgb_get_fb(uint8_t index);
 
 #ifdef __cplusplus
 }

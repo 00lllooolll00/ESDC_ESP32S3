@@ -17,6 +17,7 @@ struct plat_lcd_ops_t
 {
     int (*clear)(uint16_t color);
     int (*flush)(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+    void *(*get_fb)(uint8_t index);
 };
 
 struct plat_lcd_dev_t
@@ -42,6 +43,7 @@ int plat_lcd_dev_suspend(plat_lcd_dev_t *lcd);
 int plat_lcd_dev_resume(plat_lcd_dev_t *lcd);
 int plat_lcd_dev_clear(plat_lcd_dev_t *lcd, uint16_t color);
 int plat_lcd_dev_flush(plat_lcd_dev_t *lcd, int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+void *plat_lcd_dev_get_fb(plat_lcd_dev_t *lcd, uint8_t index);
 
 #ifdef __cplusplus
 }

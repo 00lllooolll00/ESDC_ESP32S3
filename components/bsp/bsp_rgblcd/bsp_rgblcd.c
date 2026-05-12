@@ -18,7 +18,7 @@ static void _rgblcd_display_dir(uint8_t dir);
 static esp_lcd_panel_handle_t s_rgblcd_handle;
 static uint16_t s_width;
 static uint16_t s_height;
-static DRAM_ATTR void *s_lcd_buffer[2];
+static DRAM_ATTR void *s_lcd_buffer[BSP_RGBLCD_FB_COUNT];
 static _rgblcd_cb_data_t s_cb_data;
 
 void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
@@ -39,10 +39,11 @@ void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
 
     _rgblcd_display_dir(1); /* 设置横屏 */
 
-    ESP_ERROR_CHECK(esp_lcd_rgb_panel_get_frame_buffer(s_rgblcd_handle, 2, &s_lcd_buffer[0], &s_lcd_buffer[1]));
+    ESP_ERROR_CHECK(
+        esp_lcd_rgb_panel_get_frame_buffer(s_rgblcd_handle, BSP_RGBLCD_FB_COUNT, &s_lcd_buffer[0], &s_lcd_buffer[1]));
 
     const esp_lcd_rgb_panel_event_callbacks_t rgb_cbs = {
-        .on_color_trans_done = _rgblcd_trans_done_cb,
+        .on_frame_buf_complete = _rgblcd_trans_done_cb,
     };
 
     ESP_ERROR_CHECK(esp_lcd_rgb_panel_register_event_callbacks(s_rgblcd_handle, &rgb_cbs, &s_cb_data));
@@ -53,7 +54,7 @@ void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
 void bsp_rgblcd_clear(uint16_t color)
 {
     uint32_t pixel_count = BSP_RGBLCD_WIDTH * BSP_RGBLCD_HEIGHT;
-    for (uint8_t fb = 0; fb < 2; fb++)
+    for (uint8_t fb = 0; fb < BSP_RGBLCD_FB_COUNT; fb++)
     {
         uint16_t *buffer = (uint16_t *)s_lcd_buffer[fb];
         if (buffer == NULL)
@@ -106,6 +107,11 @@ uint16_t bsp_rgblcd_get_height(void)
     return s_height;
 }
 
+void *bsp_rgb_get_fb(uint8_t index)
+{
+    return s_lcd_buffer[index];
+}
+
 static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rgb_panel_event_data_t *edata, void *arg)
 {
     _rgblcd_cb_data_t *cb_with_arg = (_rgblcd_cb_data_t *)arg;
@@ -121,7 +127,7 @@ static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rg
 static void _rgblcd_init(void)
 {
     esp_lcd_rgb_panel_config_t panel_config = {     /* RGBLCD配置结构体 */
-        .num_fbs            = 2,                    /* 缓存区数量 */
+        .num_fbs            = BSP_RGBLCD_FB_COUNT,  /* 缓存区数量 */
         .data_width         = 16,                   /* 数据宽度为16位 */
         .psram_trans_align  = 64,                   /* 在PSRAM中分配的缓冲区的对齐 */
         .clk_src            = LCD_CLK_SRC_DEFAULT,  /* RGBLCD外设时钟源 */
@@ -138,21 +144,21 @@ static void _rgblcd_init(void)
         },
         .timings = {
         /* RGBLCD时序参数 */
-            .pclk_hz            = EK_FREQ_M(20),       /* 像素时钟频率 */
-            .h_res              = BSP_RGBLCD_WIDTH,    /* 水平分辨率,即一行中的像素数 */
-            .v_res              = BSP_RGBLCD_HEIGHT,   /* 垂直分辨率,即帧中的行数 */
-            .hsync_back_porch   = 88,                  /* 水平后廊,hsync和行活动数据开始之间的PCLK数 */
-            .hsync_front_porch  = 40,                  /* 水平前廊,活动数据结束和下一个hsync之间的PCLK数 */
-            .hsync_pulse_width  = 3,                   /* 垂直同步宽度,单位:行数 */
-            .vsync_back_porch   = 32,                  /* 垂直后廊,vsync和帧开始之间的无效行数 */
-            .vsync_front_porch  = 13,                  /* 垂直前廊,帧结束和下一个vsync之间的无效行数 */
-            .vsync_pulse_width  = 48,                  /* 水平同步宽度,单位:PCLK周期 */
+            .pclk_hz            = EK_FREQ_M(20),         /* 像素时钟频率 */
+            .h_res              = BSP_RGBLCD_WIDTH,      /* 水平分辨率,即一行中的像素数 */
+            .v_res              = BSP_RGBLCD_HEIGHT,     /* 垂直分辨率,即帧中的行数 */
+            .hsync_back_porch   = 88,                    /* 水平后廊,hsync和行活动数据开始之间的PCLK数 */
+            .hsync_front_porch  = 40,                    /* 水平前廊,活动数据结束和下一个hsync之间的PCLK数 */
+            .hsync_pulse_width  = 3,                     /* 垂直同步宽度,单位:行数 */
+            .vsync_back_porch   = 32,                    /* 垂直后廊,vsync和帧开始之间的无效行数 */
+            .vsync_front_porch  = 13,                    /* 垂直前廊,帧结束和下一个vsync之间的无效行数 */
+            .vsync_pulse_width  = 48,                    /* 水平同步宽度,单位:PCLK周期 */
             .flags = {
-                .pclk_active_neg = true,               /* RGB数据在下降沿计时 */
+                .pclk_active_neg = true,                 /* RGB数据在下降沿计时 */
             },
         },
-        .flags.fb_in_psram = true,                     /* 在PSRAM中分配帧缓冲区 */
-        .bounce_buffer_size_px =  800 * 12,            /* 解决写spiflash时,抖动问题 */
+        .flags.fb_in_psram = true,                       /* 在PSRAM中分配帧缓冲区 */
+        .bounce_buffer_size_px =  12 * BSP_RGBLCD_WIDTH, /* 解决写spiflash时,抖动问题 */
     };
 
     ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&panel_config, &s_rgblcd_handle)); /* 创建RGB对象 */
@@ -162,11 +168,11 @@ static void _rgblcd_init(void)
 
 static void _rgblcd_exio_pin_config(void)
 {
-    bsp_exio_pin_config_t exio_lcd_conifg = {
+    bsp_exio_pin_config_t exio_lcd_config = {
         .mode = BSP_EXIO_PIN_MODE_OUTPUT,
         .pin = BSP_RGBLCD_BL_PIN,
     };
-    bsp_exio_conifg_pin(&exio_lcd_conifg);
-    exio_lcd_conifg.pin = BSP_RGBLCD_BL_PIN;
-    bsp_exio_conifg_pin(&exio_lcd_conifg);
+    bsp_exio_conifg_pin(&exio_lcd_config);
+    exio_lcd_config.pin = BSP_RGBLCD_BL_PIN;
+    bsp_exio_conifg_pin(&exio_lcd_config);
 }
