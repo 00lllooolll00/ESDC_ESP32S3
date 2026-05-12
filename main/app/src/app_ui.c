@@ -1,6 +1,5 @@
 #include "app_ui.h"
 #include "ui.h"
-#include "lv_demos.h"
 
 static void _app_ui_task(void *arg);
 
@@ -8,8 +7,7 @@ TaskHandle_t g_ui_handle;
 
 void app_ui_init(void)
 {
-    // ui_init();
-    lv_demo_benchmark();
+    ui_init();
     xTaskCreatePinnedToCore(_app_ui_task, "app gui", 10240, NULL, 5, &g_ui_handle, 1);
 }
 
