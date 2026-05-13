@@ -11,7 +11,7 @@ extern "C" {
 #define EXT_IMG_DESC_T
 typedef struct _ext_img_desc_t {
     const char *name;
-    const lv_img_dsc_t *img_dsc;
+    const void *img_dsc;
 } ext_img_desc_t;
 #endif
 

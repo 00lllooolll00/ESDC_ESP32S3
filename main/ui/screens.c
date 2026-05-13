@@ -13,7 +13,7 @@
 objects_t objects;
 
 static const char *screen_names[] = { "main_page", "sub_page2" };
-static const char *object_names[] = { "main_page", "sub_page2", "obj0", "obj1" };
+static const char *object_names[] = { "main_page", "sub_page2", "main_page_bg", "obj0", "obj1" };
 
 //
 // Event handlers
@@ -57,10 +57,12 @@ void create_screen_main_page() {
     {
         lv_obj_t *parent_obj = obj;
         {
-            lv_obj_t *obj = lv_label_create(parent_obj);
-            lv_obj_set_pos(obj, 356, 232);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_label_set_text_static(obj, "Hello, world!");
+            // main_page_bg
+            lv_obj_t *obj = lv_image_create(parent_obj);
+            objects.main_page_bg = obj;
+            lv_obj_set_pos(obj, 0, 0);
+            lv_obj_set_size(obj, 800, 480);
+            lv_image_set_src(obj, "S:/ui_image_main_page_bg.bin");
         }
         {
             lv_obj_t *obj = lv_button_create(parent_obj);

@@ -1,6 +1,7 @@
 // esp-idf
 #include "nvs_flash.h"
 #include "esp_timer.h"
+#include "esp_vfs_fat.h"
 
 // app
 #include "app.h"
@@ -41,6 +42,21 @@ void app_main(void)
         LOG_INFO("successfully reinit nvs flash");
     }
     portENABLE_INTERRUPTS();
+
+    const esp_vfs_fat_mount_config_t vfs_mount_cfg = {
+        .format_if_mount_failed = false,
+        .max_files = 4,
+        .allocation_unit_size = 4096,
+    };
+    esp_err_t vfs_err = esp_vfs_fat_spiflash_mount_ro("/vfs", "vfs", &vfs_mount_cfg);
+    if (vfs_err != ESP_OK)
+    {
+        LOG_ERROR("fail to mount vfs: %s", unified_strerror(vfs_err));
+    }
+    else
+    {
+        LOG_INFO("vfs mounted at /vfs");
+    }
 
     impl_exio_init();
     impl_led_register(&g_led_dev);
