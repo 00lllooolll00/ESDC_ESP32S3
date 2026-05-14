@@ -28,6 +28,7 @@ struct plat_wifi_ap_info_t
 };
 
 typedef void (*plat_wifi_event_cb_t)(plat_wifi_state_t state, void *arg);
+typedef void (*plat_wifi_scan_cb_t)(int count, plat_wifi_ap_info_t *aps, void *arg);
 
 struct plat_wifi_ops_t
 {
@@ -43,6 +44,8 @@ struct plat_wifi_dev_t
     volatile plat_wifi_state_t state;
     plat_wifi_event_cb_t event_cb;
     void *event_cb_arg;
+    plat_wifi_scan_cb_t scan_cb;
+    void *scan_cb_arg;
 };
 
 void plat_wifi_dev_register(
@@ -57,6 +60,8 @@ int plat_wifi_scan(plat_wifi_dev_t *wifi, plat_wifi_ap_info_t *ap_info, uint16_t
 plat_wifi_state_t plat_wifi_get_state(plat_wifi_dev_t *wifi);
 void plat_wifi_register_event_cb(plat_wifi_dev_t *wifi, plat_wifi_event_cb_t cb, void *arg);
 
+void plat_wifi_register_scan_cb(plat_wifi_dev_t *wifi, plat_wifi_scan_cb_t cb, void *arg);
+void plat_wifi_notify_scan_result(plat_wifi_dev_t *wifi, int count, plat_wifi_ap_info_t *aps);
 void plat_wifi_notify_state(plat_wifi_dev_t *wifi, plat_wifi_state_t state);
 
 #ifdef __cplusplus

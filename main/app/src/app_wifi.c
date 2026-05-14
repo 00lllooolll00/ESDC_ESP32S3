@@ -4,6 +4,7 @@
 FILE_TAG("app_wifi");
 
 static void _wifi_state_cb(plat_wifi_state_t state, void *arg);
+static void _scan_result_cb(int count, plat_wifi_ap_info_t *aps, void *arg);
 static void _app_wifi_task(void *arg);
 
 extern plat_wifi_dev_t g_wifi_dev;
@@ -65,6 +66,32 @@ static void _wifi_state_cb(plat_wifi_state_t state, void *arg)
     }
 }
 
+static void _scan_result_cb(int count, plat_wifi_ap_info_t *aps, void *arg)
+{
+    app_wifi_scan_result_t *result = (app_wifi_scan_result_t *)arg;
+
+    if (count <= 0)
+    {
+        free(result);
+        if (s_evt_cb)
+        {
+            lv_lock();
+            s_evt_cb(APP_WIFI_EVT_SCAN_FAIL, NULL, s_evt_cb_arg);
+            lv_unlock();
+        }
+    }
+    else
+    {
+        result->count = count;
+        if (s_evt_cb)
+        {
+            lv_lock();
+            s_evt_cb(APP_WIFI_EVT_SCAN_DONE, result, s_evt_cb_arg);
+            lv_unlock();
+        }
+    }
+}
+
 static void _app_wifi_task(void *arg)
 {
     plat_wifi_dev_init(&g_wifi_dev);
@@ -94,24 +121,15 @@ static void _app_wifi_task(void *arg)
                         break;
                     }
 
-                    int count = plat_wifi_scan(&g_wifi_dev, result->aps, WIFI_SCAN_MAX_AP);
-                    if (count <= 0)
+                    plat_wifi_register_scan_cb(&g_wifi_dev, _scan_result_cb, result);
+                    if (plat_wifi_scan(&g_wifi_dev, result->aps, WIFI_SCAN_MAX_AP) != 0)
                     {
+                        plat_wifi_register_scan_cb(&g_wifi_dev, NULL, NULL);
                         free(result);
                         if (s_evt_cb)
                         {
                             lv_lock();
                             s_evt_cb(APP_WIFI_EVT_SCAN_FAIL, NULL, s_evt_cb_arg);
-                            lv_unlock();
-                        }
-                    }
-                    else
-                    {
-                        result->count = count;
-                        if (s_evt_cb)
-                        {
-                            lv_lock();
-                            s_evt_cb(APP_WIFI_EVT_SCAN_DONE, result, s_evt_cb_arg);
                             lv_unlock();
                         }
                     }

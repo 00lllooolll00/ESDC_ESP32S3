@@ -73,3 +73,14 @@ int plat_lcd_dev_clear(plat_lcd_dev_t *lcd, uint16_t color)
     PLAT_DEV_UNLOCK(lcd);
     return err;
 }
+
+int plat_lcd_dev_display(plat_lcd_dev_t *lcd, bool on)
+{
+    PLAT_DEV_CHECK(lcd);
+    PLAT_DEV_LOCK(lcd);
+
+    int err = lcd->ops->display ? lcd->ops->display(on) : 0;
+
+    PLAT_DEV_UNLOCK(lcd);
+    return err;
+}

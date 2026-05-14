@@ -8,6 +8,8 @@ void plat_wifi_dev_register(
     wifi->state = PLAT_WIFI_DISCONNECTED;
     wifi->event_cb = NULL;
     wifi->event_cb_arg = NULL;
+    wifi->scan_cb = NULL;
+    wifi->scan_cb_arg = NULL;
 }
 
 int plat_wifi_dev_init(plat_wifi_dev_t *wifi)
@@ -68,6 +70,19 @@ void plat_wifi_register_event_cb(plat_wifi_dev_t *wifi, plat_wifi_event_cb_t cb,
     assert(wifi);
     wifi->event_cb = cb;
     wifi->event_cb_arg = arg;
+}
+
+void plat_wifi_register_scan_cb(plat_wifi_dev_t *wifi, plat_wifi_scan_cb_t cb, void *arg)
+{
+    assert(wifi);
+    wifi->scan_cb = cb;
+    wifi->scan_cb_arg = arg;
+}
+
+void plat_wifi_notify_scan_result(plat_wifi_dev_t *wifi, int count, plat_wifi_ap_info_t *aps)
+{
+    assert(wifi);
+    if (wifi->scan_cb) wifi->scan_cb(count, aps, wifi->scan_cb_arg);
 }
 
 void plat_wifi_notify_state(plat_wifi_dev_t *wifi, plat_wifi_state_t state)

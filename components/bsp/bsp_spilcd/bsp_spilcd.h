@@ -27,6 +27,7 @@ typedef bool (*bsp_spilcd_trans_done_cb_t)(void *);
 void bsp_spilcd_init(bsp_spilcd_trans_done_cb_t cb, void *arg);
 void bsp_spilcd_clear(uint16_t color);
 void bsp_spilcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+void bsp_spilcd_display(bool on);
 
 #ifdef __cplusplus
 }

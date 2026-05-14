@@ -51,6 +51,7 @@ typedef bool (*bsp_rgblcd_trans_done_cb_t)(void *);
 void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg);
 void bsp_rgblcd_clear(uint16_t color);
 void bsp_rgblcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void *buffer);
+void bsp_rgblcd_display(bool on);
 uint16_t bsp_rgblcd_get_width(void);
 uint16_t bsp_rgblcd_get_height(void);
 void *bsp_rgb_get_fb(uint8_t index);

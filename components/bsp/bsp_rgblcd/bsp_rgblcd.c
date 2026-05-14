@@ -112,6 +112,11 @@ void *bsp_rgb_get_fb(uint8_t index)
     return s_lcd_buffer[index];
 }
 
+void bsp_rgblcd_display(bool on)
+{
+    BSP_RGBLCD_BL(on);
+}
+
 static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rgb_panel_event_data_t *edata, void *arg)
 {
     _rgblcd_cb_data_t *cb_with_arg = (_rgblcd_cb_data_t *)arg;

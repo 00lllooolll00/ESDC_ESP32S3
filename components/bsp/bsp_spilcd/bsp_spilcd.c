@@ -103,6 +103,11 @@ void bsp_spilcd_disp_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const
     esp_lcd_panel_draw_bitmap(s_lcd_handle, x0, y0, x1, y1, buffer);
 }
 
+void bsp_spilcd_display(bool on)
+{
+    BSP_SPILCD_PWR(on);
+}
+
 /**
  * @brief       LCD 内部默认回调，用于适配 idf 框架
  * @param       panel LCD panel句柄
