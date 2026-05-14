@@ -27,12 +27,18 @@ idf_component_register(
 # 将 ui/ 下的 .bin 文件打包到 vfs FAT 分区
 set(vfs_staging "${CMAKE_CURRENT_BINARY_DIR}/vfs_stage")
 
+file(GLOB_RECURSE bin_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/*.bin")
+
+set(copy_cmds)
+foreach(bin_file ${bin_files})
+    get_filename_component(file_name ${bin_file} NAME)
+    list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/${file_name}")
+endforeach()
+
 add_custom_target(vfs_staging
     COMMAND ${CMAKE_COMMAND} -E make_directory ${vfs_staging}
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/ui/ui_image_main_page_bg.bin"
-        "${vfs_staging}/ui_image_main_page_bg.bin"
-    COMMENT "Staging VFS assets..."
+    ${copy_cmds}
+    COMMENT "Auto-syncing .bin VFS assets..."
 )
 
 fatfs_create_rawflash_image(vfs ${vfs_staging} FLASH_IN_PROJECT)

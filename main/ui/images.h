@@ -15,7 +15,7 @@ typedef struct _ext_img_desc_t {
 } ext_img_desc_t;
 #endif
 
-extern const ext_img_desc_t images[1];
+extern const ext_img_desc_t images[5];
 
 #ifdef __cplusplus
 }

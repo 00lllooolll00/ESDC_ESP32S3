@@ -15,12 +15,7 @@
       "displayHeight": 480,
       "displayBorderRadius": 0,
       "colorFormat": "BGR",
-      "resourceFiles": [
-        {
-          "objID": "83a72738-9a4a-4745-d315-a31fd0926d24",
-          "filePath": "../../../../Assets/main_page/output/main_page_bg.png"
-        }
-      ],
+      "resourceFiles": [],
       "hiddenWidgetLines": "dimmed",
       "dimmedLinesOpacity": "20",
       "embedBitmaps": true,
@@ -89,7 +84,7 @@
         {
           "objID": "d05c0814-03ab-4c21-cef9-684513ff2adc",
           "fileName": "ui.h",
-          "template": "#ifndef EEZ_LVGL_UI_GUI_H\n#define EEZ_LVGL_UI_GUI_H\n\n//${eez-studio LVGL_INCLUDE}\n\n//${eez-studio EEZ_FOR_LVGL_CHECK}\n\n#if defined(EEZ_FOR_LVGL)\n#include <eez/flow/lvgl_api.h>\n#endif\n\n#if !defined(EEZ_FOR_LVGL)\n#include \"screens.h\"\n#endif\n\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n\n//${eez-studio GUI_ASSETS_DECL}\n\nvoid ui_init();\nvoid ui_tick();\n\n#if !defined(EEZ_FOR_LVGL)\nvoid loadScreen(enum ScreensEnum screenId);\n#endif\n\n#ifdef __cplusplus\n}\n#endif\n\n#endif // EEZ_LVGL_UI_GUI_H"
+          "template": "#ifndef EEZ_LVGL_UI_GUI_H\n#define EEZ_LVGL_UI_GUI_H\n\n//${eez-studio LVGL_INCLUDE}\n#include \"common_header.h\"\n//${eez-studio EEZ_FOR_LVGL_CHECK}\n\n#if defined(EEZ_FOR_LVGL)\n#include <eez/flow/lvgl_api.h>\n#endif\n\n#if !defined(EEZ_FOR_LVGL)\n#include \"screens.h\"\n#endif\n\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n\n//${eez-studio GUI_ASSETS_DECL}\n\nvoid ui_init();\nvoid ui_tick();\n\n#if !defined(EEZ_FOR_LVGL)\nvoid loadScreen(enum ScreensEnum screenId);\n#endif\n\n#ifdef __cplusplus\n}\n#endif\n\n#endif // EEZ_LVGL_UI_GUI_H"
         },
         {
           "objID": "084926f1-634e-4671-9fc3-cc34c950eba7",
@@ -117,7 +112,18 @@
     "structures": [],
     "enums": []
   },
-  "actions": [],
+  "actions": [
+    {
+      "objID": "c801cb7d-cf9d-4224-9ddc-73affe6846ab",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "componentGroups": [],
+      "userProperties": [],
+      "name": "wifi_start_scan",
+      "implementationType": "native"
+    }
+  ],
   "userPages": [
     {
       "objID": "4b40eba7-b31a-468a-b887-11dfd0b6637f",
@@ -167,7 +173,52 @@
               "topUnit": "px",
               "widthUnit": "px",
               "heightUnit": "px",
-              "children": [],
+              "children": [
+                {
+                  "objID": "1ab8063d-f744-4a02-d619-0e26faa3312c",
+                  "type": "LVGLUserWidgetWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 800,
+                  "height": 480,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "28491872-3815-49be-e007-39cecb9c7f4c",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "px",
+                  "heightUnit": "px",
+                  "children": [],
+                  "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+                  "hiddenFlagType": "literal",
+                  "clickableFlag": true,
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "345d1ee8-17a6-466d-9302-27108dd4bd05"
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "userWidgetPageName": "wifi_btn",
+                  "userPropertyValues": {
+                    "objID": "c737f799-c64d-42eb-e678-c9f4b7fd06ff",
+                    "values": {}
+                  }
+                }
+              ],
               "widgetFlags": "ADV_HITTEST|CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
               "hiddenFlagType": "literal",
               "clickableFlagType": "literal",
@@ -227,52 +278,271 @@
       "objID": "27fbf1cd-9a62-49e0-a8a7-ba8545310432",
       "components": [
         {
-          "objID": "fcb3b92b-7922-4f9e-edc1-683a43cf25b0",
-          "type": "LVGLButtonWidget",
-          "left": 750,
-          "top": 0,
-          "width": 50,
-          "height": 30,
+          "objID": "de85c2a1-4ee4-4536-c6ea-d8f4ff857dd3",
+          "type": "LVGLPanelWidget",
+          "left": 150,
+          "top": -480,
+          "width": 500,
+          "height": 480,
           "customInputs": [],
           "customOutputs": [],
           "style": {
-            "objID": "1f7fec28-1093-4255-9b1c-6bc868a28f46",
+            "objID": "518ba6d3-cd6c-4d84-8b73-831cb5d6eb10",
             "useStyle": "default",
             "conditionalStyles": [],
             "childStyles": []
           },
+          "hiddenInEditor": false,
           "timeline": [],
           "eventHandlers": [],
+          "identifier": "wifi_list_panel",
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
           "heightUnit": "px",
           "children": [
             {
-              "objID": "7c0337f1-a318-4081-85bb-60763a63070e",
-              "type": "LVGLLabelWidget",
-              "left": 0,
-              "top": 0,
-              "width": 27,
-              "height": 16,
+              "objID": "2117020f-a80b-4a03-df94-d6f9f3f5ce78",
+              "type": "LVGLButtonWidget",
+              "left": 11,
+              "top": 389,
+              "width": 70,
+              "height": 40,
               "customInputs": [],
               "customOutputs": [],
               "style": {
-                "objID": "8bd280f8-dc7b-4f83-90a7-a1540ff178af",
+                "objID": "3cb3c2cd-949c-40eb-e7c6-3056ae0c415f",
                 "useStyle": "default",
                 "conditionalStyles": [],
                 "childStyles": []
               },
+              "hiddenInEditor": false,
               "timeline": [],
-              "eventHandlers": [],
-              "identifier": "",
+              "eventHandlers": [
+                {
+                  "objID": "9ecae1c2-6af6-44a0-ff7c-d25ff5abab45",
+                  "eventName": "CLICKED",
+                  "handlerType": "action",
+                  "action": "wifi_start_scan",
+                  "userData": 0
+                },
+                {
+                  "objID": "19f5303f-42ed-4349-92e2-af40ac642b96",
+                  "eventName": "CLICKED",
+                  "handlerType": "flow",
+                  "action": "wifi_start_scan",
+                  "userData": 0
+                }
+              ],
+              "identifier": "wifi_refresh_btn",
               "leftUnit": "px",
               "topUnit": "px",
-              "widthUnit": "content",
-              "heightUnit": "content",
+              "widthUnit": "px",
+              "heightUnit": "px",
               "children": [],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlag": false,
               "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "useStyle": "user_btn",
+              "localStyles": {
+                "objID": "1cca3748-c0d1-4fa2-cba8-3f543c7ba451",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "bg_img_src": "common_refresh",
+                      "layout": "FLEX"
+                    }
+                  }
+                }
+              },
+              "group": "",
+              "groupIndex": 0
+            },
+            {
+              "objID": "0c8433d3-b6de-43ab-992d-60bd68a514d0",
+              "type": "LVGLButtonWidget",
+              "left": 376,
+              "top": 389,
+              "width": 70,
+              "height": 40,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "ede69cde-fcb9-4db3-f98c-d856bc17d4c0",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "hiddenInEditor": false,
+              "timeline": [],
+              "eventHandlers": [
+                {
+                  "objID": "5d98c5a0-f735-4f45-b5fe-f8005a35024a",
+                  "eventName": "CLICKED",
+                  "handlerType": "flow",
+                  "action": "wifi_start_scan",
+                  "userData": 0
+                }
+              ],
+              "identifier": "wifi_cancel_btn",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlag": false,
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "useStyle": "user_btn",
+              "localStyles": {
+                "objID": "2235cae6-0238-4727-8962-5f2a0efce1df",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "bg_img_src": "common_cancel"
+                    }
+                  }
+                }
+              },
+              "group": "",
+              "groupIndex": 0
+            },
+            {
+              "objID": "591ba912-6c4a-4a6c-fc32-949606f29cca",
+              "type": "LVGLListWidget",
+              "left": -22,
+              "top": -22,
+              "width": 500,
+              "height": 392,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "04da6c0c-9a99-4323-a381-657aa5256312",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "hiddenInEditor": false,
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "wifi_list",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [
+                {
+                  "objID": "a01c2c4f-861d-4737-d1da-70970328de9f",
+                  "type": "LVGLSpinnerWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 80,
+                  "height": 80,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "0e46667b-bcb7-4e98-fa37-5f265be2aef7",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "identifier": "wifi_loader",
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "px",
+                  "heightUnit": "px",
+                  "children": [],
+                  "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+                  "hiddenFlag": false,
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "b72f0432-3244-47f2-aed7-d6a424c66b51",
+                    "definition": {
+                      "INDICATOR": {
+                        "DEFAULT": {
+                          "arc_color": "#69727A"
+                        }
+                      }
+                    }
+                  },
+                  "group": "",
+                  "groupIndex": 0
+                },
+                {
+                  "objID": "6e7ae301-9db3-44d9-b17f-b51082ebd95b",
+                  "type": "LVGLLabelWidget",
+                  "left": 158,
+                  "top": 930,
+                  "width": 0,
+                  "height": 16,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "4928f114-0fb7-4921-c28d-73f8ba44dcb1",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "content",
+                  "heightUnit": "content",
+                  "children": [],
+                  "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "b9e916e4-c31c-4c57-bc1c-2e3197a0414c"
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "text": "",
+                  "textType": "literal",
+                  "longMode": "WRAP",
+                  "recolor": false
+                }
+              ],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlag": false,
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
               "clickableFlagType": "literal",
               "flagScrollbarMode": "",
               "flagScrollDirection": "",
@@ -282,23 +552,86 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "f584dbee-a6a4-49e4-f27f-3958fe75f9fd",
+                "objID": "4e6dd7d8-3221-4e72-f703-b7546faa0fde",
                 "definition": {
                   "MAIN": {
                     "DEFAULT": {
-                      "align": "CENTER"
+                      "bg_color": "#D5D3D3",
+                      "layout": "FLEX",
+                      "flex_main_place": "CENTER",
+                      "flex_track_place": "CENTER",
+                      "flex_cross_place": "CENTER"
                     }
                   }
                 }
               },
               "group": "",
-              "groupIndex": 0,
-              "text": "wifi",
-              "textType": "literal",
-              "longMode": "WRAP",
-              "recolor": false
+              "groupIndex": 0
             }
           ],
+          "widgetFlags": "",
+          "hiddenFlag": true,
+          "hiddenFlagType": "literal",
+          "clickableFlag": false,
+          "clickableFlagType": "literal",
+          "flagScrollbarMode": "",
+          "flagScrollDirection": "",
+          "scrollSnapX": "",
+          "scrollSnapY": "",
+          "checkedStateType": "literal",
+          "disabledStateType": "literal",
+          "states": "",
+          "localStyles": {
+            "objID": "a4f2f196-453d-4234-f5c1-4f37e140a55f",
+            "definition": {
+              "MAIN": {
+                "DEFAULT": {
+                  "bg_color": "#EAE9E7"
+                }
+              }
+            }
+          },
+          "group": "",
+          "groupIndex": 0
+        },
+        {
+          "objID": "aab0f862-c13d-4b39-fafb-d2e5360c1cf0",
+          "type": "LVGLButtonWidget",
+          "left": 730,
+          "top": 0,
+          "width": 70,
+          "height": 40,
+          "customInputs": [],
+          "customOutputs": [],
+          "style": {
+            "objID": "206361b3-2f58-4357-f3c8-0321783ca85b",
+            "useStyle": "default",
+            "conditionalStyles": [],
+            "childStyles": []
+          },
+          "hiddenInEditor": false,
+          "timeline": [],
+          "eventHandlers": [
+            {
+              "objID": "35c9a434-77ec-4fc2-d6af-76e65b645b20",
+              "eventName": "CLICKED",
+              "handlerType": "flow",
+              "userData": 0
+            },
+            {
+              "objID": "21b30d01-2a95-4920-92df-05f57592daa4",
+              "eventName": "PRESSED",
+              "handlerType": "action",
+              "action": "wifi_start_scan",
+              "userData": 0
+            }
+          ],
+          "identifier": "wifi_btn",
+          "leftUnit": "px",
+          "topUnit": "px",
+          "widthUnit": "px",
+          "heightUnit": "px",
+          "children": [],
           "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
           "hiddenFlagType": "literal",
           "clickableFlag": true,
@@ -310,14 +643,172 @@
           "checkedStateType": "literal",
           "disabledStateType": "literal",
           "states": "",
+          "useStyle": "user_btn",
           "localStyles": {
-            "objID": "e7abeae1-23d4-471e-a393-b6f171ff9988"
+            "objID": "11de8ca7-7b7e-468e-a0dd-34e1f2c8ace4",
+            "definition": {
+              "MAIN": {
+                "DEFAULT": {
+                  "bg_img_src": "wifi_icon",
+                  "layout": "NONE",
+                  "flex_main_place": "CENTER",
+                  "flex_cross_place": "START",
+                  "flex_track_place": "START"
+                }
+              }
+            }
           },
           "group": "",
           "groupIndex": 0
+        },
+        {
+          "objID": "869d874b-a61a-4813-8970-1fd6efeb9d13",
+          "type": "LVGLActionComponent",
+          "left": 833,
+          "top": 59,
+          "width": 427,
+          "height": 87,
+          "customInputs": [],
+          "customOutputs": [],
+          "actions": [
+            {
+              "objID": "52a28423-d029-4ea1-ec84-0991cd92586d",
+              "action": "objClearFlag",
+              "object": "wifi_list_panel",
+              "objectType": "literal",
+              "flag": "HIDDEN",
+              "flagType": "literal"
+            },
+            {
+              "objID": "19e5a25b-f908-446d-feff-817f15828df9",
+              "action": "animY",
+              "object": "wifi_list_panel",
+              "objectType": "literal",
+              "start": -480,
+              "startType": "literal",
+              "end": 0,
+              "endType": "literal",
+              "delay": 0,
+              "delayType": "literal",
+              "time": 400,
+              "timeType": "literal",
+              "relative": false,
+              "relativeType": "literal",
+              "instant": false,
+              "instantType": "literal",
+              "path": "EASE_IN",
+              "pathType": "literal"
+            },
+            {
+              "objID": "7ff9215c-6005-4424-9d3f-e4d8665d8b9f",
+              "action": "objSetFlagHidden",
+              "object": "wifi_btn",
+              "objectType": "literal",
+              "hidden": true,
+              "hiddenType": "literal"
+            }
+          ]
+        },
+        {
+          "objID": "aa0d49fa-baeb-4625-b645-aaebfb26d06f",
+          "type": "LVGLActionComponent",
+          "left": 273,
+          "top": 519,
+          "width": 218,
+          "height": 52,
+          "customInputs": [],
+          "customOutputs": [],
+          "actions": [
+            {
+              "objID": "81b986e2-ce73-43ee-bc20-ff776db0f4be",
+              "action": "objClearFlag",
+              "object": "wifi_loader",
+              "objectType": "literal",
+              "flag": "HIDDEN",
+              "flagType": "literal"
+            }
+          ]
+        },
+        {
+          "objID": "d9b0533b-cc90-4eb3-d310-0f38d06f0abb",
+          "type": "LVGLActionComponent",
+          "left": 693,
+          "top": 480,
+          "width": 433,
+          "height": 104,
+          "customInputs": [],
+          "customOutputs": [],
+          "actions": [
+            {
+              "objID": "476f429f-9dfa-4ea2-aa3a-7cf809207e2e",
+              "action": "animY",
+              "object": "wifi_list_panel",
+              "objectType": "literal",
+              "start": 0,
+              "startType": "literal",
+              "end": -480,
+              "endType": "literal",
+              "delay": 0,
+              "delayType": "literal",
+              "time": 300,
+              "timeType": "literal",
+              "relative": false,
+              "relativeType": "literal",
+              "instant": false,
+              "instantType": "literal",
+              "path": "EASE_OUT",
+              "pathType": "literal"
+            },
+            {
+              "objID": "3ff2ac75-44ba-496b-87ec-abf1edf28c4a",
+              "action": "objSetFlagHidden",
+              "object": "wifi_loader",
+              "objectType": "literal",
+              "hidden": true,
+              "hiddenType": "literal"
+            },
+            {
+              "objID": "e2481bed-089f-4844-9f32-ae025ff8151c",
+              "action": "objClearFlag",
+              "object": "wifi_btn",
+              "objectType": "literal",
+              "flag": "HIDDEN",
+              "flagType": "literal"
+            },
+            {
+              "objID": "1b0c3ffa-d46b-455d-b51e-b2adc78de96c",
+              "action": "objSetFlagHidden",
+              "object": "wifi_list_panel",
+              "objectType": "literal",
+              "hidden": false,
+              "hiddenType": "literal"
+            }
+          ]
         }
       ],
-      "connectionLines": [],
+      "connectionLines": [
+        {
+          "objID": "995a9287-cde0-448e-c589-7a51208de535",
+          "source": "aab0f862-c13d-4b39-fafb-d2e5360c1cf0",
+          "output": "CLICKED",
+          "target": "869d874b-a61a-4813-8970-1fd6efeb9d13",
+          "input": "@seqin"
+        },
+        {
+          "objID": "98c08284-bb85-49fd-98bc-2010bed4bb85",
+          "source": "2117020f-a80b-4a03-df94-d6f9f3f5ce78",
+          "output": "CLICKED",
+          "target": "aa0d49fa-baeb-4625-b645-aaebfb26d06f",
+          "input": "@seqin"
+        },
+        {
+          "objID": "19b05579-c70e-4697-a2d4-ef985a37ce5a",
+          "source": "0c8433d3-b6de-43ab-992d-60bd68a514d0",
+          "output": "CLICKED",
+          "target": "d9b0533b-cc90-4eb3-d310-0f38d06f0abb",
+          "input": "@seqin"
+        }
+      ],
       "localVariables": [],
       "componentGroups": [],
       "userProperties": [],
@@ -333,7 +824,58 @@
   ],
   "lvglStyles": {
     "objID": "a31bd004-35c5-b3fb-5c8b-78ea5c7693b8",
-    "styles": [],
+    "styles": [
+      {
+        "objID": "82e24ffe-4def-414f-d6be-d3d6be4def9a",
+        "name": "user_btn",
+        "forWidgetType": "LVGLButtonWidget",
+        "childStyles": [],
+        "definition": {
+          "objID": "c93f9761-af45-441a-c166-6c5baa0f785a",
+          "definition": {
+            "MAIN": {
+              "DEFAULT": {
+                "pad_top": 8,
+                "border_color": "#FFFFFF",
+                "shadow_color": "#000000",
+                "shadow_ofs_y": 5,
+                "shadow_ofs_x": 2,
+                "shadow_width": 10,
+                "bg_color": "#7c848a"
+              }
+            }
+          }
+        }
+      },
+      {
+        "objID": "e48f992b-196f-4f23-fc43-c52de40456ac",
+        "name": "wifi_loadder",
+        "forWidgetType": "LVGLSpinnerWidget",
+        "childStyles": [],
+        "definition": {
+          "objID": "1f01dafe-4429-4a3d-9448-4420e757c6a1"
+        }
+      },
+      {
+        "objID": "6c79c0f7-b69c-4fe1-ce1e-d30fa4232a88",
+        "name": "wifi_scan_result",
+        "forWidgetType": "LVGLButtonWidget",
+        "childStyles": [],
+        "definition": {
+          "objID": "bfc5c60a-7e15-4e6e-f125-c92fb15889bb",
+          "definition": {
+            "MAIN": {
+              "DEFAULT": {
+                "pad_top": 8,
+                "bg_color": "#D5D3D3",
+                "text_color": "#000000",
+                "border_width": 0
+              }
+            }
+          }
+        }
+      }
+    ],
     "defaultStyles": {}
   },
   "lvglGroups": {
@@ -354,7 +896,34 @@
     {
       "objID": "1a00421d-fa0f-4831-b688-e29279c6bff4",
       "name": "wifi_icon",
-      "image": "data:image/png;base64,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",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfqBQ0FLShS1fUXAAAE60lEQVRYw+3X36umVRUH8M9a6znjTOpkjeVvxcnAGNCyMEsSpKjAfhCVRXdCRWQ3eRUEEQQFUVDRzxv/gIhKwovKakjDMivRoZmE0kET0zFjHJ2ZfN9ndfG8ZzzneI56RoMCF2x4eN+91/6u9f2utffmRfs/sDi+ZcNi7RhBoYQOMRt1MzZa/xfAZJTuHvDS4CzsJHbidJyCbcIMh7QDuA9/a+7BwxlxGD3v2fGBqRiMPcLJwUW4gngTduE0bEUinvIS6DHarDloAvMH/Bq3tr4fszY+dzAh4aQQl+MDuBLnCktxHMx296O4Ez/Bj1rvD+bjGlCrPGcUurrjtcE1eL9wWojj1NYxNMtfR5vbcT19Q0Q8Mu/508FUJJzY4n34NHHxQpxP+XzKceMoHsPjWPa4dUHrSyxUvjaOhY9H8X18PTL36e55z0SqZdm/MsS1wicW36tdtHnzIO7CH5s9uB//oueLwLbGtPbVzcV4PXbi5FgJqulpzS3EF5rdwVwoIc9K9c1UhyqGXjlSzVPtTfWVVG8NeWqIWrJ1XUZKKhGptqa8MNVHU92Y6mA+zffQadgThveEYUnI8zLqexl1ZBUQ1akeSvXdlJeG3BarWXtWSyVlpjwzJlC/SzVbB9BdqT4Yqa4XPhxi2xpe9+DLzQ0lD86MmKupmpPe3lOJ7yBOCLr14eZA8I+YtNRzo5SaJF4TXBdcLeKk1frufZHqUEScuEr77Tf059O4e5Tz0VwKLbfSF4a4Mri8OR8vw5YJjKN4BPtwc/MrYj9madRC6NOJa4lPCaes2PSIjLq3opbTNlYMv0zDG8KQaRCRMrJC7Ur1pVR3pzpaqlesWzFqmeInUt2e6rpU55zsFCGVQRm2l+GzFXVgMfdwqh9UisdanGEq493E50Z+n3QbhVgirorwRRFXR8QrIqKmkl2v/QQRImIpIs4k3oILnvTve/Fg646Io8Kd2n48RP+4xbeU2pLygpSXpjqDIcMgp7Et1TWp7sl1s/DsI6eKHBdZelcYKgxqquMqua3UUm1UHBWlIk+oqI+luq+s3aA6j1Ex7F9Uw55Ufz9GoVqPuj2p3pYxRC564pqcru0TNRE29lXEt4lzV3XQSfoH8HP8jPjzdCg2ekeIi/BuXC5sX9k8F2tvJD6OB0bPfIorpeQJpb6zOrqha0r3b0N+KOT2tcGkXOQ1T0v1yVR3r81qGfam4XXrZWajRrUl1TdSjSscjaV2p7osZC1O9nVt6uq1lOq9qe7K5aAm+n5ahnPW00itByci5q2PhLgEp+JJ/CLEZ0LcFhE9mgspRKwYFnQpOQZ/xV+wY5HFPwVfJe4wNcln1sz0Y8IS3hi8GU8QN4W8mx4X95ASzo+OK3A2HsYtEbEXs3nPxERF0qfjjNAPx3S4jvMNLljPqCAqQ+VyEqcNljLV21PdnOpQqtmicd1Rho+UYameiyaer02aqp0LIE/vLWpfqstyk4fqIoWbmBy1zOsVuCTWuQA2r8I7WudmAW0KjCamG+HZwpYNZg04jw3/f4HAYLRoem2+4ZRJzLPn7PR4wIzmywV5C/au90YLHghuSrFpMJtXmcT4T+JgsCt4eTvWYB7A10L/sHly3GT5HtcTJA2aLaEvwTtxrukqcFNza/D4KNiQyRfYKoI4UUZmyC0hawru+T2xXrT/efsPbKPCM7RPsAgAAAAASUVORK5CYII=",
+      "bpp": 16,
+      "alwaysBuild": false,
+      "lvglBinaryOutputFormat": 3,
+      "lvglDither": false
+    },
+    {
+      "objID": "cf2f4542-e355-4c35-fd68-d5a30ff8f2a6",
+      "name": "common_cancel",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAQAAAC00HvSAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAAd0SU1FB+oFDQ0jDhBIDNwAAADaSURBVEjH7dS9DoIwEMDxPzLibMLuE/hUbiYY38CpJI6GxcHRJzFh9Qk0Ojg5GQIMdVAS+WiF2kETbix3P67QHvTxH+HWVgYfa5x6TpWZsGTMgUyJDJkx5cxF954NkowQT5HhEZIh2eq7npNroALJWej3XSQ2QbpnraFOiKqgM9JUZISUIcEIYYa8QwkxiSnyhAQpEokkRZghAD7xi4nxTREr3Vj5Nlb+lJVzY+UUW7lTlm540HLeBHomajn9ovJydRafcNmx4q5gcvbcOLLmqu/HweHbjD5+Nh4Yj50yr8QVVwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=",
+      "bpp": 16,
+      "alwaysBuild": false,
+      "lvglBinaryOutputFormat": 3,
+      "lvglDither": false
+    },
+    {
+      "objID": "bc82d557-567e-4fac-fac0-1aa994f6ba20",
+      "name": "common_confirm",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAQAAAC00HvSAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAAd0SU1FB+oFDQ0kJx27AncAAAG4SURBVEjHzdZPiExxHADwz87YWVlqCZs2ciC1SimUlMM2ckAhpVzWgVKKxEU5KMXByWFT3LYUObiYoi0HDlqhXFCrbPmzyGpqlxpr9+cyvd7szpudee/A753e7/t9n/f9/Xm/Hv9Ty2d6ut0+PUazldDmqEn3dWRj9vqioj8bssM7wR2dWZCNXgo+2JIFWeORYMb5LMhydwXBYyvTI4tdNyMo25MeKbhkShAMaE+L5J3ySxC8tj59LUf8EAQVx9Mju30UBME9S9Ii27ytImO2Nxp3h1xidIPhKhJc1FY/KafPoCFXrasb7/EgQp5alfSuXcaqSc9snRNd6laETDiQhCxwO0oL3uiriS5yzXQUvZl8LHR6EmOCUfuj0be7oBJFRvQmT27OjRom+KpfHjknTEa9U042XszNRmZBZacVHPI91lfSZZ520PgsaELJp9j9NzvnQ8g5G5uDeteVBruqZkUGGiDPrW4GgW6lBOSnw80i0OtVXWbQwlYYij7PQd7b1BoCx2I7JQj+ONM6QsHl2OYPhixLw9AV+8bGFdMhsNZD04Kyc839LCQcQLoVrfDCsN/pq/lX7S9k2fEWEhDykAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=",
+      "bpp": 16,
+      "alwaysBuild": false,
+      "lvglBinaryOutputFormat": 3,
+      "lvglDither": false
+    },
+    {
+      "objID": "7f7c66c7-a57a-426e-e390-f9cf9d958f65",
+      "name": "common_refresh",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAQAAAC00HvSAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAE69gABOvYBOrFXOgAAAAd0SU1FB+oFDQ8ON2zjClUAAAIaSURBVEjH7dVLSNRRFMfxz0xjo04vK4nKhUmUkiXSG+wl1EYo2rYMt27aRATRJnosCqpl1M5WRS0i21RE1KIXQUlqERlqRS5krHRSb4sUHOcZbvvdzeWc8//+f/f+OefPf+XSnH+sr3HUGm+MFf9IRKkqDbZqVC0hgjOCpOaZpbEciJg6LXZbrUKJcUM+euyWOOapd7846xf0Cxnrm25BcLmwm4i9zmkAKQP6DCuzwkqlKlWC1UqN5HdyUJ8gGNLuoGrzxCWs0OKG0UlXnZblhzT5JAheajE3LX7VM6lJzHfr80EqPRAEj9SmxcvcS7ujt6rz3c0hO9Glzbu0+G/ddvnlm14fdHvoUz4vzwUprVlyFXbbaLkykUKfucWI4KklhQozFZ223y6ODoOzwcTUIuX5v0OmY+Zaip++zA4TMQcTRfVu1H5nNWZLxd0VDNtRBGaV98Jko85wM6oXCWuLwNSqQkzIxPACNCspiNkjjldS2ZLr9Au+2lwAUqMr+/D6q5hrgqBdIg+kxHlB0GF+rpJtBgQpx3MeLKpVUpB0IPeboo4ZE/xw0sIs+XJtBgXBxbQxkqEFrpgQ/HbHvjTbZZpc90sQ3J45tjL7dYlTDivBsJee6JFUrsY2WyzChJuO+KygEtp8nDakxqftB5ywuDBiymOd095OHuHvSulxyabsP8jcQyhqmQ3qVSk3ol+n1/qMF+vkv6b0B594toov7YtCAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==",
       "bpp": 16,
       "alwaysBuild": false,
       "lvglBinaryOutputFormat": 3,

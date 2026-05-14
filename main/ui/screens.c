@@ -12,8 +12,8 @@
 
 objects_t objects;
 
-static const char *screen_names[] = { "main_page", "sub_page2" };
-static const char *object_names[] = { "main_page", "sub_page2", "main_page_bg", "obj0", "obj1" };
+static const char *screen_names[] = { "main_page" };
+static const char *object_names[] = { "main_page", "obj0", "obj0__wifi_list_panel", "obj0__wifi_refresh_btn", "obj0__wifi_cancel_btn", "obj0__wifi_list", "obj0__wifi_loader", "obj0__wifi_btn", "main_page_bg" };
 
 //
 // Event handlers
@@ -21,25 +21,44 @@ static const char *object_names[] = { "main_page", "sub_page2", "main_page_bg", 
 
 lv_obj_t *tick_value_change_obj;
 
-static void event_handler_cb_main_page_obj0(lv_event_t *e) {
+static void event_handler_cb_wifi_btn_wifi_refresh_btn(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
     
-    if (event == LV_EVENT_PRESSED) {
+    if (event == LV_EVENT_CLICKED) {
+        e->user_data = (void *)0;
+        action_wifi_start_scan(e);
+    }
+    if (event == LV_EVENT_CLICKED) {
+        e->user_data = (void *)0;
+        flowPropagateValueLVGLEvent(flowState, 0, 0, e);
+    }
+}
+
+static void event_handler_cb_wifi_btn_wifi_cancel_btn(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_CLICKED) {
         e->user_data = (void *)0;
         flowPropagateValueLVGLEvent(flowState, 2, 0, e);
     }
 }
 
-static void event_handler_cb_sub_page2_obj1(lv_event_t *e) {
+static void event_handler_cb_wifi_btn_wifi_btn(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
     
+    if (event == LV_EVENT_CLICKED) {
+        e->user_data = (void *)0;
+        flowPropagateValueLVGLEvent(flowState, 6, 0, e);
+    }
     if (event == LV_EVENT_PRESSED) {
         e->user_data = (void *)0;
-        flowPropagateValueLVGLEvent(flowState, 2, 0, e);
+        action_wifi_start_scan(e);
     }
 }
 
@@ -63,21 +82,20 @@ void create_screen_main_page() {
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, 800, 480);
             lv_image_set_src(obj, "S:/ui_image_main_page_bg.bin");
-        }
-        {
-            lv_obj_t *obj = lv_button_create(parent_obj);
-            objects.obj0 = obj;
-            lv_obj_set_pos(obj, 350, 390);
-            lv_obj_set_size(obj, 100, 50);
-            lv_obj_add_event_cb(obj, event_handler_cb_main_page_obj0, LV_EVENT_ALL, flowState);
             {
                 lv_obj_t *parent_obj = obj;
                 {
-                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    lv_obj_t *obj = lv_obj_create(parent_obj);
+                    objects.obj0 = obj;
                     lv_obj_set_pos(obj, 0, 0);
-                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-                    lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text_static(obj, "Button");
+                    lv_obj_set_size(obj, 800, 480);
+                    lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    create_user_widget_wifi_btn(obj, getFlowState(flowState, 2), 2);
                 }
             }
         }
@@ -89,63 +107,121 @@ void create_screen_main_page() {
 void tick_screen_main_page() {
     void *flowState = getFlowState(0, 0);
     (void)flowState;
+    tick_user_widget_wifi_btn(getFlowState(flowState, 2), 2);
 }
 
-void create_screen_sub_page2() {
-    void *flowState = getFlowState(0, 1);
+void create_user_widget_wifi_btn(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex) {
     (void)flowState;
-    lv_obj_t *obj = lv_obj_create(0);
-    objects.sub_page2 = obj;
-    lv_obj_set_pos(obj, 0, 0);
-    lv_obj_set_size(obj, 800, 480);
+    (void)startWidgetIndex;
+    lv_obj_t *obj = parent_obj;
     {
         lv_obj_t *parent_obj = obj;
         {
-            lv_obj_t *obj = lv_arc_create(parent_obj);
-            lv_obj_set_pos(obj, 325, 196);
-            lv_obj_set_size(obj, 150, 150);
-            lv_arc_set_value(obj, 25);
-        }
-        {
-            lv_obj_t *obj = lv_button_create(parent_obj);
-            objects.obj1 = obj;
-            lv_obj_set_pos(obj, 350, 390);
-            lv_obj_set_size(obj, 100, 50);
-            lv_obj_add_event_cb(obj, event_handler_cb_sub_page2_obj1, LV_EVENT_ALL, flowState);
+            // wifi_list_panel
+            lv_obj_t *obj = lv_obj_create(parent_obj);
+            ((lv_obj_t **)&objects)[startWidgetIndex + 0] = obj;
+            lv_obj_set_pos(obj, 150, -480);
+            lv_obj_set_size(obj, 500, 480);
+            lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xeae9e7), LV_PART_MAIN | LV_STATE_DEFAULT);
             {
                 lv_obj_t *parent_obj = obj;
                 {
-                    lv_obj_t *obj = lv_label_create(parent_obj);
-                    lv_obj_set_pos(obj, 0, 0);
-                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-                    lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text_static(obj, "Button");
+                    // wifi_refresh_btn
+                    lv_obj_t *obj = lv_button_create(parent_obj);
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 1] = obj;
+                    lv_obj_set_pos(obj, 11, 389);
+                    lv_obj_set_size(obj, 70, 40);
+                    lv_obj_add_event_cb(obj, event_handler_cb_wifi_btn_wifi_refresh_btn, LV_EVENT_ALL, flowState);
+                    add_style_user_btn(obj);
+                    lv_obj_set_style_bg_image_src(obj, "S:/ui_image_common_refresh.bin", LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_layout(obj, LV_LAYOUT_FLEX, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // wifi_cancel_btn
+                    lv_obj_t *obj = lv_button_create(parent_obj);
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 2] = obj;
+                    lv_obj_set_pos(obj, 376, 389);
+                    lv_obj_set_size(obj, 70, 40);
+                    lv_obj_add_event_cb(obj, event_handler_cb_wifi_btn_wifi_cancel_btn, LV_EVENT_ALL, flowState);
+                    add_style_user_btn(obj);
+                    lv_obj_set_style_bg_image_src(obj, "S:/ui_image_common_cancel.bin", LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // wifi_list
+                    lv_obj_t *obj = lv_list_create(parent_obj);
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 3] = obj;
+                    lv_obj_set_pos(obj, -22, -22);
+                    lv_obj_set_size(obj, 500, 392);
+                    lv_obj_set_style_bg_color(obj, lv_color_hex(0xd5d3d3), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_layout(obj, LV_LAYOUT_FLEX, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_flex_main_place(obj, LV_FLEX_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_flex_track_place(obj, LV_FLEX_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_flex_cross_place(obj, LV_FLEX_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    {
+                        lv_obj_t *parent_obj = obj;
+                        {
+                            // wifi_loader
+                            lv_obj_t *obj = lv_spinner_create(parent_obj);
+                            ((lv_obj_t **)&objects)[startWidgetIndex + 4] = obj;
+                            lv_obj_set_pos(obj, 0, 0);
+                            lv_obj_set_size(obj, 80, 80);
+                            lv_obj_set_style_arc_color(obj, lv_color_hex(0x69727a), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+                        }
+                        {
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            lv_obj_set_pos(obj, 158, 930);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text_static(obj, "");
+                        }
+                    }
                 }
             }
         }
+        {
+            // wifi_btn
+            lv_obj_t *obj = lv_button_create(parent_obj);
+            ((lv_obj_t **)&objects)[startWidgetIndex + 5] = obj;
+            lv_obj_set_pos(obj, 730, 0);
+            lv_obj_set_size(obj, 70, 40);
+            lv_obj_add_event_cb(obj, event_handler_cb_wifi_btn_wifi_btn, LV_EVENT_ALL, flowState);
+            add_style_user_btn(obj);
+            lv_obj_set_style_bg_image_src(obj, "S:/ui_image_wifi_icon.bin", LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_layout(obj, LV_LAYOUT_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_flex_main_place(obj, LV_FLEX_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_flex_cross_place(obj, LV_FLEX_ALIGN_START, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_flex_track_place(obj, LV_FLEX_ALIGN_START, LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
     }
-    
-    tick_screen_sub_page2();
 }
 
-void tick_screen_sub_page2() {
-    void *flowState = getFlowState(0, 1);
+void tick_user_widget_wifi_btn(void *flowState, int startWidgetIndex) {
     (void)flowState;
+    (void)startWidgetIndex;
 }
 
 typedef void (*tick_screen_func_t)();
 tick_screen_func_t tick_screen_funcs[] = {
     tick_screen_main_page,
-    tick_screen_sub_page2,
 };
 void tick_screen(int screen_index) {
-    if (screen_index >= 0 && screen_index < 2) {
+    if (screen_index >= 0 && screen_index < 1) {
         tick_screen_funcs[screen_index]();
     }
 }
 void tick_screen_by_id(enum ScreensEnum screenId) {
     tick_screen(screenId - 1);
 }
+
+//
+// Styles
+//
+
+static const char *style_names[] = { "user_btn", "wifi_loadder", "wifi_scan_result" };
+
+extern void add_style(lv_obj_t *obj, int32_t styleIndex);
+extern void remove_style(lv_obj_t *obj, int32_t styleIndex);
 
 //
 // Fonts
@@ -222,8 +298,11 @@ ext_font_desc_t fonts[] = {
 //
 
 void create_screens() {
-    
-    eez_flow_init_fonts(fonts, sizeof(fonts) / sizeof(ext_font_desc_t));
+    // Initialize styles
+    eez_flow_init_styles(add_style, remove_style);
+    eez_flow_init_style_names(style_names, sizeof(style_names) / sizeof(const char *));
+
+eez_flow_init_fonts(fonts, sizeof(fonts) / sizeof(ext_font_desc_t));
 
 // Set default LVGL theme
     lv_display_t *dispp = lv_display_get_default();
@@ -236,5 +315,4 @@ void create_screens() {
     
     // Create screens
     create_screen_main_page();
-    create_screen_sub_page2();
 }

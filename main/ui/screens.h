@@ -12,16 +12,19 @@ extern "C" {
 enum ScreensEnum {
     _SCREEN_ID_FIRST = 1,
     SCREEN_ID_MAIN_PAGE = 1,
-    SCREEN_ID_SUB_PAGE2 = 2,
-    _SCREEN_ID_LAST = 2
+    _SCREEN_ID_LAST = 1
 };
 
 typedef struct _objects_t {
     lv_obj_t *main_page;
-    lv_obj_t *sub_page2;
-    lv_obj_t *main_page_bg;
     lv_obj_t *obj0;
-    lv_obj_t *obj1;
+    lv_obj_t *obj0__wifi_list_panel;
+    lv_obj_t *obj0__wifi_refresh_btn;
+    lv_obj_t *obj0__wifi_cancel_btn;
+    lv_obj_t *obj0__wifi_list;
+    lv_obj_t *obj0__wifi_loader;
+    lv_obj_t *obj0__wifi_btn;
+    lv_obj_t *main_page_bg;
 } objects_t;
 
 extern objects_t objects;
@@ -29,8 +32,8 @@ extern objects_t objects;
 void create_screen_main_page();
 void tick_screen_main_page();
 
-void create_screen_sub_page2();
-void tick_screen_sub_page2();
+void create_user_widget_wifi_btn(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
+void tick_user_widget_wifi_btn(void *flowState, int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);
