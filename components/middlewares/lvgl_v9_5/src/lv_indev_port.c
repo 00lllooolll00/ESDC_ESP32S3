@@ -1,5 +1,4 @@
 #include "lv_indev_port.h"
-#include "ek_ringbuf.h"
 
 FILE_TAG("lv_indev_port.c");
 
@@ -44,7 +43,7 @@ static void _lv_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data);
 
 static plat_touch_dev_t *s_touch_dev;
 static uint8_t s_touch_count;
-static ek_ringbuf_spsc_t **s_touch_rb_spsc;
+static bool *s_touch_datas_flag;
 static lv_indev_t **s_touchs;
 
 void lv_port_touch_init(plat_touch_dev_t *dev, uint8_t count)
@@ -52,17 +51,11 @@ void lv_port_touch_init(plat_touch_dev_t *dev, uint8_t count)
     assert(dev);
     assert(count > 0);
 
-    s_touch_rb_spsc = calloc((sizeof(*s_touch_rb_spsc)), count);
-    assert(s_touch_rb_spsc);
-
-    for (uint8_t i = 0; i < count; i++)
-    {
-        s_touch_rb_spsc[i] = ek_ringbuf_create_spsc(sizeof(plat_touch_data_t), 5);
-        assert(s_touch_rb_spsc[i]);
-    }
-
+    s_touch_datas_flag = calloc((sizeof(*s_touch_datas_flag)), count);
+    assert(s_touch_datas_flag);
     s_touchs = calloc(sizeof(*s_touchs), count);
     assert(s_touchs);
+
     for (uint8_t i = 0; i < count; i++)
     {
         s_touchs[i] = lv_indev_create();
@@ -94,8 +87,7 @@ static void _plat_touch_isr_cb(void)
 
         if (temp.x <= 0 && temp.y <= 0) continue;
         if (temp.x > lv_obj_get_width(lv_screen_active()) || temp.y > lv_obj_get_height(lv_screen_active())) continue;
-
-        ek_ringbuf_write_spsc(s_touch_rb_spsc[i], &temp);
+        s_touch_datas_flag[i] = true;
     }
 }
 
@@ -103,13 +95,12 @@ static void _lv_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data)
 {
     uint8_t idx = (uint8_t)(uintptr_t)lv_indev_get_user_data(indev);
 
-    if (!ek_ringbuf_empty_spsc(s_touch_rb_spsc[idx]))
+    if (s_touch_datas_flag[idx])
     {
-        plat_touch_data_t temp = { 0 };
-        ek_ringbuf_read_spsc(s_touch_rb_spsc[idx], &temp);
         data->state = LV_INDEV_STATE_PRESSED;
-        data->point.x = temp.x;
-        data->point.y = temp.y;
+        data->point.x = s_touch_dev->t_data[idx].x;
+        data->point.y = s_touch_dev->t_data[idx].y;
+        s_touch_datas_flag[idx] = false;
     }
     else
     {
