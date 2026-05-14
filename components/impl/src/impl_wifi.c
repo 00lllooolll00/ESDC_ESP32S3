@@ -159,8 +159,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             wifi_event_sta_disconnected_t *disconn = (wifi_event_sta_disconnected_t *)event_data;
 
             // 认证失败（密码错误等）不重试，立即通知上层
-            if (disconn->reason == WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT
-                || disconn->reason == WIFI_REASON_AUTH_FAIL)
+            if (disconn->reason == WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT || disconn->reason == WIFI_REASON_AUTH_FAIL)
             {
                 LOG_WARN("wifi auth failed, reason=%d", disconn->reason);
                 if (s_wifi_dev) plat_wifi_notify_state(s_wifi_dev, PLAT_WIFI_DISCONNECTED);
@@ -173,8 +172,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             }
             else
             {
-                LOG_WARN("wifi connect failed after %d retries, reason=%d",
-                    IMPL_WIFI_MAX_RETRY, disconn->reason);
+                LOG_WARN("wifi connect failed after %d retries, reason=%d", IMPL_WIFI_MAX_RETRY, disconn->reason);
                 if (s_wifi_dev) plat_wifi_notify_state(s_wifi_dev, PLAT_WIFI_DISCONNECTED);
             }
         }
