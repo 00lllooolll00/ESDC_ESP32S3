@@ -16,10 +16,15 @@ void remove_style_user_btn(lv_obj_t *obj);
 void add_style_wifi_loadder(lv_obj_t *obj);
 void remove_style_wifi_loadder(lv_obj_t *obj);
 
-// Style: wifi_scan_result
-lv_style_t *get_style_wifi_scan_result_MAIN_DEFAULT();
-void add_style_wifi_scan_result(lv_obj_t *obj);
-void remove_style_wifi_scan_result(lv_obj_t *obj);
+// Style: user_icon_label
+lv_style_t *get_style_user_icon_label_MAIN_DEFAULT();
+void add_style_user_icon_label(lv_obj_t *obj);
+void remove_style_user_icon_label(lv_obj_t *obj);
+
+// Style: user_text_label
+lv_style_t *get_style_user_text_label_MAIN_DEFAULT();
+void add_style_user_text_label(lv_obj_t *obj);
+void remove_style_user_text_label(lv_obj_t *obj);
 
 #ifdef __cplusplus
 }

@@ -4,6 +4,7 @@
 #include "esp_event.h"
 #include "esp_mac.h"
 #include "esp_netif.h"
+#include "freertos/semphr.h"
 
 FILE_TAG("impl_wifi");
 
@@ -37,6 +38,8 @@ static const plat_wifi_ops_t s_wifi_ops = {
 
 static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static uint8_t s_retry_count;
+static bool s_wifi_started;
+static SemaphoreHandle_t s_wifi_start_sem;
 
 int impl_wifi_register(plat_wifi_dev_t *wifi_dev)
 {
@@ -56,7 +59,9 @@ static int _wifi_dev_init(void)
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_start());
+
+    s_wifi_start_sem = xSemaphoreCreateBinary();
+    assert(s_wifi_start_sem);
 
     esp_event_handler_instance_t wifi_instance;
     esp_event_handler_instance_t ip_instance;
@@ -70,6 +75,14 @@ static int _wifi_dev_init(void)
 
 static int _wifi_dev_deinit(void)
 {
+    if (s_wifi_started) {
+        esp_wifi_stop();
+        s_wifi_started = false;
+    }
+    if (s_wifi_start_sem) {
+        vSemaphoreDelete(s_wifi_start_sem);
+        s_wifi_start_sem = NULL;
+    }
     return 0;
 }
 
@@ -83,8 +96,24 @@ static int _wifi_dev_resume(void)
     return 0;
 }
 
+static int _wifi_ensure_started(void)
+{
+    if (s_wifi_started) return 0;
+
+    ESP_ERROR_CHECK(esp_wifi_start());
+    if (xSemaphoreTake(s_wifi_start_sem, pdMS_TO_TICKS(5000)) != pdTRUE) {
+        LOG_ERROR("wifi start timeout");
+        return -1;
+    }
+    s_wifi_started = true;
+    LOG_INFO("wifi started (on-demand)");
+    return 0;
+}
+
 static int _wifi_sta_start(const char *ssid, const char *passwd)
 {
+    if (_wifi_ensure_started() != 0) return -1;
+
     s_retry_count = 0;
 
     wifi_config_t wifi_cfg = { 0 };
@@ -103,18 +132,22 @@ static int _wifi_sta_stop(void)
 {
     ESP_ERROR_CHECK(esp_wifi_disconnect());
     ESP_ERROR_CHECK(esp_wifi_stop());
+    s_wifi_started = false;
+    s_retry_count = IMPL_WIFI_MAX_RETRY;
     return 0;
 }
 
 static int _wifi_scan(plat_wifi_ap_info_t *ap_info, uint16_t max_count)
 {
+    if (_wifi_ensure_started() != 0) return -1;
+
     s_scan_ap_info = ap_info;
     s_scan_max_count = max_count;
 
     esp_err_t err = esp_wifi_scan_start(NULL, false);
     if (err != ESP_OK)
     {
-        LOG_ERROR("wifi scan start failed: %d", err);
+        LOG_ERROR("wifi scan start failed: %s", unified_strerror(err));
         return -1;
     }
     return 0;
@@ -152,7 +185,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
         }
         else if (event_id == WIFI_EVENT_STA_START)
         {
-            esp_wifi_connect();
+            xSemaphoreGive(s_wifi_start_sem);
         }
         else if (event_id == WIFI_EVENT_STA_DISCONNECTED)
         {

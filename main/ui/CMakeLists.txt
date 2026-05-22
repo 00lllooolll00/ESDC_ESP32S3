@@ -3,6 +3,8 @@
 
 set(ui_src_dirs
     ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/actions
+    ${CMAKE_CURRENT_LIST_DIR}/vars
 )
 
 set(ui_include_dirs

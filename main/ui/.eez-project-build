@@ -13,11 +13,7 @@
     "styles.h",
     "ui.c",
     "ui.h",
-    "ui_image_common_cancel.bin",
-    "ui_image_common_confirm.bin",
-    "ui_image_common_refresh.bin",
-    "ui_image_main_page_bg.bin",
-    "ui_image_wifi_icon.bin",
+    "ui_font_chinese_3500_14.bin",
     "vars.h"
   ]
 }

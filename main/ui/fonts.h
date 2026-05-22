@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+extern lv_font_t *ui_font_chinese_3500_14;
+
 #ifndef EXT_FONT_DESC_T
 #define EXT_FONT_DESC_T
 typedef struct _ext_font_desc_t {

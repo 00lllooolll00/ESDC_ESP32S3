@@ -1,12 +1,12 @@
 {
   "navigation": {
     "selectedUserPageObject": "[eez.eez-project]:/userPages/0",
-    "selectedUserWidgetObject": "[eez.eez-project]:/userWidgets/-1",
+    "selectedUserWidgetObject": "[eez.eez-project]:/userWidgets/0",
     "selectedActionObject": "[eez.eez-project]:/actions/0",
-    "selectedStyleObject": "[eez.eez-project]:/lvglStyles/styles/2",
-    "selectedBitmapObject": "[eez.eez-project]:/bitmaps/4",
+    "selectedGlobalVariableObject": "[eez.eez-project]:/variables/globalVariables/0",
+    "selectedStyleObject": "[eez.eez-project]:/lvglStyles/styles/3",
     "subnavigationSelectedItems": {
-      "variables-tab/sub-navigation/selected-item": "Widgets"
+      "variables-tab/sub-navigation/selected-item": "Global"
     }
   },
   "layoutModel": {
@@ -212,7 +212,6 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 35.77153712683117,
-              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -1082,19 +1081,15 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "0": {
-            "0": {
-              "$selected": true
-            }
-          }
+          "0": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -268.6554389609006,
-          "y": -192.26328023489654
+          "x": -304.42686230074435,
+          "y": -198.80258687552154
         },
-        "scale": 0.67
+        "scale": 0.5
       },
       "timeline": {
         "isEditorActive": false,
@@ -1128,18 +1123,16 @@
         "0": {
           "0": {},
           "1": {},
-          "2": {
-            "$selected": true
-          }
+          "2": {}
         },
         "1": {}
       },
       "transform": {
         "translate": {
-          "x": -276.9038538433168,
-          "y": -187.75140323516518
+          "x": -213.83478392612497,
+          "y": -148.78429596641524
         },
-        "scale": 0.67
+        "scale": 0.5
       },
       "timeline": {
         "isEditorActive": false,
@@ -1161,9 +1154,7 @@
     "[eez.eez-project]:/lvglStyles/styles[tree-state]": {
       "0": {},
       "1": {},
-      "2": {
-        "$selected": true
-      },
+      "2": {},
       "3": {
         "$selected": true
       }
@@ -1218,7 +1209,7 @@
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 0.67,
+  "flowZoom": 0.5,
   "implementationLanguage": "C",
   "openDialogDefaultPath": "/home/n1netynine99/WorkSpace/Competition/ESDC/Assets/common/common_refresh.png"
 }

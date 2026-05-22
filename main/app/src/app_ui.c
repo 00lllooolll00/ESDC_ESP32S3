@@ -4,9 +4,12 @@
 static void _app_ui_task(void *arg);
 
 TaskHandle_t g_ui_handle;
+lv_font_t *g_ui_font_chinese_3500_14;
 
 void app_ui_init(void)
 {
+    g_ui_font_chinese_3500_14 = lv_binfont_create("S:/ui_font_chinese_3500_14.bin");
+    assert(g_ui_font_chinese_3500_14);
     ui_init();
     xTaskCreatePinnedToCore(_app_ui_task, "app gui", 10240, NULL, 5, &g_ui_handle, 1);
 }

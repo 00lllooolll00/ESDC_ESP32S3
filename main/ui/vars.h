@@ -18,6 +18,9 @@ enum FlowGlobalVariables {
 
 // Native global variables
 
+extern bool get_var_g_wifi_is_connected();
+extern void set_var_g_wifi_is_connected(bool value);
+
 #ifdef __cplusplus
 }
 #endif

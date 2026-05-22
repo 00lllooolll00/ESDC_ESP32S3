@@ -24,7 +24,10 @@ typedef struct _objects_t {
     lv_obj_t *obj0__wifi_list;
     lv_obj_t *obj0__wifi_loader;
     lv_obj_t *obj0__wifi_btn;
-    lv_obj_t *main_page_bg;
+    lv_obj_t *obj0__wifi_icon;
+    lv_obj_t *obj0__wifi_state;
+    lv_obj_t *obj0__obj0;
+    lv_obj_t *obj0__obj1;
 } objects_t;
 
 extern objects_t objects;
