@@ -26,6 +26,12 @@ lv_style_t *get_style_user_text_label_MAIN_DEFAULT();
 void add_style_user_text_label(lv_obj_t *obj);
 void remove_style_user_text_label(lv_obj_t *obj);
 
+// Style: volume_slider
+lv_style_t *get_style_volume_slider_MAIN_DEFAULT();
+lv_style_t *get_style_volume_slider_KNOB_DEFAULT();
+void add_style_volume_slider(lv_obj_t *obj);
+void remove_style_volume_slider(lv_obj_t *obj);
+
 #ifdef __cplusplus
 }
 #endif

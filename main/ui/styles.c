@@ -113,6 +113,57 @@ void remove_style_user_text_label(lv_obj_t *obj) {
 };
 
 //
+// Style: volume_slider
+//
+
+void init_style_volume_slider_MAIN_DEFAULT(lv_style_t *style) {
+    lv_style_set_text_color(style, lv_color_hex(0x212121));
+    lv_style_set_text_font(style, &lv_font_montserrat_16);
+    lv_style_set_border_color(style, lv_color_hex(0xffffff));
+    lv_style_set_shadow_width(style, 25);
+    lv_style_set_shadow_ofs_x(style, 2);
+    lv_style_set_shadow_ofs_y(style, 5);
+    lv_style_set_shadow_color(style, lv_color_hex(0x000000));
+    lv_style_set_line_color(style, lv_color_hex(0x212121));
+};
+
+lv_style_t *get_style_volume_slider_MAIN_DEFAULT() {
+    static lv_style_t *style;
+    if (!style) {
+        style = (lv_style_t *)lv_malloc(sizeof(lv_style_t));
+        lv_style_init(style);
+        init_style_volume_slider_MAIN_DEFAULT(style);
+    }
+    return style;
+};
+
+void init_style_volume_slider_KNOB_DEFAULT(lv_style_t *style) {
+    lv_style_set_line_color(style, lv_color_lighten(lv_color_hex(0x000000), 0));
+};
+
+lv_style_t *get_style_volume_slider_KNOB_DEFAULT() {
+    static lv_style_t *style;
+    if (!style) {
+        style = (lv_style_t *)lv_malloc(sizeof(lv_style_t));
+        lv_style_init(style);
+        init_style_volume_slider_KNOB_DEFAULT(style);
+    }
+    return style;
+};
+
+void add_style_volume_slider(lv_obj_t *obj) {
+    (void)obj;
+    lv_obj_add_style(obj, get_style_volume_slider_MAIN_DEFAULT(), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_add_style(obj, get_style_volume_slider_KNOB_DEFAULT(), LV_PART_KNOB | LV_STATE_DEFAULT);
+};
+
+void remove_style_volume_slider(lv_obj_t *obj) {
+    (void)obj;
+    lv_obj_remove_style(obj, get_style_volume_slider_MAIN_DEFAULT(), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_remove_style(obj, get_style_volume_slider_KNOB_DEFAULT(), LV_PART_KNOB | LV_STATE_DEFAULT);
+};
+
+//
 //
 //
 
@@ -123,6 +174,7 @@ void add_style(lv_obj_t *obj, int32_t styleIndex) {
         add_style_wifi_loadder,
         add_style_user_icon_label,
         add_style_user_text_label,
+        add_style_volume_slider,
     };
     add_style_funcs[styleIndex](obj);
 }
@@ -134,6 +186,7 @@ void remove_style(lv_obj_t *obj, int32_t styleIndex) {
         remove_style_wifi_loadder,
         remove_style_user_icon_label,
         remove_style_user_text_label,
+        remove_style_volume_slider,
     };
     remove_style_funcs[styleIndex](obj);
 }

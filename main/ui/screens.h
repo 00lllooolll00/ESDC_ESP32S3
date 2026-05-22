@@ -28,6 +28,13 @@ typedef struct _objects_t {
     lv_obj_t *obj0__wifi_state;
     lv_obj_t *obj0__obj0;
     lv_obj_t *obj0__obj1;
+    lv_obj_t *obj1;
+    lv_obj_t *obj1__volume_panel;
+    lv_obj_t *obj1__volume_canel;
+    lv_obj_t *obj1__volume_canel_icon;
+    lv_obj_t *obj1__volume_slider;
+    lv_obj_t *obj1__obj2;
+    lv_obj_t *obj1__volume_icon;
 } objects_t;
 
 extern objects_t objects;
@@ -37,6 +44,9 @@ void tick_screen_main_page();
 
 void create_user_widget_wifi_btn(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_wifi_btn(void *flowState, int startWidgetIndex);
+
+void create_user_widget_volume_slider(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
+void tick_user_widget_volume_slider(void *flowState, int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);

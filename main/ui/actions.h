@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 extern void action_wifi_start_scan(lv_event_t * e);
+extern void action_volume_change(lv_event_t * e);
 
 #ifdef __cplusplus
 }

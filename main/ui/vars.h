@@ -20,6 +20,8 @@ enum FlowGlobalVariables {
 
 extern bool get_var_g_wifi_is_connected();
 extern void set_var_g_wifi_is_connected(bool value);
+extern int32_t get_var_g_volume();
+extern void set_var_g_volume(int32_t value);
 
 #ifdef __cplusplus
 }
