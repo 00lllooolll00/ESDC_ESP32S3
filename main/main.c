@@ -18,6 +18,7 @@
 #include "impl_led.h"
 #include "impl_key.h"
 #include "impl_exio.h"
+#include "impl_tts.h"
 #include "impl_wifi.h"
 
 FILE_TAG("main.c");
@@ -29,6 +30,7 @@ plat_key_dev_t g_key_dev;
 plat_led_dev_t g_led_dev;
 plat_touch_dev_t g_touch_dev;
 plat_wifi_dev_t g_wifi_dev;
+plat_tts_dev_t g_tts_dev;
 
 void app_main(void)
 {
@@ -64,6 +66,8 @@ void app_main(void)
     impl_rgblcd_register(&g_lcd_dev);
     impl_touch_register(&g_touch_dev, 5);
     impl_wifi_register(&g_wifi_dev);
+    impl_tts_register(&g_tts_dev);
+    plat_tts_dev_enable_amp(&g_tts_dev, 0);  /* 显式关闭功放（TTS 暂停时也静音，避免残留使能放大底噪）*/
 
     plat_led_dev_init(&g_led_dev);
     plat_key_dev_init(&g_key_dev);

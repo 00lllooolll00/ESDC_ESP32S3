@@ -51,14 +51,14 @@ int bsp_audio_init(void)
     else
     {
         LOG_INFO("successfully init the audio");
+        bsp_audio_adda_cfg(1, 0);    /* 开启DAC，关闭ADC（仅需播放）*/
+        bsp_audio_input_cfg(0);     /* 关闭录音输入 */
+        bsp_audio_output_cfg(1, 1); /* 开启输出通道1、2 */
+        bsp_audio_hpvol_set(24);    /* 耳机音量（中等，0~33）*/
+        bsp_audio_spkvol_set(24);   /* 喇叭音量（中等，0~33）*/
         vTaskDelay(pdMS_TO_TICKS(100));
         return 0;
     }
-    bsp_audio_adda_cfg(0, 0); /* 开启DAC关闭ADC */
-    bsp_audio_input_cfg(0); /* 关闭录音输入 */
-    bsp_audio_output_cfg(0, 0); /* DAC选择通道输出 */
-    bsp_audio_hpvol_set(0); /* 设置耳机音量 */
-    bsp_audio_spkvol_set(0); /* 设置喇叭音量 */
 }
 
 /**

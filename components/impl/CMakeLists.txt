@@ -16,6 +16,7 @@ set(requires
         esp_wifi
         esp_netif
         mqtt
+        esp-sr
 )
 
 idf_component_register(

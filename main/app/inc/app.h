@@ -7,5 +7,6 @@
 #include "app_led.h"
 #include "app_ui.h"
 #include "app_wifi.h"
+#include "app_tts.h"
 
 #endif // APP_H

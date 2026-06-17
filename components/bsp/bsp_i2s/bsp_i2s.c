@@ -100,6 +100,7 @@ void bsp_i2s_set_samplerate_bits_sample(int samplerate, int bits_sample)
     ESP_ERROR_CHECK(i2s_channel_reconfig_std_slot(s_bsp_tx_handle, &s_cfg.slot_cfg));
     s_cfg.clk_cfg.sample_rate_hz = samplerate; /* 设置采样率 */
     ESP_ERROR_CHECK(i2s_channel_reconfig_std_clock(s_bsp_tx_handle, &s_cfg.clk_cfg));
+    bsp_i2s_trx_start();
 }
 
 /**

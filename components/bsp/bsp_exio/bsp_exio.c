@@ -41,7 +41,6 @@ void bsp_exio_init(void)
 
     ESP_ERROR_CHECK(bsp_exio_read(&temp));
 
-    // bsp_exio_set_directoin(BSP_EXIO_DEFAULT_CONFIG);
 
     LOG_INFO("bsp exio init ok");
 }
