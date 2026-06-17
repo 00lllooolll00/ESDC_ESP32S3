@@ -6,3 +6,6 @@ build
 managed_components
 .clangd
 .envrc
+.agents
+.auto-embedded
+.codegraph
