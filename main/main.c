@@ -67,7 +67,7 @@ void app_main(void)
     impl_touch_register(&g_touch_dev, 5);
     impl_wifi_register(&g_wifi_dev);
     impl_tts_register(&g_tts_dev);
-    plat_tts_dev_enable_amp(&g_tts_dev, 0);  /* 显式关闭功放（TTS 暂停时也静音，避免残留使能放大底噪）*/
+    plat_tts_dev_enable_amp(&g_tts_dev, 0); // 显式关闭功放（TTS 暂停时也静音，避免残留使能放大底噪）
 
     plat_led_dev_init(&g_led_dev);
     plat_key_dev_init(&g_key_dev);

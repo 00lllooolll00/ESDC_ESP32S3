@@ -49,6 +49,18 @@
 - C 文件通常先引入 `common_header.h`，再用 `FILE_TAG("...")` 声明日志标签；统一使用 `LOG_DEBUG/INFO/WARN/ERROR`。
 - 错误处理遵循就近模式：`ESP_ERROR_CHECK`、`assert()`、以及少量 `0 / -1` 返回约定并存；扩展时优先复用相邻文件风格，不要自造第四种约定。
 - 命名有明显层前缀：`app_*`、`plat_*`、`impl_*`、`bsp_*`。变量常见前缀：全局 `g_`、静态 `s_`、内部 helper `_name`。
+- **注释规范**：
+  - 函数/语句注释统一使用 `// ...`，不要使用 `/* ... */`。
+  - 注释写在代码上方，不要写在行尾。正确写法是多行注释逐行 `//`，最后跟代码：
+    ```
+    // 第一句注释
+    // 第二句注释
+    // 第三句注释
+    // ...
+    func();
+    ```
+    而不是 `func(); // ...`。
+  - 只在确有必要说明的一段加注释，不要给每一句代码都加注释。
 - 平台设备要走 `plat_dev_register()` / `plat_*_dev_init()` 生命周期，并尊重 `PLAT_DEV_LOCK` / `PLAT_DEV_UNLOCK` 状态与锁语义。
 - `main/app/src/app_*.c` 偏向“一功能一任务”；跨线程触碰 LVGL 时必须像 `main/app/src/app_wifi.c` 那样包 `lv_lock()` / `lv_unlock()`。
 - UI 原生变量遵循 `get_var_g_*` / `set_var_g_*` 命名，见 `main/ui/vars/wifi_vars.c`、`main/ui/vars/volume_vars.c`。
