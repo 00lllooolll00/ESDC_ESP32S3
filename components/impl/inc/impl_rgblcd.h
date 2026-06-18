@@ -8,7 +8,8 @@ extern "C"
 
 #include "plat_lcd.h"
 
-int impl_rgblcd_register(plat_lcd_dev_t *lcd_dev);
+// 获取 RGB LCD 设备指针（设备实例私有于 impl_rgblcd.c）
+plat_lcd_dev_t *impl_rgblcd_dev(void);
 
 #ifdef __cplusplus
 }

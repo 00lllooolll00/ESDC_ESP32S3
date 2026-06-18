@@ -1,11 +1,10 @@
 #include "app_tts.h"
 #include "plat_tts.h"
+#include "impl_tts.h"
 
 #include <string.h>
 
 FILE_TAG("app_tts.c");
-
-extern plat_tts_dev_t g_tts_dev;
 
 #define APP_TTS_QUEUE_LEN  4
 #define APP_TTS_STACK_SIZE 8192
@@ -22,6 +21,8 @@ static void _app_tts_task(void *arg);
 static QueueHandle_t s_tts_queue = NULL;
 static TaskHandle_t s_tts_handle = NULL;
 
+// 注：app_tts_init 当前未注册到 EK_EXPORT（保持不启动，省 esp-sr 资源）。
+// 需要时在此处加 EK_EXPORT_APP(app_tts_init, 3) 即可启用。
 void app_tts_init(void)
 {
     s_tts_queue = xQueueCreate(APP_TTS_QUEUE_LEN, sizeof(tts_msg_t));
@@ -43,7 +44,7 @@ void app_tts_say(const char *text)
 static void _app_tts_task(void *arg)
 {
     /* 初始化 TTS（音频链 + voice 加载 + esp_tts 实例）—— 耗时操作放 task 内不阻塞启动序列 */
-    int ret = plat_tts_dev_init(&g_tts_dev);
+    int ret = plat_tts_dev_init(impl_tts_dev());
     if (ret != 0)
     {
         LOG_ERROR("plat_tts_dev_init failed: %d", ret);
@@ -57,7 +58,7 @@ static void _app_tts_task(void *arg)
     {
         if (xQueueReceive(s_tts_queue, &msg, portMAX_DELAY) == pdTRUE)
         {
-            plat_tts_dev_speak(&g_tts_dev, msg.text);
+            plat_tts_dev_speak(impl_tts_dev(), msg.text);
         }
     }
 }

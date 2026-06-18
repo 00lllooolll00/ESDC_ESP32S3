@@ -1,5 +1,8 @@
 #include "impl_touch.h"
 #include "bsp_touch.h"
+#include "ek_export.h"
+
+FILE_TAG("impl_touch.c");
 
 static int _touch_dev_init(void);
 static int _touch_dev_deinit(void);
@@ -29,13 +32,22 @@ static const plat_touch_ops_t s_touch_ops = {
 
 static bsp_touch_points_t s_tps;
 
-int impl_touch_register(plat_touch_dev_t *dev, uint8_t count)
-{
-    assert(dev);
-    plat_touch_dev_register(dev, "touch", &s_touch_base_ops, &s_touch_ops, count, NULL);
+// 设备实例私有于本文件，通过 impl_touch_dev() 访问
+static plat_touch_dev_t s_touch_dev;
 
-    return 0;
+plat_touch_dev_t *impl_touch_dev(void)
+{
+    return &s_touch_dev;
 }
+
+// 设备注册：无参，count 取 IMPL_TOUCH_POINT_MAX，供 EK_EXPORT_COMPONENTS 自动调用
+static void impl_touch_register(void)
+{
+    LOG_INFO("ek_export: COMPONENTS impl_touch_register");
+    plat_touch_dev_register(&s_touch_dev, "touch", &s_touch_base_ops, &s_touch_ops, IMPL_TOUCH_POINT_MAX, NULL);
+}
+
+EK_EXPORT_COMPONENTS(impl_touch_register, 0);
 
 static int _touch_dev_init(void)
 {

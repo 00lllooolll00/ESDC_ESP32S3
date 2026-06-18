@@ -13,14 +13,15 @@ set(requires
         common
         platform
         bsp
+        middlewares
         esp_wifi
         esp_netif
         mqtt
         esp-sr
 )
-
 idf_component_register(
             SRC_DIRS ${src_dirs}
             INCLUDE_DIRS ${include_dirs}
             REQUIRES ${requires}
+            WHOLE_ARCHIVE
 )

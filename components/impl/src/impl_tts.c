@@ -6,6 +6,7 @@
 
 #include "esp_tts.h"
 #include "esp_tts_voice_template.h"
+#include "ek_export.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -32,6 +33,23 @@ static const plat_tts_ops_t s_tts_ops = {
     .enable_amp = _tts_enable_amp,
 };
 
+// 设备实例私有于本文件，通过 impl_tts_dev() 访问
+static plat_tts_dev_t s_tts_dev;
+
+plat_tts_dev_t *impl_tts_dev(void)
+{
+    return &s_tts_dev;
+}
+
+// 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用
+static void impl_tts_register(void)
+{
+    LOG_INFO("ek_export: COMPONENTS impl_tts_register");
+    plat_tts_dev_register(&s_tts_dev, "tts", &s_tts_base_ops, &s_tts_ops, NULL);
+}
+
+EK_EXPORT_COMPONENTS(impl_tts_register, 0);
+
 #define TTS_VOICE_PATH  "/vfs/esp_tts_voice_data_xiaole.dat"
 #define TTS_SAMPLE_RATE 16000
 #define TTS_BIT_WIDTH   16
@@ -40,12 +58,6 @@ static const plat_tts_ops_t s_tts_ops = {
 static esp_tts_handle_t s_tts_handle = NULL;
 static esp_tts_voice_t *s_voice = NULL;
 static uint16_t *s_voice_data = NULL;
-
-int impl_tts_register(plat_tts_dev_t *tts_dev)
-{
-    plat_tts_dev_register(tts_dev, "tts", &s_tts_base_ops, &s_tts_ops, NULL);
-    return 0;
-}
 
 static int _tts_dev_init(void)
 {

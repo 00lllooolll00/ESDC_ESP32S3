@@ -8,7 +8,8 @@ extern "C"
 
 #include "plat_key.h"
 
-int impl_key_register(plat_key_dev_t *key_dev);
+// 获取按键设备指针（设备实例私有于 impl_key.c）
+plat_key_dev_t *impl_key_dev(void);
 
 #ifdef __cplusplus
 }

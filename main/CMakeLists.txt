@@ -22,6 +22,7 @@ set(all_include_dirs
 idf_component_register(
     SRC_DIRS ${all_src_dirs}
     INCLUDE_DIRS ${all_include_dirs}
+    WHOLE_ARCHIVE
 )
 
 # 将 ui/ 下的 .bin 文件打包到 vfs FAT 分区

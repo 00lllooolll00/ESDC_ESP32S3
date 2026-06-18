@@ -8,7 +8,8 @@ extern "C"
 
 #include "plat_wifi.h"
 
-int impl_wifi_register(plat_wifi_dev_t *wifi_dev);
+// 获取 WiFi 设备指针（设备实例私有于 impl_wifi.c）
+plat_wifi_dev_t *impl_wifi_dev(void);
 
 #ifdef __cplusplus
 }

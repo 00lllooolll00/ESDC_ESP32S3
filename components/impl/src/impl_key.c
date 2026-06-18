@@ -1,5 +1,8 @@
 #include "impl_key.h"
 #include "bsp_key.h"
+#include "ek_export.h"
+
+FILE_TAG("impl_key.c");
 
 static int _key_dev_init(void);
 static int _key_dev_deinit(void);
@@ -25,11 +28,25 @@ static const plat_key_ops_t s_key_ops = {
     .register_int_cb = _key_register_int_cb,
 };
 
-int impl_key_register(plat_key_dev_t *key_dev)
+// 设备实例私有于本文件，通过 impl_key_dev() 访问
+static plat_key_dev_t s_key_dev;
+
+plat_key_dev_t *impl_key_dev(void)
 {
-    plat_key_dev_register(key_dev, "key", &s_key_base_ops, &s_key_ops, NULL);
-    return 0;
+    return &s_key_dev;
 }
+
+// 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用
+static void impl_key_register(void)
+{
+    LOG_INFO("ek_export: COMPONENTS impl_key_register");
+    plat_key_dev_register(&s_key_dev, "key", &s_key_base_ops, &s_key_ops, NULL);
+}
+
+EK_EXPORT_COMPONENTS(impl_key_register, 0);
+// 设备 init：建锁 + bsp 初始化，依赖 register 完成
+static void _auto_key_dev_init(void) { LOG_INFO("ek_export: COMPONENTS _auto_key_dev_init"); (void)plat_key_dev_init(&s_key_dev); }
+EK_EXPORT_COMPONENTS(_auto_key_dev_init, 1);
 
 static int _key_dev_init(void)
 {

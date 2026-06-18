@@ -1,4 +1,5 @@
 #include "app_console.h"
+#include "ek_export.h"
 #include "app_weather.h"
 #include "esp_console.h"
 #include "esp_log.h"
@@ -136,6 +137,7 @@ static void _console_task(void *arg)
 
 void app_console_init(void)
 {
+    LOG_INFO("ek_export: APP app_console_init");
 #if APP_DEBUG_CONSOLE
     esp_console_config_t console_cfg = ESP_CONSOLE_CONFIG_DEFAULT();
     esp_err_t ret = esp_console_init(&console_cfg);
@@ -177,3 +179,5 @@ void app_console_init(void)
     LOG_INFO("console ready, type 'help' for commands");
 #endif // APP_DEBUG_CONSOLE
 }
+
+EK_EXPORT_APP(app_console_init, 6);

@@ -5,12 +5,21 @@
 #include "esp_mac.h"
 #include "esp_netif.h"
 #include "freertos/semphr.h"
+#include "ek_export.h"
 
 FILE_TAG("impl_wifi");
 
 #define IMPL_WIFI_MAX_RETRY 5
 
-static plat_wifi_dev_t *s_wifi_dev;
+// 设备实例私有于本文件，通过 impl_wifi_dev() 访问
+static plat_wifi_dev_t s_wifi_dev;
+
+plat_wifi_dev_t *impl_wifi_dev(void)
+{
+    return &s_wifi_dev;
+}
+
+
 static plat_wifi_ap_info_t *s_scan_ap_info;
 static uint16_t s_scan_max_count;
 
@@ -36,17 +45,18 @@ static const plat_wifi_ops_t s_wifi_ops = {
     .scan = _wifi_scan,
 };
 
+// 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用（须在 s_wifi_*_ops 定义之后）
+static void impl_wifi_register(void)
+{
+    LOG_INFO("ek_export: COMPONENTS impl_wifi_register");
+    plat_wifi_dev_register(&s_wifi_dev, "wifi", &s_wifi_base_ops, &s_wifi_ops, NULL);
+}
+
+EK_EXPORT_COMPONENTS(impl_wifi_register, 0);
 static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static uint8_t s_retry_count;
 static bool s_wifi_started;
 static SemaphoreHandle_t s_wifi_start_sem;
-
-int impl_wifi_register(plat_wifi_dev_t *wifi_dev)
-{
-    plat_wifi_dev_register(wifi_dev, "wifi", &s_wifi_base_ops, &s_wifi_ops, NULL);
-    s_wifi_dev = wifi_dev;
-    return 0;
-}
 
 static int _wifi_dev_init(void)
 {
@@ -181,7 +191,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             free(records);
 
             int result_count = (err == ESP_OK) ? ((rec_count < ap_number) ? rec_count : ap_number) : -1;
-            if (s_wifi_dev) plat_wifi_notify_scan_result(s_wifi_dev, result_count, s_scan_ap_info);
+            plat_wifi_notify_scan_result(&s_wifi_dev, result_count, s_scan_ap_info);
         }
         else if (event_id == WIFI_EVENT_STA_START)
         {
@@ -195,7 +205,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             if (disconn->reason == WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT || disconn->reason == WIFI_REASON_AUTH_FAIL)
             {
                 LOG_WARN("wifi auth failed, reason=%d", disconn->reason);
-                if (s_wifi_dev) plat_wifi_notify_state(s_wifi_dev, PLAT_WIFI_DISCONNECTED);
+                plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_DISCONNECTED);
             }
             else if (s_retry_count < IMPL_WIFI_MAX_RETRY)
             {
@@ -206,7 +216,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             else
             {
                 LOG_WARN("wifi connect failed after %d retries, reason=%d", IMPL_WIFI_MAX_RETRY, disconn->reason);
-                if (s_wifi_dev) plat_wifi_notify_state(s_wifi_dev, PLAT_WIFI_DISCONNECTED);
+                plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_DISCONNECTED);
             }
         }
     }
@@ -217,7 +227,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
             LOG_INFO("wifi got ip: " IPSTR, IP2STR(&event->ip_info.ip));
             s_retry_count = 0;
-            if (s_wifi_dev) plat_wifi_notify_state(s_wifi_dev, PLAT_WIFI_CONNECTED);
+            plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_CONNECTED);
         }
     }
 }

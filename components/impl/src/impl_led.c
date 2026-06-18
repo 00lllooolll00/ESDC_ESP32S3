@@ -1,5 +1,8 @@
 #include "impl_led.h"
 #include "bsp_led.h"
+#include "ek_export.h"
+
+FILE_TAG("impl_led.c");
 
 static int _led_dev_init(void);
 static int _led_dev_deinit(void);
@@ -21,11 +24,25 @@ static const plat_led_ops_t s_led_ops = {
     .toggle = _led_toggle,
 };
 
-int impl_led_register(plat_led_dev_t *led_dev)
+// 设备实例私有于本文件，通过 impl_led_dev() 访问
+static plat_led_dev_t s_led_dev;
+
+plat_led_dev_t *impl_led_dev(void)
 {
-    plat_led_dev_register(led_dev, "led", &s_led_base_ops, &s_led_ops, NULL);
-    return 0;
+    return &s_led_dev;
 }
+
+// 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用
+static void impl_led_register(void)
+{
+    LOG_INFO("ek_export: COMPONENTS impl_led_register");
+    plat_led_dev_register(&s_led_dev, "led", &s_led_base_ops, &s_led_ops, NULL);
+}
+
+EK_EXPORT_COMPONENTS(impl_led_register, 0);
+// 设备 init：建锁 + bsp 初始化，依赖 register 完成
+static void _auto_led_dev_init(void) { LOG_INFO("ek_export: COMPONENTS _auto_led_dev_init"); (void)plat_led_dev_init(&s_led_dev); }
+EK_EXPORT_COMPONENTS(_auto_led_dev_init, 1);
 
 static int _led_dev_init(void)
 {

@@ -19,8 +19,8 @@ extern "C"
 #define EKCFG_IO_LWPRTF (0)
 
 // 核心服务开关
-// EKCFG_EXPORT: 对应 bak EK_EXPORT_ENABLE=0
-#define EKCFG_EXPORT (0)
+// EKCFG_EXPORT: 对应 bak EK_EXPORT_ENABLE=1
+#define EKCFG_EXPORT (1)
 
 // EKCFG_ASSERT: 必须为 1（bak EK_ASSERT_ENABLE=0）
 // 新版 ek_assert.h 无 #else 回退，RINGBUF 编译需要 ek_assert_param 有定义

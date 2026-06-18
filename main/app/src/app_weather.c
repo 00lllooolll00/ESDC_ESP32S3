@@ -1,5 +1,7 @@
 #include "app_weather.h"
+#include "ek_export.h"
 #include "lvgl.h"
+
 #include "cJSON.h"
 #include <string.h>
 
@@ -12,6 +14,7 @@ static void *s_ui_cb_arg;
 
 void app_weather_init(void)
 {
+    LOG_INFO("ek_export: APP app_weather_init");
     s_mutex = xSemaphoreCreateMutex();
     assert(s_mutex);
     s_forecast.count = 0;
@@ -19,6 +22,7 @@ void app_weather_init(void)
     s_ui_cb_arg = NULL;
 }
 
+EK_EXPORT_APP(app_weather_init, 2);
 void app_weather_set_forecast(const int16_t *temps, int count)
 {
     if (!s_mutex || !temps || count <= 0)

@@ -1,39 +1,20 @@
 // esp-idf
 #include "nvs_flash.h"
-#include "esp_timer.h"
 #include "esp_vfs_fat.h"
 #include "esp_pm.h"
 
-// app
-#include "app.h"
+// common（FILE_TAG / LOG_* / unified_strerror）
+#include "common_header.h"
 
-// lvgl
-#include "lvgl.h"
-#include "lv_disp_port.h"
-#include "lv_indev_port.h"
 
-// impl
-#include "impl_rgblcd.h"
-#include "impl_touch.h"
-#include "impl_wifi.h"
-#include "impl_led.h"
-#include "impl_key.h"
-#include "impl_exio.h"
-#include "impl_tts.h"
-#include "impl_mqtt.h"
+// ek_utils 自动初始化
+#include "ek_export.h"
 
 FILE_TAG("main.c");
 
-static uint32_t _lv_port_tick_get_cb(void);
-
-plat_lcd_dev_t g_lcd_dev;
-plat_key_dev_t g_key_dev;
-plat_led_dev_t g_led_dev;
-plat_touch_dev_t g_touch_dev;
-plat_wifi_dev_t g_wifi_dev;
-plat_tts_dev_t g_tts_dev;
-plat_mqtt_dev_t g_mqtt_dev;
-
+// 启动总线：仅保留 NVS / VFS / PM 这三项必须在自动初始化前完成的基础设施，
+// 其余所有外设注册、设备 init、LVGL 端口、应用任务均由各模块自行 EK_EXPORT_*
+// 注册，ek_export_init() 按 level→order 自动调度。main.c 不感知任何具体设备。
 void app_main(void)
 {
     portDISABLE_INTERRUPTS();
@@ -70,36 +51,10 @@ void app_main(void)
         .light_sleep_enable = true,
     };
     ESP_ERROR_CHECK(esp_pm_configure(&pm_config));
-    impl_exio_init();
-    impl_led_register(&g_led_dev);
-    impl_key_register(&g_key_dev);
-    impl_rgblcd_register(&g_lcd_dev);
-    impl_touch_register(&g_touch_dev, 5);
-    impl_wifi_register(&g_wifi_dev);
-    impl_tts_register(&g_tts_dev);
-    impl_mqtt_register(&g_mqtt_dev);
-    plat_tts_dev_enable_amp(&g_tts_dev, 0); // 显式关闭功放（TTS 暂停时也静音，避免残留使能放大底噪）
 
-    plat_led_dev_init(&g_led_dev);
-    plat_key_dev_init(&g_key_dev);
-    // touch 在 lv_port_touch_init 中初始化
-    // rgblcd 在 lv_port_disp_init 中初始化
-
-    lv_init();
-    lv_tick_set_cb(_lv_port_tick_get_cb);
-    lv_port_disp_init(&g_lcd_dev);
-    lv_port_touch_init(&g_touch_dev, 5);
-
-    app_weather_init();
-    app_wifi_init();
-    app_led_init();
-    app_key_intit();
-    app_ui_init();
-    app_mqtt_init();
-    app_console_init();
-}
-
-static uint32_t _lv_port_tick_get_cb(void)
-{
-    return (uint32_t)(esp_timer_get_time() / 1000);
+    // 执行所有 EK_EXPORT_* 注册的初始化函数（按 level→order 排序后逐个调用）
+    // HARDWARE:      impl_exio_init
+    // COMPONENTS:    led/key/rgblcd/touch/wifi/tts register → led/key dev_init
+    // APP:           lv_init+tick → disp/touch port → weather → wifi/led/key → ui → mqtt → console
+    ek_export_init();
 }

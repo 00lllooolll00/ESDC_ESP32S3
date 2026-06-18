@@ -1,0 +1,18 @@
+# ek_export 自动初始化机制链接器段
+# 收集所有 EK_EXPORT_* 宏放入的 .ek_export_fn 输入段到 flash_rodata，
+# 并用 SURROUND(ek_export_fn) 生成边界符号 _ek_export_fn_start / _ek_export_fn_end，
+# 供 ek_export_init() 遍历（与 components/middlewares/ek_utils/src/ek_export.c 的 extern 引用匹配）。
+
+[sections:ek_export_fn]
+entries:
+    .ek_export_fn
+
+[scheme:ek_export_fn_default]
+entries:
+    ek_export_fn -> flash_rodata
+
+[mapping:ek_export_fn]
+archive: *
+entries:
+    * (ek_export_fn_default);
+        ek_export_fn -> flash_rodata KEEP() SURROUND(ek_export_fn)

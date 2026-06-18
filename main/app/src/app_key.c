@@ -1,9 +1,9 @@
 #include "app_key.h"
+#include "impl_key.h"
+#include "ek_export.h"
 #include "plat_key.h"
 
 FILE_TAG("app_key.c");
-
-extern plat_key_dev_t g_key_dev;
 
 static void _app_key_task(void *arg);
 
@@ -11,8 +11,11 @@ TaskHandle_t g_key_handle;
 
 void app_key_intit(void)
 {
+    LOG_INFO("ek_export: APP app_key_intit");
     xTaskCreate(_app_key_task, "app key", 2048, NULL, 2, &g_key_handle);
 }
+
+EK_EXPORT_APP(app_key_intit, 3);
 
 static void _app_key_task(void *arg)
 {
@@ -21,7 +24,7 @@ static void _app_key_task(void *arg)
     while (1)
     {
         plat_key_state_t key_temp;
-        plat_key_dev_read_raw(&g_key_dev, &key_temp);
+        plat_key_dev_read_raw(impl_key_dev(), &key_temp);
         plat_key_state_t key_val = key_temp & (key_old ^ key_temp);
         key_old = key_temp;
 

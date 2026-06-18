@@ -1,7 +1,8 @@
 #include "impl_rgblcd.h"
 #include "bsp_rgblcd.h"
+#include "ek_export.h"
 
-static plat_lcd_dev_t *s_lcd_dev;
+FILE_TAG("impl_rgblcd.c");
 
 static int _lcd_dev_init(void);
 static int _lcd_dev_deinit(void);
@@ -27,16 +28,26 @@ static const plat_lcd_ops_t s_lcd_ops = {
     .display = _lcd_display,
 };
 
-int impl_rgblcd_register(plat_lcd_dev_t *lcd_dev)
+// 设备实例私有于本文件，通过 impl_rgblcd_dev() 访问
+static plat_lcd_dev_t s_lcd_dev;
+
+plat_lcd_dev_t *impl_rgblcd_dev(void)
 {
-    s_lcd_dev = lcd_dev;
-    plat_lcd_dev_register(lcd_dev, "lcd", &s_lcd_base_ops, &s_lcd_ops, BSP_RGBLCD_WIDTH, BSP_RGBLCD_HEIGHT, NULL);
-    return 0;
+    return &s_lcd_dev;
 }
+
+// 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用
+static void impl_rgblcd_register(void)
+{
+    LOG_INFO("ek_export: COMPONENTS impl_rgblcd_register");
+    plat_lcd_dev_register(&s_lcd_dev, "lcd", &s_lcd_base_ops, &s_lcd_ops, BSP_RGBLCD_WIDTH, BSP_RGBLCD_HEIGHT, NULL);
+}
+
+EK_EXPORT_COMPONENTS(impl_rgblcd_register, 0);
 
 static int _lcd_dev_init(void)
 {
-    bsp_rgblcd_init((bsp_rgblcd_trans_done_cb_t)s_lcd_dev->flush_done_cb, s_lcd_dev->flush_done_cb_arg);
+    bsp_rgblcd_init((bsp_rgblcd_trans_done_cb_t)s_lcd_dev.flush_done_cb, s_lcd_dev.flush_done_cb_arg);
     return 0;
 }
 

@@ -1,4 +1,6 @@
 #include "app_wifi.h"
+#include "impl_wifi.h"
+#include "ek_export.h"
 #include "lvgl.h"
 
 FILE_TAG("app_wifi");
@@ -7,8 +9,6 @@ static void _wifi_state_cb(plat_wifi_state_t state, void *arg);
 static void _scan_result_cb(int count, plat_wifi_ap_info_t *aps, void *arg);
 static void _app_wifi_task(void *arg);
 
-extern plat_wifi_dev_t g_wifi_dev;
-
 TaskHandle_t g_wifi_task_handle;
 static QueueHandle_t s_wifi_cmd_queue;
 static app_wifi_evt_cb_t s_evt_cb;
@@ -16,11 +16,14 @@ static void *s_evt_cb_arg;
 
 void app_wifi_init(void)
 {
+    LOG_INFO("ek_export: APP app_wifi_init");
     s_wifi_cmd_queue = xQueueCreate(WIFI_CMD_QUEUE_LEN, sizeof(app_wifi_cmd_msg_t));
     assert(s_wifi_cmd_queue);
 
     xTaskCreate(_app_wifi_task, "app wifi", 4096, NULL, 3, &g_wifi_task_handle);
 }
+
+EK_EXPORT_APP(app_wifi_init, 3);
 
 int app_wifi_send_cmd(const app_wifi_cmd_msg_t *msg, TickType_t timeout)
 {
@@ -94,8 +97,9 @@ static void _scan_result_cb(int count, plat_wifi_ap_info_t *aps, void *arg)
 
 static void _app_wifi_task(void *arg)
 {
-    plat_wifi_dev_init(&g_wifi_dev);
-    plat_wifi_register_event_cb(&g_wifi_dev, _wifi_state_cb, NULL);
+    plat_wifi_dev_t *wifi = impl_wifi_dev();
+    plat_wifi_dev_init(wifi);
+    plat_wifi_register_event_cb(wifi, _wifi_state_cb, NULL);
 
     app_wifi_cmd_msg_t msg;
     while (1)
@@ -121,10 +125,10 @@ static void _app_wifi_task(void *arg)
                         break;
                     }
 
-                    plat_wifi_register_scan_cb(&g_wifi_dev, _scan_result_cb, result);
-                    if (plat_wifi_scan(&g_wifi_dev, result->aps, WIFI_SCAN_MAX_AP) != 0)
+                    plat_wifi_register_scan_cb(wifi, _scan_result_cb, result);
+                    if (plat_wifi_scan(wifi, result->aps, WIFI_SCAN_MAX_AP) != 0)
                     {
-                        plat_wifi_register_scan_cb(&g_wifi_dev, NULL, NULL);
+                        plat_wifi_register_scan_cb(wifi, NULL, NULL);
                         free(result);
                         if (s_evt_cb)
                         {
@@ -137,11 +141,11 @@ static void _app_wifi_task(void *arg)
                 }
 
             case APP_WIFI_CMD_CONNECT:
-                plat_wifi_sta_start(&g_wifi_dev, msg.data.connect.ssid, msg.data.connect.password);
+                plat_wifi_sta_start(wifi, msg.data.connect.ssid, msg.data.connect.password);
                 break;
 
             case APP_WIFI_CMD_DISCONNECT:
-                plat_wifi_sta_stop(&g_wifi_dev);
+                plat_wifi_sta_stop(wifi);
                 break;
 
             default:

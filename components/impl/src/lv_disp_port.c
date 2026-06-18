@@ -1,4 +1,7 @@
 #include "lv_disp_port.h"
+#include "impl_rgblcd.h"
+#include "esp_timer.h"
+#include "ek_export.h"
 
 FILE_TAG("lv_disp_prot.c");
 
@@ -8,8 +11,26 @@ static void _lv_port_flush_cb(lv_display_t *drv, const lv_area_t *area, uint8_t 
 static plat_lcd_dev_t *s_lcd_dev;
 static SemaphoreHandle_t s_trans_sem;
 
-void lv_port_disp_init(plat_lcd_dev_t *lcd_dev)
+static uint32_t _lv_port_tick_get_cb(void)
 {
+    return (uint32_t)(esp_timer_get_time() / 1000);
+}
+
+// LVGL 核心 + tick 源：APP 层最早执行，disp/touch port 的前提
+static void _auto_lv_core_init(void)
+{
+    LOG_INFO("ek_export: APP _auto_lv_core_init (lv_init + tick)");
+    lv_init();
+    lv_tick_set_cb(_lv_port_tick_get_cb);
+}
+
+EK_EXPORT_APP(_auto_lv_core_init, 0);
+
+// 显示端口初始化：依赖 lv_init 与 rgblcd register，用访问器取设备
+void lv_port_disp_init(void)
+{
+    LOG_INFO("ek_export: APP lv_port_disp_init");
+    plat_lcd_dev_t *lcd_dev = impl_rgblcd_dev();
     assert(lcd_dev);
     s_lcd_dev = lcd_dev;
 
@@ -39,6 +60,8 @@ void lv_port_disp_init(plat_lcd_dev_t *lcd_dev)
 
     LOG_INFO("lvgl port display driver init ok");
 }
+
+EK_EXPORT_APP(lv_port_disp_init, 1);
 
 static bool _lv_port_trans_done_cb(void *ctx)
 {

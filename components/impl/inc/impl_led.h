@@ -8,7 +8,8 @@ extern "C"
 
 #include "plat_led.h"
 
-int impl_led_register(plat_led_dev_t *led_dev);
+// 获取 LED 设备指针（设备实例私有于 impl_led.c）
+plat_led_dev_t *impl_led_dev(void);
 
 #ifdef __cplusplus
 }

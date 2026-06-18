@@ -8,7 +8,8 @@ extern "C"
 
 #include "plat_tts.h"
 
-int impl_tts_register(plat_tts_dev_t *tts_dev);
+// 获取 TTS 设备指针（设备实例私有于 impl_tts.c）
+plat_tts_dev_t *impl_tts_dev(void);
 
 #ifdef __cplusplus
 }

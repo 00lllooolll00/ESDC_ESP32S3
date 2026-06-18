@@ -10,7 +10,8 @@ extern "C"
 
 #define IMPL_TOUCH_POINT_MAX 5
 
-int impl_touch_register(plat_touch_dev_t *dev, uint8_t count);
+// 获取触摸设备指针（设备实例私有于 impl_touch.c）
+plat_touch_dev_t *impl_touch_dev(void);
 
 #ifdef __cplusplus
 }
