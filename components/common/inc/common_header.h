@@ -32,6 +32,10 @@ extern "C"
 #define LOG_VERBOSE(fmt, ...) ESP_LOGV(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
 #define TODO(fmt, ...)        LOG_WARN("TODO: " fmt, ##__VA_ARGS__)
 
+// 调试开关：串口命令台（esp_console）
+// 设为 1 启用 weather / weather_demo 等串口命令，设为 0 禁用
+// 文件始终参与编译，仅运行时行为受此宏控制
+#define APP_DEBUG_CONSOLE 1
 FORCE_INLINE_ATTR const char *unified_strerror(int err_code)
 {
     if (err_code == ESP_OK)
