@@ -13,7 +13,6 @@
     "styles.h",
     "ui.c",
     "ui.h",
-    "ui_font_chinese_3500_14.bin",
     "vars.h"
   ]
 }
