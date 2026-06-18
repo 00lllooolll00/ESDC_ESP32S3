@@ -38,7 +38,7 @@ extern lv_font_t *g_ui_font_chinese_3500_14;
 
 void action_wifi_start_scan(lv_event_t *e)
 {
-    lv_obj_t *list = objects.obj0__wifi_list;
+    lv_obj_t *list = objects.obj2__wifi_list;
 
     s_scan_count = 0;
     s_connecting = false;
@@ -50,11 +50,11 @@ void action_wifi_start_scan(lv_event_t *e)
     for (int32_t i = (int32_t)child_cnt - 1; i >= 0; i--)
     {
         lv_obj_t *child = lv_obj_get_child(list, i);
-        if (child != objects.obj0__wifi_loader) lv_obj_delete(child);
+        if (child != objects.obj2__wifi_loader) lv_obj_delete(child);
     }
 
     // 显示 spinner
-    lv_obj_clear_flag(objects.obj0__wifi_loader, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
 
     // 注册事件回调
     app_wifi_register_evt_cb(_wifi_evt_cb, NULL);
@@ -63,7 +63,7 @@ void action_wifi_start_scan(lv_event_t *e)
     app_wifi_cmd_msg_t msg = { .cmd = APP_WIFI_CMD_SCAN };
     if (app_wifi_send_cmd(&msg, pdMS_TO_TICKS(1000)) != 0)
     {
-        lv_obj_add_flag(objects.obj0__wifi_loader, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
         lv_list_add_btn(list, NULL, "发送失败");
         app_wifi_unregister_evt_cb();
     }
@@ -172,7 +172,7 @@ static void _show_connect_status(const char *text)
 {
     _clear_connect_status();
 
-    s_connect_status_item = lv_label_create(objects.obj0__wifi_list_panel);
+    s_connect_status_item = lv_label_create(objects.obj2__wifi_list_panel);
     lv_label_set_text(s_connect_status_item, text);
     lv_obj_set_style_text_font(s_connect_status_item, g_ui_font_chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(s_connect_status_item, lv_color_hex(0x333333), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -198,7 +198,7 @@ static void _finish_connect_attempt(const char *text, lv_color_t color)
 
 static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 {
-    lv_obj_t *list = objects.obj0__wifi_list;
+    lv_obj_t *list = objects.obj2__wifi_list;
 
     switch (evt)
     {
@@ -206,7 +206,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
             {
                 app_wifi_scan_result_t *result = (app_wifi_scan_result_t *)data;
 
-                lv_obj_add_flag(objects.obj0__wifi_loader, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
 
                 s_scan_count = result->count;
                 for (int i = 0; i < result->count; i++)
@@ -233,7 +233,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
             }
 
         case APP_WIFI_EVT_SCAN_FAIL:
-            lv_obj_add_flag(objects.obj0__wifi_loader, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
             lv_list_add_btn(list, NULL, "扫描失败");
             break;
 
