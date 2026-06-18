@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "ESP-IDF",
-            "compilerPath": "/home/nn99/WorkSpace/Embedded/ESP32/esp-tools/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/bin/xtensa-esp32s3-elf-g++",
+            "compilerPath": "/home/n1netynine99/WorkSpace/Embedded/ESP32/esp-tools/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clang",
             "compileCommands": [
                 "${config:idf.buildPath}/compile_commands.json"
             ],

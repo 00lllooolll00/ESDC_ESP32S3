@@ -116,10 +116,13 @@ typedef struct _objects_t {
     lv_obj_t *obj11__nav_home_btn;
     lv_obj_t *obj11__nav_home_icon;
     lv_obj_t *func_smart_home;
+    lv_obj_t *func_smart_home_icon;
     lv_obj_t *func_smart_home_label;
     lv_obj_t *func_weather;
+    lv_obj_t *func_weather_icon;
     lv_obj_t *func_weather_label;
     lv_obj_t *func_ai_chat;
+    lv_obj_t *func_ai_chat_icon;
     lv_obj_t *func_ai_chat_label;
     lv_obj_t *smart_home_title;
     lv_obj_t *weather_title;

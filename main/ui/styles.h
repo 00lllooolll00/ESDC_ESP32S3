@@ -32,6 +32,11 @@ lv_style_t *get_style_volume_slider_KNOB_DEFAULT();
 void add_style_volume_slider(lv_obj_t *obj);
 void remove_style_volume_slider(lv_obj_t *obj);
 
+// Style: func_card
+lv_style_t *get_style_func_card_MAIN_DEFAULT();
+void add_style_func_card(lv_obj_t *obj);
+void remove_style_func_card(lv_obj_t *obj);
+
 #ifdef __cplusplus
 }
 #endif
