@@ -60,11 +60,6 @@ extern "C"
 #    define ek_realloc realloc
 #endif
 
-// 日志子配置（对应 bak EK_LOG_* 宏，LOG=0 时无实际作用但保持一致）
-#define EKCFG_LOG_DEBUG   (1)
-#define EKCFG_LOG_COLOR   (1)
-#define EKCFG_LOG_BUF_SIZE (256)
-
 // 断言子配置（对应 bak EK_ASSERT_* 宏）
 // EKCFG_ASSERT_TINY: 1=轻量级断言（失败时 while 死循环）
 #define EKCFG_ASSERT_TINY (1)
