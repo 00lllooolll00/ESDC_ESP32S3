@@ -8,6 +8,7 @@ set(src_dirs
 
 # 头文件
 set(include_dirs
+            ek_conf
             ek_utils/inc
             ek_utils/third_party/tlsf
             ek_utils/third_party/lwprintf/inc

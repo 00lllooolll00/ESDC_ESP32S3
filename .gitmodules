@@ -1,0 +1,3 @@
+[submodule "components/middlewares/ek_utils"]
+	path = components/middlewares/ek_utils
+	url = git@github.com:EmbeddedKitOrg/EK_UTILS.git
