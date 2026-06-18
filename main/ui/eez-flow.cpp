@@ -6737,6 +6737,9 @@ void replacePageHook(int16_t pageId, uint32_t animType, uint32_t speed, uint32_t
     }
     eez::flow::onPageChanged(g_currentScreen + 1, pageId);
     g_currentScreen = screenIndex;
+    if (animType > LV_SCREEN_LOAD_ANIM_OUT_BOTTOM) {
+        animType = LV_SCREEN_LOAD_ANIM_FADE_IN;
+    }
     lv_scr_load_anim(screen, (lv_scr_load_anim_t)animType, speed, delay, false);
 }
 extern "C" void flowOnPageLoaded(unsigned pageIndex) {

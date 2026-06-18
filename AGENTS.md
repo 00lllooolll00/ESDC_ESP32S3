@@ -67,7 +67,7 @@
 - `main/app/src/app_*.c` 偏向“一功能一任务”；跨线程触碰 LVGL 时必须像 `main/app/src/app_wifi.c` 那样包 `lv_lock()` / `lv_unlock()`。
 - UI 原生变量遵循 `get_var_g_*` / `set_var_g_*` 命名，见 `main/ui/vars/wifi_vars.c`、`main/ui/vars/volume_vars.c`。
 - 自动生成的 UI 控件通过全局 `objects` 访问，定义在 `main/ui/screens.h`。改动对象名会直接影响 `actions/*.c`。
-- **重要边界**：如果改的是 UI 布局、控件树、Flow 绑定，先改 `main/ui/eez/eez.eez-project`，再重新生成代码；不要把持久修改直接写进 `main/ui/ui.c` 或 `main/ui/screens.c`。
+- **重要边界（不可违反）**：修改 LVGL 界面（布局、控件树、z-order 层级、Flow 绑定、样式等）时，必须先改 `main/ui/eez/eez.eez-project`，再用 EEZ Studio 重新生成代码。绝对不要直接修改 EEZ 生成的文件，包括：`main/ui/screens.c`、`main/ui/screens.h`、`main/ui/ui.c`、`main/ui/styles.c`、`main/ui/styles.h`、`main/ui/eez-flow.cpp`、`main/ui/eez-flow.h`、`main/ui/actions.h`、`main/ui/vars.h`、`main/ui/structs.h`、`main/ui/images.h` 等。直接改生成代码会被下次重新生成覆盖，且破坏工程一致性。
 - `main/ui/eez-flow.cpp` 和 `main/ui/eez-flow.h` 体积很大且为框架/生成产物；非必要不要做大范围人工修改。
 
 ## Important Files
