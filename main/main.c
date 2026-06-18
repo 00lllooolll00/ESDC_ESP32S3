@@ -2,6 +2,7 @@
 #include "nvs_flash.h"
 #include "esp_timer.h"
 #include "esp_vfs_fat.h"
+#include "esp_pm.h"
 
 // app
 #include "app.h"
@@ -60,6 +61,14 @@ void app_main(void)
         LOG_INFO("vfs mounted at /vfs");
     }
 
+    // 配置电源管理：启用 DFS 动态调频与自动 light sleep
+    // 必须在持有 PM lock 的外设（RGB LCD 等）初始化之前调用，否则 PM 模块不会真正生效
+    esp_pm_config_esp32s3_t pm_config = {
+        .max_freq_mhz       = 240,
+        .min_freq_mhz       = 80,
+        .light_sleep_enable = true,
+    };
+    ESP_ERROR_CHECK(esp_pm_configure(&pm_config));
     impl_exio_init();
     impl_led_register(&g_led_dev);
     impl_key_register(&g_key_dev);

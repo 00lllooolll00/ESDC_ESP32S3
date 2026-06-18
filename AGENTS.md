@@ -35,14 +35,15 @@
 ## Development Commands
 
 - `just build`：构建并输出 size 信息（实际调用 `idf.py build size`）。
-- `just flash`：仅烧录 app。
-- `just flash-full`：整片烧录。
+- `just flash`：仅烧录 app 分区（`idf.py app-flash -b 2000000`，2Mbps 高速；依赖 `build`）。
+- `just flash-full`：整片烧录（`idf.py flash -b 2000000`，2Mbps 高速；依赖 `build`）。
 - `just monitor`：打开串口监视。
-- `just run`：`build + flash + monitor`。
+- `just run`：`build + flash + monitor` 一条龙（先编译再烧录再监视）。
 - `just menuconfig`：打开 `ESP-IDF` 配置界面。
 - `just clean`：删除 `build/`。
 - `just format`：对 `components/**/*.c,h` 与 `main/**/*.c,h` 运行 `clang-format`，但明确排除 `main/ui/*`。
 - 仓库里没有 `just test`，也没有项目级 `pytest` / `ctest` 入口。
+- 命令别名（`justfile` 顶部 `alias`，日常高频）：`just b`=build、`just c`=clean、`just f`=flash、`just ff`=flash-full、`just r`=run、`just cfg`=menuconfig、`just m`=monitor、`just fmt`=format。
 
 ## Code Conventions & Common Patterns
 
