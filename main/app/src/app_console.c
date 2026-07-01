@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-FILE_TAG("app_console");
+EK_LOG_FILE_TAG("app_console");
 
 // weather 命令：注入 JSON 天气数据
 // 用法：weather {temps:[25.5,26.0,24.8]}（不要加双引号，console 会消费掉）
@@ -137,13 +137,13 @@ static void _console_task(void *arg)
 
 void app_console_init(void)
 {
-    LOG_INFO("ek_export: APP app_console_init");
+    EK_LOG_INFO("ek_export: APP app_console_init");
 #if APP_DEBUG_CONSOLE
     esp_console_config_t console_cfg = ESP_CONSOLE_CONFIG_DEFAULT();
     esp_err_t ret = esp_console_init(&console_cfg);
     if (ret != ESP_OK)
     {
-        LOG_ERROR("esp_console_init failed: %s", esp_err_to_name(ret));
+        EK_LOG_ERROR("esp_console_init failed: %s", esp_err_to_name(ret));
         return;
     }
 
@@ -172,11 +172,11 @@ void app_console_init(void)
     BaseType_t xret = xTaskCreatePinnedToCore(_console_task, "console", 4096, NULL, 2, NULL, 0);
     if (xret != pdTRUE)
     {
-        LOG_ERROR("failed to create console task");
+        EK_LOG_ERROR("failed to create console task");
         return;
     }
 
-    LOG_INFO("console ready, type 'help' for commands");
+    EK_LOG_INFO("console ready, type 'help' for commands");
 #endif // APP_DEBUG_CONSOLE
 }
 

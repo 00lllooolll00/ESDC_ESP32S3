@@ -1,8 +1,7 @@
 #include "plat_tts.h"
 
-void plat_tts_dev_register(plat_tts_dev_t *tts, const char *name,
-                           const plat_dev_ops_t *base_ops,
-                           const plat_tts_ops_t *ops, void *priv)
+void plat_tts_dev_register(
+    plat_tts_dev_t *tts, const char *name, const plat_dev_ops_t *base_ops, const plat_tts_ops_t *ops, void *priv)
 {
     plat_dev_register(PLAT_GET_BASE(tts), name, base_ops, priv);
     tts->ops = ops;

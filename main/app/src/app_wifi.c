@@ -3,7 +3,7 @@
 #include "ek_export.h"
 #include "lvgl.h"
 
-FILE_TAG("app_wifi");
+EK_LOG_FILE_TAG("app_wifi");
 
 static void _wifi_state_cb(plat_wifi_state_t state, void *arg);
 static void _scan_result_cb(int count, plat_wifi_ap_info_t *aps, void *arg);
@@ -16,7 +16,7 @@ static void *s_evt_cb_arg;
 
 void app_wifi_init(void)
 {
-    LOG_INFO("ek_export: APP app_wifi_init");
+    EK_LOG_INFO("ek_export: APP app_wifi_init");
     s_wifi_cmd_queue = xQueueCreate(WIFI_CMD_QUEUE_LEN, sizeof(app_wifi_cmd_msg_t));
     assert(s_wifi_cmd_queue);
 
@@ -149,7 +149,7 @@ static void _app_wifi_task(void *arg)
                 break;
 
             default:
-                LOG_WARN("unknown wifi cmd: %d", msg.cmd);
+                EK_LOG_WARN("unknown wifi cmd: %d", msg.cmd);
                 break;
         }
     }

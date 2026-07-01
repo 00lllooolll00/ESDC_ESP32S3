@@ -27,7 +27,4 @@ idf_component_register(
             LDFRAGMENTS linker.lf
 )
 
-# 当前组件的编译选项
-component_compile_options(
-)
 

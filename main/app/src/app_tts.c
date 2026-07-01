@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-FILE_TAG("app_tts.c");
+EK_LOG_FILE_TAG("app_tts.c");
 
 #define APP_TTS_QUEUE_LEN  4
 #define APP_TTS_STACK_SIZE 8192
@@ -36,7 +36,7 @@ void app_tts_say(const char *text)
     {
         return;
     }
-    tts_msg_t msg = {0};
+    tts_msg_t msg = { 0 };
     strncpy(msg.text, text, APP_TTS_MAX_TEXT - 1);
     xQueueSend(s_tts_queue, &msg, 0);
 }
@@ -47,11 +47,11 @@ static void _app_tts_task(void *arg)
     int ret = plat_tts_dev_init(impl_tts_dev());
     if (ret != 0)
     {
-        LOG_ERROR("plat_tts_dev_init failed: %d", ret);
+        EK_LOG_ERROR("plat_tts_dev_init failed: %d", ret);
         vTaskDelete(NULL);
         return;
     }
-    LOG_INFO("app_tts ready");
+    EK_LOG_INFO("app_tts ready");
 
     tts_msg_t msg;
     while (1)

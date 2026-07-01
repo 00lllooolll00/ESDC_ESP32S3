@@ -1,7 +1,7 @@
 #include "bsp_led.h"
 #include "bsp_exio.h"
 
-FILE_TAG("bsp_led.c");
+EK_LOG_FILE_TAG("bsp_led.c");
 
 void bsp_led_init(void)
 {
@@ -17,7 +17,7 @@ void bsp_led_init(void)
     bsp_exio_conifg_pin(&led_config);
     bsp_led_set(1);
 
-    LOG_INFO("bsp led init ok");
+    EK_LOG_INFO("bsp led init ok");
 }
 
 void bsp_led_set(uint8_t value)

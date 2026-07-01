@@ -2,7 +2,7 @@
 #include "bsp_led.h"
 #include "ek_export.h"
 
-FILE_TAG("impl_led.c");
+EK_LOG_FILE_TAG("impl_led.c");
 
 static int _led_dev_init(void);
 static int _led_dev_deinit(void);
@@ -59,7 +59,7 @@ plat_led_dev_t *impl_led_b_dev(void)
 
 static void impl_led_register(void)
 {
-    LOG_INFO("ek_export: COMPONENTS impl_led_register");
+    EK_LOG_INFO("ek_export: COMPONENTS impl_led_register");
     plat_led_dev_register(&s_led_r_dev, "led_r", &s_led_base_ops, &s_led_r_ops, NULL);
     plat_led_dev_register(&s_led_g_dev, "led_g", &s_led_base_ops, &s_led_g_ops, NULL);
     plat_led_dev_register(&s_led_b_dev, "led_b", &s_led_base_ops, &s_led_b_ops, NULL);
@@ -69,7 +69,7 @@ EK_EXPORT_COMPONENTS(impl_led_register, 0);
 
 static void _auto_led_dev_init(void)
 {
-    LOG_INFO("ek_export: COMPONENTS _auto_led_dev_init");
+    EK_LOG_INFO("ek_export: COMPONENTS _auto_led_dev_init");
     plat_led_dev_init(&s_led_r_dev);
     plat_led_dev_init(&s_led_g_dev);
     plat_led_dev_init(&s_led_b_dev);
@@ -140,4 +140,3 @@ static int _led_b_toggle(void)
     bsp_led_b_toggle();
     return 0;
 }
-

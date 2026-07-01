@@ -3,7 +3,7 @@
 #include "app_weather.h"
 #include "lvgl.h"
 
-FILE_TAG("weather_actions");
+EK_LOG_FILE_TAG("weather_actions");
 
 static lv_chart_series_t *s_temp_series;
 static lv_obj_t *s_chart;
@@ -34,7 +34,7 @@ void weather_ui_init(void)
     s_chart = lv_chart_create(objects.weather);
     if (!s_chart)
     {
-        LOG_ERROR("failed to create weather chart");
+        EK_LOG_ERROR("failed to create weather chart");
         return;
     }
 
@@ -52,12 +52,12 @@ void weather_ui_init(void)
     s_temp_series = lv_chart_add_series(s_chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
     if (!s_temp_series)
     {
-        LOG_ERROR("failed to add chart series");
+        EK_LOG_ERROR("failed to add chart series");
         return;
     }
 
     // 注册天气数据回调
     app_weather_register_ui_cb(_weather_ui_cb, NULL);
 
-    LOG_INFO("weather chart initialized");
+    EK_LOG_INFO("weather chart initialized");
 }

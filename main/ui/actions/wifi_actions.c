@@ -5,7 +5,7 @@
 #include "app_wifi.h"
 #include "screens.h"
 
-FILE_TAG("wifi_actions");
+EK_LOG_FILE_TAG("wifi_actions");
 
 // 缓存扫描结果，用于点击按钮时查找 SSID
 static plat_wifi_ap_info_t s_scan_results[WIFI_SCAN_MAX_AP];

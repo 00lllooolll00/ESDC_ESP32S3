@@ -8,7 +8,7 @@
 #include "esp_lcd_panel_commands.h"
 #include "esp_lcd_panel_st7789.h"
 
-FILE_TAG("bsp_lcd.c");
+EK_LOG_FILE_TAG("bsp_lcd.c");
 
 typedef struct
 {
@@ -70,7 +70,7 @@ void bsp_spilcd_init(bsp_spilcd_trans_done_cb_t cb, void *arg)
     bsp_spilcd_clear(0xFFFF);
     BSP_SPILCD_PWR(1);
 
-    LOG_INFO("bsp lcd init ok");
+    EK_LOG_INFO("bsp lcd init ok");
 }
 
 void bsp_spilcd_clear(uint16_t color)
@@ -80,7 +80,7 @@ void bsp_spilcd_clear(uint16_t color)
     uint16_t color_tmp = ((color & 0x00FF) << 8) | ((color & 0xFF00) >> 8);
     if (NULL == buffer)
     {
-        LOG_ERROR("Memory for bitmap is not enough");
+        EK_LOG_ERROR("Memory for bitmap is not enough");
     }
     else
     {

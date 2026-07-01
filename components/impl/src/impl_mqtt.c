@@ -4,7 +4,7 @@
 #include "esp_event.h"
 #include "ek_export.h"
 
-FILE_TAG("impl_mqtt");
+EK_LOG_FILE_TAG("impl_mqtt");
 
 // 设备实例私有于本文件，通过 impl_mqtt_dev() 访问
 static plat_mqtt_dev_t s_mqtt_dev;
@@ -47,7 +47,7 @@ static const plat_mqtt_ops_t s_mqtt_ops = {
 // 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用（broker_url 由 app_mqtt_init 设置）
 static void impl_mqtt_register(void)
 {
-    LOG_INFO("ek_export: COMPONENTS impl_mqtt_register");
+    EK_LOG_INFO("ek_export: COMPONENTS impl_mqtt_register");
     plat_mqtt_dev_register(&s_mqtt_dev, "mqtt", &s_mqtt_base_ops, &s_mqtt_ops, NULL, NULL);
 }
 
@@ -123,7 +123,7 @@ static int _mqtt_unsubscribe(const char *topic)
 }
 
 #define MQTT_LOG_CHECK_ERROR(err_code, ...) \
-    if (err_code) LOG_ERROR(__VA_ARGS__)
+    if (err_code) EK_LOG_ERROR(__VA_ARGS__)
 
 static void _mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
@@ -132,49 +132,49 @@ static void _mqtt_event_handler(void *handler_args, esp_event_base_t base, int32
     switch ((esp_mqtt_event_id_t)event_id)
     {
         case MQTT_EVENT_CONNECTED:
-            LOG_INFO("mqtt connected");
+            EK_LOG_INFO("mqtt connected");
             if (s_mqtt_dev.cb[PLAT_MQTT_CB_CONNECTED]) s_mqtt_dev.cb[PLAT_MQTT_CB_CONNECTED]();
             break;
 
         case MQTT_EVENT_DISCONNECTED:
-            LOG_INFO("mqtt disconnected");
+            EK_LOG_INFO("mqtt disconnected");
             if (s_mqtt_dev.cb[PLAT_MQTT_CB_DISCONNECTED]) s_mqtt_dev.cb[PLAT_MQTT_CB_DISCONNECTED]();
             break;
 
         case MQTT_EVENT_SUBSCRIBED:
-            LOG_INFO("mqtt subscribed, msg_id=%d", event->msg_id);
+            EK_LOG_INFO("mqtt subscribed, msg_id=%d", event->msg_id);
             if (s_mqtt_dev.cb[PLAT_MQTT_CB_SUBSCRIBE]) s_mqtt_dev.cb[PLAT_MQTT_CB_SUBSCRIBE]();
             break;
 
         case MQTT_EVENT_UNSUBSCRIBED:
-            LOG_INFO("mqtt unsubscribed, msg_id=%d", event->msg_id);
+            EK_LOG_INFO("mqtt unsubscribed, msg_id=%d", event->msg_id);
             if (s_mqtt_dev.cb[PLAT_MQTT_CB_UNSUBSCRIBE]) s_mqtt_dev.cb[PLAT_MQTT_CB_UNSUBSCRIBE]();
             break;
 
         case MQTT_EVENT_PUBLISHED:
-            LOG_INFO("mqtt published, msg_id=%d", event->msg_id);
+            EK_LOG_INFO("mqtt published, msg_id=%d", event->msg_id);
             if (s_mqtt_dev.cb[PLAT_MQTT_CB_PUBLISH]) s_mqtt_dev.cb[PLAT_MQTT_CB_PUBLISH]();
             break;
 
         case MQTT_EVENT_DATA:
-            LOG_INFO("mqtt data: topic=%.*s", event->topic_len, event->topic);
+            EK_LOG_INFO("mqtt data: topic=%.*s", event->topic_len, event->topic);
             if (s_mqtt_dev.data_cb) s_mqtt_dev.data_cb(event->topic, event->topic_len, event->data, event->data_len);
             break;
 
         case MQTT_EVENT_ERROR:
-            LOG_INFO("mqtt error");
+            EK_LOG_INFO("mqtt error");
             if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT)
             {
                 MQTT_LOG_CHECK_ERROR(event->error_handle->esp_tls_last_esp_err, "reported from esp-tls");
                 MQTT_LOG_CHECK_ERROR(event->error_handle->esp_tls_stack_err, "reported from tls stack");
                 MQTT_LOG_CHECK_ERROR(event->error_handle->esp_transport_sock_errno,
                                      "captured as transport's socket errno");
-                LOG_INFO("last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
+                EK_LOG_INFO("last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
             }
             break;
 
         default:
-            LOG_DEBUG("mqtt other event id:%d", event->event_id);
+            EK_LOG_DEBUG("mqtt other event id:%d", event->event_id);
             break;
     }
 }

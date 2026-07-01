@@ -78,7 +78,6 @@ typedef struct
 // #define BSP_KEY3_IO       BSP_EXIO_NUM7
 // #define BSP_LCD_BL_IO     BSP_EXIO_NUM8
 
-
 void bsp_exio_init(void);
 void bsp_exio_int_enable(void);
 void bsp_exio_int_disable(void);

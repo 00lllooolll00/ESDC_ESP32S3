@@ -3,7 +3,7 @@
 #include "ek_export.h"
 #include "plat_led.h"
 
-FILE_TAG("app_led.c");
+EK_LOG_FILE_TAG("app_led.c");
 
 static void _app_led_task(void *arg);
 
@@ -11,7 +11,7 @@ TaskHandle_t g_led_handle;
 
 void app_led_init(void)
 {
-    LOG_INFO("ek_export: APP app_led_init");
+    EK_LOG_INFO("ek_export: APP app_led_init");
     xTaskCreate(_app_led_task, "app led", 2048, NULL, 1, &g_led_handle);
 }
 

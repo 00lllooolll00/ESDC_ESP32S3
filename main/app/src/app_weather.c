@@ -5,7 +5,7 @@
 #include "cJSON.h"
 #include <string.h>
 
-FILE_TAG("app_weather");
+EK_LOG_FILE_TAG("app_weather");
 
 static app_weather_forecast_t s_forecast;
 static SemaphoreHandle_t s_mutex;
@@ -14,7 +14,7 @@ static void *s_ui_cb_arg;
 
 void app_weather_init(void)
 {
-    LOG_INFO("ek_export: APP app_weather_init");
+    EK_LOG_INFO("ek_export: APP app_weather_init");
     s_mutex = xSemaphoreCreateMutex();
     assert(s_mutex);
     s_forecast.count = 0;
@@ -42,7 +42,7 @@ void app_weather_set_forecast(const int16_t *temps, int count)
     s_forecast.count = count;
     xSemaphoreGive(s_mutex);
 
-    LOG_INFO("forecast updated, count=%d", count);
+    EK_LOG_INFO("forecast updated, count=%d", count);
 
     // 触发 UI 回调，lv_lock 保护 LVGL 操作
     if (s_ui_cb)
@@ -63,14 +63,14 @@ int app_weather_inject_json(const char *json_str)
     cJSON *root = cJSON_Parse(json_str);
     if (!root)
     {
-        LOG_WARN("json parse failed: %s", json_str);
+        EK_LOG_WARN("json parse failed: %s", json_str);
         return -1;
     }
 
     cJSON *temps_arr = cJSON_GetObjectItem(root, "temps");
     if (!temps_arr || !cJSON_IsArray(temps_arr))
     {
-        LOG_WARN("missing \"temps\" array in json");
+        EK_LOG_WARN("missing \"temps\" array in json");
         cJSON_Delete(root);
         return -1;
     }
@@ -78,7 +78,7 @@ int app_weather_inject_json(const char *json_str)
     int arr_size = cJSON_GetArraySize(temps_arr);
     if (arr_size <= 0)
     {
-        LOG_WARN("empty temps array");
+        EK_LOG_WARN("empty temps array");
         cJSON_Delete(root);
         return -1;
     }

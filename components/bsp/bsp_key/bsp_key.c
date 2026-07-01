@@ -1,6 +1,6 @@
 #include "bsp_key.h"
 
-FILE_TAG("bsp_key.c");
+EK_LOG_FILE_TAG("bsp_key.c");
 
 void bsp_key_init(void)
 {
@@ -25,7 +25,7 @@ void bsp_key_init(void)
     exio_key_config.pin = BSP_KEY2_PIN;
     bsp_exio_conifg_pin(&exio_key_config);
 
-    LOG_INFO("bsp key init ok");
+    EK_LOG_INFO("bsp key init ok");
 }
 
 bsp_key_state_t bsp_key_read_raw(void)

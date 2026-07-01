@@ -47,7 +47,7 @@
 
 ## Code Conventions & Common Patterns
 
-- C 文件通常先引入 `common_header.h`，再用 `FILE_TAG("...")` 声明日志标签；统一使用 `LOG_DEBUG/INFO/WARN/ERROR`。
+- C 文件通常先引入 `common_header.h`，再用 `EK_LOG_FILE_TAG("...")` 声明日志标签；统一使用 `EK_LOG_DEBUG/INFO/WARN/ERROR`。
 - 错误处理遵循就近模式：`ESP_ERROR_CHECK`、`assert()`、以及少量 `0 / -1` 返回约定并存；扩展时优先复用相邻文件风格，不要自造第四种约定。
 - 命名有明显层前缀：`app_*`、`plat_*`、`impl_*`、`bsp_*`。变量常见前缀：全局 `g_`、静态 `s_`、内部 helper `_name`。
 - **注释规范**：

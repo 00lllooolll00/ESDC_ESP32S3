@@ -1,7 +1,7 @@
 #include "bsp_exio.h"
 #include "bsp_i2c.h"
 
-FILE_TAG("bsp_exio.c");
+EK_LOG_FILE_TAG("bsp_exio.c");
 
 FORCE_INLINE_ATTR esp_err_t _exio_i2c_write(uint8_t reg, const uint8_t *txbuffer, size_t size);
 FORCE_INLINE_ATTR esp_err_t _exio_i2c_read(uint8_t reg, uint8_t *rxbuffer, size_t size);
@@ -41,7 +41,7 @@ void bsp_exio_init(void)
 
     ESP_ERROR_CHECK(bsp_exio_read(&temp));
 
-    LOG_INFO("bsp exio init ok");
+    EK_LOG_INFO("bsp exio init ok");
 }
 
 /**

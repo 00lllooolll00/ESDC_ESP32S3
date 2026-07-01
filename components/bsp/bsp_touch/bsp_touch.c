@@ -1,7 +1,7 @@
 #include "bsp_touch.h"
 #include "bsp_i2c.h"
 
-FILE_TAG("bsp_touch.c");
+EK_LOG_FILE_TAG("bsp_touch.c");
 
 FORCE_INLINE_ATTR esp_err_t _touch_write_reg(uint16_t reg, uint8_t *txdata, uint8_t size);
 FORCE_INLINE_ATTR esp_err_t _touch_read_reg(uint16_t reg, uint8_t *rxdata, uint8_t size);
@@ -59,7 +59,7 @@ void bsp_touch_register_int_cb(void (*cb)(void))
 {
     if (s_touch_int_cb)
     {
-        LOG_WARN("there is already a callback of touch");
+        EK_LOG_WARN("there is already a callback of touch");
         return;
     }
 
@@ -180,7 +180,7 @@ static esp_err_t _touch_wait_ready(void)
         vTaskDelay(pdMS_TO_TICKS(50));
     }
 
-    LOG_ERROR("touch not ready after reset, err=0x%x", err);
+    EK_LOG_ERROR("touch not ready after reset, err=0x%x", err);
     return err;
 }
 

@@ -7,7 +7,7 @@
 #include "freertos/semphr.h"
 #include "ek_export.h"
 
-FILE_TAG("impl_wifi");
+EK_LOG_FILE_TAG("impl_wifi");
 
 #define IMPL_WIFI_MAX_RETRY 5
 
@@ -18,7 +18,6 @@ plat_wifi_dev_t *impl_wifi_dev(void)
 {
     return &s_wifi_dev;
 }
-
 
 static plat_wifi_ap_info_t *s_scan_ap_info;
 static uint16_t s_scan_max_count;
@@ -48,7 +47,7 @@ static const plat_wifi_ops_t s_wifi_ops = {
 // 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用（须在 s_wifi_*_ops 定义之后）
 static void impl_wifi_register(void)
 {
-    LOG_INFO("ek_export: COMPONENTS impl_wifi_register");
+    EK_LOG_INFO("ek_export: COMPONENTS impl_wifi_register");
     plat_wifi_dev_register(&s_wifi_dev, "wifi", &s_wifi_base_ops, &s_wifi_ops, NULL);
 }
 
@@ -85,11 +84,13 @@ static int _wifi_dev_init(void)
 
 static int _wifi_dev_deinit(void)
 {
-    if (s_wifi_started) {
+    if (s_wifi_started)
+    {
         esp_wifi_stop();
         s_wifi_started = false;
     }
-    if (s_wifi_start_sem) {
+    if (s_wifi_start_sem)
+    {
         vSemaphoreDelete(s_wifi_start_sem);
         s_wifi_start_sem = NULL;
     }
@@ -111,12 +112,13 @@ static int _wifi_ensure_started(void)
     if (s_wifi_started) return 0;
 
     ESP_ERROR_CHECK(esp_wifi_start());
-    if (xSemaphoreTake(s_wifi_start_sem, pdMS_TO_TICKS(5000)) != pdTRUE) {
-        LOG_ERROR("wifi start timeout");
+    if (xSemaphoreTake(s_wifi_start_sem, pdMS_TO_TICKS(5000)) != pdTRUE)
+    {
+        EK_LOG_ERROR("wifi start timeout");
         return -1;
     }
     s_wifi_started = true;
-    LOG_INFO("wifi started (on-demand)");
+    EK_LOG_INFO("wifi started (on-demand)");
     return 0;
 }
 
@@ -134,7 +136,7 @@ static int _wifi_sta_start(const char *ssid, const char *passwd)
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_cfg));
     ESP_ERROR_CHECK(esp_wifi_connect());
 
-    LOG_INFO("wifi sta start: ssid=%s", ssid);
+    EK_LOG_INFO("wifi sta start: ssid=%s", ssid);
     return 0;
 }
 
@@ -157,7 +159,7 @@ static int _wifi_scan(plat_wifi_ap_info_t *ap_info, uint16_t max_count)
     esp_err_t err = esp_wifi_scan_start(NULL, false);
     if (err != ESP_OK)
     {
-        LOG_ERROR("wifi scan start failed: %s", unified_strerror(err));
+        EK_LOG_ERROR("wifi scan start failed: %s", unified_strerror(err));
         return -1;
     }
     return 0;
@@ -204,18 +206,18 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
             // 认证失败（密码错误等）不重试，立即通知上层
             if (disconn->reason == WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT || disconn->reason == WIFI_REASON_AUTH_FAIL)
             {
-                LOG_WARN("wifi auth failed, reason=%d", disconn->reason);
+                EK_LOG_WARN("wifi auth failed, reason=%d", disconn->reason);
                 plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_DISCONNECTED);
             }
             else if (s_retry_count < IMPL_WIFI_MAX_RETRY)
             {
                 esp_wifi_connect();
                 s_retry_count++;
-                LOG_WARN("wifi retry connect: %d, reason=%d", s_retry_count, disconn->reason);
+                EK_LOG_WARN("wifi retry connect: %d, reason=%d", s_retry_count, disconn->reason);
             }
             else
             {
-                LOG_WARN("wifi connect failed after %d retries, reason=%d", IMPL_WIFI_MAX_RETRY, disconn->reason);
+                EK_LOG_WARN("wifi connect failed after %d retries, reason=%d", IMPL_WIFI_MAX_RETRY, disconn->reason);
                 plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_DISCONNECTED);
             }
         }
@@ -225,7 +227,7 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
         if (event_id == IP_EVENT_STA_GOT_IP)
         {
             ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-            LOG_INFO("wifi got ip: " IPSTR, IP2STR(&event->ip_info.ip));
+            EK_LOG_INFO("wifi got ip: " IPSTR, IP2STR(&event->ip_info.ip));
             s_retry_count = 0;
             plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_CONNECTED);
         }

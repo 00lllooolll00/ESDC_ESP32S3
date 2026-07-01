@@ -3,7 +3,7 @@
 #include "driver/sdspi_host.h"
 #include "driver/sdmmc_host.h"
 
-FILE_TAG("bsp_sdcard.c");
+EK_LOG_FILE_TAG("bsp_sdcard.c");
 
 esp_err_t bsp_sdcard_init(void)
 {
@@ -34,7 +34,7 @@ esp_err_t bsp_sdcard_init(void)
     {
         if (retry > 0)
         {
-            LOG_WARN("retry to mount the sd card:%d/%d", retry, BSP_SDCARD_MAX_RETRY);
+            EK_LOG_WARN("retry to mount the sd card:%d/%d", retry, BSP_SDCARD_MAX_RETRY);
             vTaskDelay(pdMS_TO_TICKS(100));
         }
 
@@ -42,29 +42,29 @@ esp_err_t bsp_sdcard_init(void)
 
         if (err == ESP_OK)
         {
-            LOG_INFO("SD card mounted successfully!");
+            EK_LOG_INFO("SD card mounted successfully!");
             break;
         }
 
-        LOG_WARN("fail to mount: %s", unified_strerror(err));
+        EK_LOG_WARN("fail to mount: %s", unified_strerror(err));
 
         if (err == ESP_FAIL)
         {
-            LOG_WARN("try to format the sdcard...");
+            EK_LOG_WARN("try to format the sdcard...");
             err = esp_vfs_fat_sdcard_format(BSP_SDCARD_PATH, sdcard);
             if (err == ESP_OK)
             {
-                LOG_INFO("format and mount successfully!");
+                EK_LOG_INFO("format and mount successfully!");
                 break;
             }
             else
             {
-                LOG_WARN("fail to format the sd card: %s", unified_strerror(err));
+                EK_LOG_WARN("fail to format the sd card: %s", unified_strerror(err));
             }
         }
         else if (err == ESP_ERR_NOT_FOUND)
         {
-            LOG_WARN("there is not a sd card found");
+            EK_LOG_WARN("there is not a sd card found");
             break;
         }
 

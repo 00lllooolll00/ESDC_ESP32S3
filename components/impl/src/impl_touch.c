@@ -2,7 +2,7 @@
 #include "bsp_touch.h"
 #include "ek_export.h"
 
-FILE_TAG("impl_touch.c");
+EK_LOG_FILE_TAG("impl_touch.c");
 
 static int _touch_dev_init(void);
 static int _touch_dev_deinit(void);
@@ -43,7 +43,7 @@ plat_touch_dev_t *impl_touch_dev(void)
 // 设备注册：无参，count 取 IMPL_TOUCH_POINT_MAX，供 EK_EXPORT_COMPONENTS 自动调用
 static void impl_touch_register(void)
 {
-    LOG_INFO("ek_export: COMPONENTS impl_touch_register");
+    EK_LOG_INFO("ek_export: COMPONENTS impl_touch_register");
     plat_touch_dev_register(&s_touch_dev, "touch", &s_touch_base_ops, &s_touch_ops, IMPL_TOUCH_POINT_MAX, NULL);
 }
 

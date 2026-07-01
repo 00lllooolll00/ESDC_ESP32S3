@@ -3,7 +3,7 @@
 #include "ek_export.h"
 #include "plat_key.h"
 
-FILE_TAG("app_key.c");
+EK_LOG_FILE_TAG("app_key.c");
 
 static void _app_key_task(void *arg);
 
@@ -11,7 +11,7 @@ TaskHandle_t g_key_handle;
 
 void app_key_intit(void)
 {
-    LOG_INFO("ek_export: APP app_key_intit");
+    EK_LOG_INFO("ek_export: APP app_key_intit");
     xTaskCreate(_app_key_task, "app key", 2048, NULL, 2, &g_key_handle);
 }
 
@@ -30,7 +30,7 @@ static void _app_key_task(void *arg)
 
         if (key_val != PLAT_KEY_STATE_NONE)
         {
-            LOG_INFO("key down:%x", key_val);
+            EK_LOG_INFO("key down:%x", key_val);
         }
 
         vTaskDelayUntil(&start_tick, 30);

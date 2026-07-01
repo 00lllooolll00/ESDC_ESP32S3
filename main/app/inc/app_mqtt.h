@@ -17,7 +17,7 @@ extern "C"
  * @brief 初始化 MQTT 任务层
  *
  * 注册 plat_mqtt 设备、配置 broker、注册数据回调并启动连接
- * broker 为占位 URL 时连接会失败，只 LOG_WARN 不崩溃
+ * broker 为占位 URL 时连接会失败，只 EK_LOG_WARN 不崩溃
  */
 void app_mqtt_init(void);
 

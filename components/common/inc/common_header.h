@@ -22,15 +22,9 @@ extern "C"
 
 #include "esp_log.h"
 #include "esp_err.h"
+#include "ek_log.h"
 
-#define FILE_TAG(x)           static const char *__LOG_TAG__ = x
-
-#define LOG_DEBUG(fmt, ...)   ESP_LOGD(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
-#define LOG_INFO(fmt, ...)    ESP_LOGI(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
-#define LOG_WARN(fmt, ...)    ESP_LOGW(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
-#define LOG_ERROR(fmt, ...)   ESP_LOGE(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
-#define LOG_VERBOSE(fmt, ...) ESP_LOGV(__LOG_TAG__, "[L:%d F:%s]:" fmt, __LINE__, __func__, ##__VA_ARGS__)
-#define TODO(fmt, ...)        LOG_WARN("TODO: " fmt, ##__VA_ARGS__)
+#define TODO(fmt, ...) EK_LOG_WARN("TODO: " fmt, ##__VA_ARGS__)
 
 // 调试开关：串口命令台（esp_console）
 // 设为 1 启用 weather / weather_demo 等串口命令，设为 0 禁用

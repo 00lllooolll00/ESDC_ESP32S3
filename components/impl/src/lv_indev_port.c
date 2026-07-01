@@ -3,7 +3,7 @@
 #include "impl_touch.h"
 #include "ek_export.h"
 
-FILE_TAG("lv_indev_port.c");
+EK_LOG_FILE_TAG("lv_indev_port.c");
 
 // tocuh
 static void _plat_touch_isr_cb(void);
@@ -16,7 +16,7 @@ static lv_indev_t **s_touchs;
 
 void lv_port_touch_init(void)
 {
-    LOG_INFO("ek_export: APP lv_port_touch_init");
+    EK_LOG_INFO("ek_export: APP lv_port_touch_init");
     plat_touch_dev_t *dev = impl_touch_dev();
     uint8_t count = IMPL_TOUCH_POINT_MAX;
     assert(dev);
@@ -49,7 +49,7 @@ static void _plat_touch_isr_cb(void)
     int err = plat_touch_dev_read(s_touch_dev);
     if (err)
     {
-        LOG_WARN("fail to read touch dev by i2c:%s", unified_strerror(err));
+        EK_LOG_WARN("fail to read touch dev by i2c:%s", unified_strerror(err));
         return;
     }
 

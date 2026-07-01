@@ -2,7 +2,7 @@
 #include "bsp_rgblcd.h"
 #include "ek_export.h"
 
-FILE_TAG("impl_rgblcd.c");
+EK_LOG_FILE_TAG("impl_rgblcd.c");
 
 static int _lcd_dev_init(void);
 static int _lcd_dev_deinit(void);
@@ -39,7 +39,7 @@ plat_lcd_dev_t *impl_rgblcd_dev(void)
 // 设备注册：无参，供 EK_EXPORT_COMPONENTS 自动调用
 static void impl_rgblcd_register(void)
 {
-    LOG_INFO("ek_export: COMPONENTS impl_rgblcd_register");
+    EK_LOG_INFO("ek_export: COMPONENTS impl_rgblcd_register");
     plat_lcd_dev_register(&s_lcd_dev, "lcd", &s_lcd_base_ops, &s_lcd_ops, BSP_RGBLCD_WIDTH, BSP_RGBLCD_HEIGHT, NULL);
 }
 

@@ -1,7 +1,7 @@
 #include "bsp_audio.h"
 #include "bsp_i2c.h"
 
-FILE_TAG("bsp_audio.c");
+EK_LOG_FILE_TAG("bsp_audio.c");
 
 static esp_err_t _write_reg(uint8_t reg_addr, uint8_t data);
 static esp_err_t _read_reg(uint8_t reg_addr, uint8_t *pdata);
@@ -45,17 +45,17 @@ int bsp_audio_init(void)
 
     if (temp != ESP_OK)
     {
-        LOG_ERROR("fail to init audio");
+        EK_LOG_ERROR("fail to init audio");
         return 1;
     }
     else
     {
-        LOG_INFO("successfully init the audio");
-        bsp_audio_adda_cfg(1, 0);    /* 开启DAC，关闭ADC（仅需播放）*/
-        bsp_audio_input_cfg(0);     /* 关闭录音输入 */
+        EK_LOG_INFO("successfully init the audio");
+        bsp_audio_adda_cfg(1, 0); /* 开启DAC，关闭ADC（仅需播放）*/
+        bsp_audio_input_cfg(0); /* 关闭录音输入 */
         bsp_audio_output_cfg(1, 1); /* 开启输出通道1、2 */
-        bsp_audio_hpvol_set(24);    /* 耳机音量（中等，0~33）*/
-        bsp_audio_spkvol_set(24);   /* 喇叭音量（中等，0~33）*/
+        bsp_audio_hpvol_set(24); /* 耳机音量（中等，0~33）*/
+        bsp_audio_spkvol_set(24); /* 喇叭音量（中等，0~33）*/
         vTaskDelay(pdMS_TO_TICKS(100));
         return 0;
     }
