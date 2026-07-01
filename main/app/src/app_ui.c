@@ -23,7 +23,7 @@ void app_ui_init(void)
 }
 
 // UI 初始化：加载字体/screens、起 gui task；依赖 LVGL disp/touch port 完成
-EK_EXPORT_APP(app_ui_init, 4);
+// EK_EXPORT_APP(app_ui_init, 4);
 static void _app_ui_task(void *arg)
 {
     while (1)

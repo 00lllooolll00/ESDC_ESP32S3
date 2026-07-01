@@ -90,6 +90,7 @@ void bsp_i2s_trx_stop(void)
  * @brief       设置采样率和位宽
  * @param       sampleRate  :采样率
  * @param       bits_sample :位宽
+ * @note       当前 TTS/ES8388 播放链路使用 16bit 数据，MCLK 默认按 256fs 配置；仅 24bit 场景才需要重新评估 384fs。
  * @retval      无
  */
 void bsp_i2s_set_samplerate_bits_sample(int samplerate, int bits_sample)

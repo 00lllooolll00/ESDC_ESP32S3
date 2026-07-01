@@ -15,7 +15,7 @@ void bsp_led_init(void)
     bsp_exio_conifg_pin(&led_config);
     led_config.pin = BSP_LED_B_PIN;
     bsp_exio_conifg_pin(&led_config);
-    bsp_led_set(1);
+    bsp_led_set(0);
 
     EK_LOG_INFO("bsp led init ok");
 }

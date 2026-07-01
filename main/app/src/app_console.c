@@ -1,6 +1,7 @@
 #include "app_console.h"
-#include "ek_export.h"
+#include "app_tts.h"
 #include "app_weather.h"
+#include "ek_export.h"
 #include "esp_console.h"
 #include "esp_log.h"
 #include <stdio.h>
@@ -70,6 +71,39 @@ static int _cmd_weather_demo(int argc, char **argv)
     // 演示数据：20.0°C..28.0°C（×10）
     static const int16_t demo[] = { 200, 210, 230, 250, 270, 280, 270, 250, 230, 210 };
     app_weather_set_forecast(demo, sizeof(demo) / sizeof(demo[0]));
+    return 0;
+}
+
+// tts 命令：播放输入文本
+// 用法：tts 你好，欢迎使用语音播报
+static int _cmd_tts(int argc, char **argv)
+{
+    if (argc < 2)
+    {
+        printf("usage: tts <text>\n");
+        return 1;
+    }
+
+    char text[128];
+    size_t used = 0;
+    text[0] = '\0';
+    for (int i = 1; i < argc && used < sizeof(text) - 1; i++)
+    {
+        int written = snprintf(text + used, sizeof(text) - used, "%s%s", i == 1 ? "" : " ", argv[i]);
+        if (written < 0)
+        {
+            return 1;
+        }
+        if ((size_t)written >= sizeof(text) - used)
+        {
+            used = sizeof(text) - 1;
+            break;
+        }
+        used += (size_t)written;
+    }
+
+    app_tts_say(text);
+    printf("tts queued: %s\n", text);
     return 0;
 }
 
@@ -168,6 +202,15 @@ void app_console_init(void)
     };
     ESP_ERROR_CHECK(esp_console_cmd_register(&demo_cmd));
 
+    // 注册 tts 命令
+    const esp_console_cmd_t tts_cmd = {
+        .command = "tts",
+        .help = "Speak text, e.g. tts ni hao",
+        .hint = NULL,
+        .func = _cmd_tts,
+    };
+    ESP_ERROR_CHECK(esp_console_cmd_register(&tts_cmd));
+
     // 起 console task
     BaseType_t xret = xTaskCreatePinnedToCore(_console_task, "console", 4096, NULL, 2, NULL, 0);
     if (xret != pdTRUE)
@@ -180,4 +223,4 @@ void app_console_init(void)
 #endif // APP_DEBUG_CONSOLE
 }
 
-// EK_EXPORT_APP(app_console_init, 6);
+EK_EXPORT_APP(app_console_init, 6);

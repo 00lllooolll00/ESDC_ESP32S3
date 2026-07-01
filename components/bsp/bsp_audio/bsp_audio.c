@@ -54,8 +54,7 @@ int bsp_audio_init(void)
         bsp_audio_adda_cfg(1, 0); /* 开启DAC，关闭ADC（仅需播放）*/
         bsp_audio_input_cfg(0); /* 关闭录音输入 */
         bsp_audio_output_cfg(1, 1); /* 开启输出通道1、2 */
-        bsp_audio_hpvol_set(24); /* 耳机音量（中等，0~33）*/
-        bsp_audio_spkvol_set(24); /* 喇叭音量（中等，0~33）*/
+        bsp_audio_spkvol_set(30); /* 喇叭音量（较低，0~33）*/
         vTaskDelay(pdMS_TO_TICKS(100));
         return 0;
     }

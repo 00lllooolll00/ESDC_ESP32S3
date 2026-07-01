@@ -65,8 +65,9 @@ static int _tts_dev_init(void)
     bsp_audio_init();
     bsp_i2s_init();
     bsp_i2s_set_samplerate_bits_sample(TTS_SAMPLE_RATE, TTS_BIT_WIDTH);
-    /* 使能喇叭功放 */
-    _tts_enable_amp(1);
+
+    /* 初始化后默认关闭功放，播放时再打开 */
+    _tts_enable_amp(0);
 
     /* 2. 从 vfs 加载 voice 数据到 PSRAM */
     FILE *fp = fopen(TTS_VOICE_PATH, "rb");
@@ -123,6 +124,9 @@ static int _tts_speak(const char *text)
     {
         return -1;
     }
+
+    _tts_enable_amp(1);
+
     /* 确保采样率匹配 TTS（16kHz/16bit）*/
     bsp_i2s_set_samplerate_bits_sample(TTS_SAMPLE_RATE, TTS_BIT_WIDTH);
 
@@ -150,13 +154,24 @@ static int _tts_speak(const char *text)
             }
         } while (len[0] > 0);
     }
+    vTaskDelay(pdMS_TO_TICKS(50));
+    _tts_enable_amp(0);
+
     return 0;
 }
 
 static int _tts_enable_amp(int enable)
 {
-    __EK_UNUSED(enable);
-    EK_LOG_WARN("PA_EN is not assigned on current IO map");
+    bsp_exio_pin_config_t amp_config = {
+        .pin = BSP_EXIO_NUM3,
+        .mode = BSP_EXIO_PIN_MODE_OUTPUT,
+    };
+    bsp_exio_conifg_pin(&amp_config);
+
+    // MD8002A SHUTDOWN 当前板级连接为低电平驱动喇叭
+    uint8_t level = enable ? 0 : 1;
+    bsp_exio_write_pin(BSP_EXIO_NUM3, level);
+    EK_LOG_INFO("PA_EN(EXIO3)=%d, amp_enable=%d", level, enable ? 1 : 0);
     return 0;
 }
 

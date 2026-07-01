@@ -1,4 +1,5 @@
 #include "app_tts.h"
+#include "ek_export.h"
 #include "plat_tts.h"
 #include "impl_tts.h"
 
@@ -21,14 +22,15 @@ static void _app_tts_task(void *arg);
 static QueueHandle_t s_tts_queue = NULL;
 static TaskHandle_t s_tts_handle = NULL;
 
-// 注：app_tts_init 当前未注册到 EK_EXPORT（保持不启动，省 esp-sr 资源）。
-// 需要时在此处加 EK_EXPORT_APP(app_tts_init, 3) 即可启用。
+// 初始化 TTS 应用任务，供 console/UI 调用 app_tts_say 播放文本
 void app_tts_init(void)
 {
     s_tts_queue = xQueueCreate(APP_TTS_QUEUE_LEN, sizeof(tts_msg_t));
     assert(s_tts_queue);
     xTaskCreate(_app_tts_task, "app tts", APP_TTS_STACK_SIZE, NULL, APP_TTS_PRIORITY, &s_tts_handle);
 }
+
+EK_EXPORT_APP(app_tts_init, 5);
 
 void app_tts_say(const char *text)
 {

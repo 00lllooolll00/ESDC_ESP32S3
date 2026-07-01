@@ -42,7 +42,7 @@ void lv_port_touch_init(void)
     plat_touch_dev_cb_register(dev, _plat_touch_isr_cb);
 }
 // APP 层注册：依赖 lv_init、disp port（indev 需绑定已创建的 display）与 touch register
-EK_EXPORT_APP(lv_port_touch_init, 2);
+// EK_EXPORT_APP(lv_port_touch_init, 2);
 
 static void _plat_touch_isr_cb(void)
 {

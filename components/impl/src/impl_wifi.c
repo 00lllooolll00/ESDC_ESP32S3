@@ -51,7 +51,7 @@ static void impl_wifi_register(void)
     plat_wifi_dev_register(&s_wifi_dev, "wifi", &s_wifi_base_ops, &s_wifi_ops, NULL);
 }
 
-EK_EXPORT_COMPONENTS(impl_wifi_register, 0);
+// EK_EXPORT_COMPONENTS(impl_wifi_register, 0);
 static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 static uint8_t s_retry_count;
 static bool s_wifi_started;

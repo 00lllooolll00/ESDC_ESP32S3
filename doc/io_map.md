@@ -96,7 +96,7 @@
 | `EXIO0` | RGB LED 红 | `RGB_R` | 高电平点亮 |
 | `EXIO1` | RGB LED 绿 | `RGB_G` | 高电平点亮 |
 | `EXIO2` | RGB LED 蓝 | `RGB_B` | 高电平点亮；原 `PA_EN` 位置已占用 |
-| `EXIO3` | 预留 | — | 未分配 |
+| `EXIO3` | 功放使能 | `PA_EN` / `MD8002A_SHUTDOWN` | 低电平驱动喇叭，高电平关断 |
 | `EXIO4` | 触摸复位 | `TOUCH_RST` | 低有效 |
 | `EXIO5` | 按键 1 | `KEY_1` | 慢速输入，需上拉 |
 | `EXIO6` | 按键 2 | `KEY_2` | 慢速输入，需上拉 |
@@ -204,6 +204,7 @@ ESP32-S3
 ├── I2C0 (IO41/42) ─── XL9555 (0x20) ─┬── EXIO0 → RGB_R
 │                        │              ├── EXIO1 → RGB_G
 │                        │              ├── EXIO2 → RGB_B
+│                        │              ├── EXIO3 → PA_EN / MD8002A_SHUTDOWN
 │                        │              ├── EXIO4 → TOUCH_RST
 │                        │              ├── EXIO5 → KEY_1
 │                        │              ├── EXIO6 → KEY_2
@@ -211,7 +212,7 @@ ESP32-S3
 │                        │              ├── EXIO8 → LCD_BL_EN
 │                        │              └── EXIO9~15 → H1 排针预留
 │                        │
-│                        └── ES8388 (0x10) ─── 模拟输出 → 功放（PA_EN 未分配）→ 喇叭
+│                        └── ES8388 (0x10) ─── 模拟输出 → MD8002A 功放（EXIO3 PA_EN）→ 喇叭
 │
 ├── I2C1 (IO38=SDA, IO39=SCL) ─── 触摸 IC
 │

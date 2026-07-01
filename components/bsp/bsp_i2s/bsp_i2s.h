@@ -19,7 +19,7 @@ extern "C"
 
 #define BSP_I2S_RECV_BUF_SIZE (2400)
 #define BSP_I2S_SAMPLE_RATE   (44100)
-#define BSP_I2S_MCLK_MULTIPLE (384)
+#define BSP_I2S_MCLK_MULTIPLE (256)
 
 void bsp_i2s_init(void);
 void bsp_i2s_deinit(void);

@@ -12,7 +12,10 @@ TaskHandle_t g_led_handle;
 void app_led_init(void)
 {
     EK_LOG_INFO("ek_export: APP app_led_init");
-    xTaskCreate(_app_led_task, "app led", 2048, NULL, 1, &g_led_handle);
+    plat_led_dev_init(impl_led_r_dev());
+    plat_led_dev_init(impl_led_g_dev());
+    plat_led_dev_init(impl_led_b_dev());
+    // xTaskCreate(_app_led_task, "app led", 2048, NULL, 1, &g_led_handle);
 }
 
 EK_EXPORT_APP(app_led_init, 3);
