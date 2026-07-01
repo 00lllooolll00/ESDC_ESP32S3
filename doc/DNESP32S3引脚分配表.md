@@ -1,305 +1,50 @@
-<table>
-  <tr>
-    <th colspan="6"><p>广州市星翼电子科技有限公司（正点原子）</p></th>
-  </tr>
-  <tr>
-    <td colspan="6"><p>DNESP32S3 IO资源分配表</p></td>
-  </tr>
-  <tr>
-    <td><p>引脚编号</p></td>
-    <td><p>GPIO</p></td>
-    <td colspan="2"><p>连接资源</p></td>
-    <td><p>完全
-独立</p></td>
-    <td><p>连接关系说明</p></td>
-  </tr>
-  <tr>
-    <td><p>4</p></td>
-    <td><p>IO4</p></td>
-    <td><p>LCD_DE</p></td>
-    <td><p>OV_D0</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的DE信号<br>2，	摄像头的D0信号</p></td>
-  </tr>
-  <tr>
-    <td><p>5</p></td>
-    <td><p>IO5</p></td>
-    <td><p>LCD_CLK</p></td>
-    <td><p>OV_D1</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的CLK信号<br>2，	摄像头的D1信号</p></td>
-  </tr>
-  <tr>
-    <td><p>6</p></td>
-    <td><p>IO6</p></td>
-    <td><p>LCD_B7</p></td>
-    <td><p>OV_D2</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的B7信号<br>2，	摄像头的D2信号</p></td>
-  </tr>
-  <tr>
-    <td><p>7</p></td>
-    <td><p>IO7</p></td>
-    <td><p>LCD_B6</p></td>
-    <td><p>OV_D3</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的B6信号<br>2，	摄像头的D3信号</p></td>
-  </tr>
-  <tr>
-    <td><p>8</p></td>
-    <td><p>IO15</p></td>
-    <td><p>LCD_B5</p></td>
-    <td><p>OV_D4</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的B5信号<br>2，	摄像头的D4信号</p></td>
-  </tr>
-  <tr>
-    <td><p>9</p></td>
-    <td><p>IO16</p></td>
-    <td><p>LCD_B4</p></td>
-    <td><p>OV_D5</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的B4信号<br>2，	摄像头的D5信号</p></td>
-  </tr>
-  <tr>
-    <td><p>10</p></td>
-    <td><p>IO17</p></td>
-    <td><p>LCD_B3</p></td>
-    <td><p>OV_D6</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的B3信号<br>2，	摄像头的D6信号</p></td>
-  </tr>
-  <tr>
-    <td><p>11</p></td>
-    <td><p>IO18</p></td>
-    <td><p>LCD_G7</p></td>
-    <td><p>OV_D7</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的G7信号<br>2，	摄像头的D7信号</p></td>
-  </tr>
-  <tr>
-    <td><p>12</p></td>
-    <td><p>IO8</p></td>
-    <td><p>LCD_G5、ADC_IN</p></td>
-    <td><p>REMOTE_OUT</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的G6信号<br>2，	ADC输入信号<br>3，	红外发送信号</p></td>
-  </tr>
-  <tr>
-    <td><p>13</p></td>
-    <td><p>IO19</p></td>
-    <td><p>USB_D-</p></td>
-    <td><p>USB_D-</p></td>
-    <td><p>N</p></td>
-    <td rowspan="2"><p>USB</p></td>
-  </tr>
-  <tr>
-    <td><p>14</p></td>
-    <td><p>IO20</p></td>
-    <td><p>USB_D+</p></td>
-    <td><p>USB_D+</p></td>
-    <td><p>N</p></td>
-  </tr>
-  <tr>
-    <td><p>15</p></td>
-    <td><p>IO3</p></td>
-    <td><p>LCD_G5</p></td>
-    <td><p>I2S_MCLK</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的G5信号<br>2，	音频的MCLK信号</p></td>
-  </tr>
-  <tr>
-    <td><p>16</p></td>
-    <td><p>IO46</p></td>
-    <td><p>LCD_G4</p></td>
-    <td><p>I2S_SCK</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的G4信号<br>2，	音频的SCK信号</p></td>
-  </tr>
-  <tr>
-    <td><p>17</p></td>
-    <td><p>IO9</p></td>
-    <td><p>LCD_G3</p></td>
-    <td><p>I2S_LRCK</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的G3信号<br>2，	音频的LRCK信号</p></td>
-  </tr>
-  <tr>
-    <td><p>18</p></td>
-    <td><p>IO10</p></td>
-    <td><p>LCD_G2</p></td>
-    <td><p>I2S_SDIN</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的G2信号<br>2，	音频的SDIN信号</p></td>
-  </tr>
-  <tr>
-    <td><p>19</p></td>
-    <td><p>IO11</p></td>
-    <td><p>SPI_MOSI</p></td>
-    <td><p>SPI_MOSI</p></td>
-    <td><p>N</p></td>
-    <td><p>SPI2口的MOSI信号</p></td>
-  </tr>
-  <tr>
-    <td><p>20</p></td>
-    <td><p>IO12</p></td>
-    <td><p>SPI_SCK</p></td>
-    <td><p>SPI_SCK</p></td>
-    <td><p>N</p></td>
-    <td><p>SPI2口的SCK信号</p></td>
-  </tr>
-  <tr>
-    <td><p>21</p></td>
-    <td><p>IO13</p></td>
-    <td><p>SPI_MISO</p></td>
-    <td><p>SPI_MISO</p></td>
-    <td><p>N</p></td>
-    <td><p>SPI2口的MISO信号</p></td>
-  </tr>
-  <tr>
-    <td><p>22</p></td>
-    <td><p>IO14</p></td>
-    <td><p>LCD_R7</p></td>
-    <td><p>I2S_SDOUT</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的R7信号<br>2，	音频的SDOUT信号</p></td>
-  </tr>
-  <tr>
-    <td><p>23</p></td>
-    <td><p>IO21</p></td>
-    <td><p>LCD_R6</p></td>
-    <td><p>LCD_CS</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的R6信号<br>2，	SPILCD的CS信号</p></td>
-  </tr>
-  <tr>
-    <td><p>24</p></td>
-    <td><p>IO47</p></td>
-    <td><p>LCD_R5</p></td>
-    <td><p>OV_VSYNC</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的R5信号<br>2，	摄像头的VSYNC信号</p></td>
-  </tr>
-  <tr>
-    <td><p>25</p></td>
-    <td><p>IO48</p></td>
-    <td><p>LCD_R4</p></td>
-    <td><p>OV_HREF</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的R4信号<br>2，	摄像头的HREF信号</p></td>
-  </tr>
-  <tr>
-    <td><p>26</p></td>
-    <td><p>IO45</p></td>
-    <td><p>LCD_R3</p></td>
-    <td><p>OV_PCLK</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	RGBLCD的R3信号<br>2，	摄像头的PCLK信号</p></td>
-  </tr>
-  <tr>
-    <td><p>27</p></td>
-    <td><p>IO0</p></td>
-    <td><p>IIC_INT、BOOT</p></td>
-    <td><p>1WIRE_DQ</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	XL9555的INT信号<br>2，	BOOT按键信号<br>3，	DHT11/DS18B20信号</p></td>
-  </tr>
-  <tr>
-    <td><p>28</p></td>
-    <td><p>IO35</p></td>
-    <td><p></p></td>
-    <td><p></p></td>
-    <td><p>Y</p></td>
-    <td rowspan="3"><p>不可用</p></td>
-  </tr>
-  <tr>
-    <td><p>29</p></td>
-    <td><p>IO36</p></td>
-    <td><p></p></td>
-    <td><p></p></td>
-    <td><p>Y</p></td>
-  </tr>
-  <tr>
-    <td><p>30</p></td>
-    <td><p>IO37</p></td>
-    <td><p></p></td>
-    <td><p></p></td>
-    <td><p>Y</p></td>
-  </tr>
-  <tr>
-    <td><p>31</p></td>
-    <td><p>IO38</p></td>
-    <td><p>CT_SCL</p></td>
-    <td><p>OV_SCL</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	触摸IC的SCL信号<br>2，	摄像头的SCL信号</p></td>
-  </tr>
-  <tr>
-    <td><p>32</p></td>
-    <td><p>IO39</p></td>
-    <td><p>CT_SDA</p></td>
-    <td><p>OV_SDA</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	触摸IC的SDA信号<br>2，	摄像头的SDA信号</p></td>
-  </tr>
-  <tr>
-    <td><p>33</p></td>
-    <td><p>IO40</p></td>
-    <td><p>CT_INT</p></td>
-    <td><p>LCD_DC</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	触摸IC的INT信号<br>2，	SPILCD的DC信号</p></td>
-  </tr>
-  <tr>
-    <td><p>34</p></td>
-    <td><p>IO41</p></td>
-    <td><p>IIC_SDA</p></td>
-    <td><p>IIC_SDA</p></td>
-    <td><p>N</p></td>
-    <td><p>IIC0的SDA信号</p></td>
-  </tr>
-  <tr>
-    <td><p>35</p></td>
-    <td><p>IO42</p></td>
-    <td><p>IIC_SCL</p></td>
-    <td><p>IIC_SCL</p></td>
-    <td><p>N</p></td>
-    <td><p>IIC0的SCL信号</p></td>
-  </tr>
-  <tr>
-    <td><p>36</p></td>
-    <td><p>RXD0</p></td>
-    <td><p>U1RXD</p></td>
-    <td><p>U0RXD</p></td>
-    <td><p>N</p></td>
-    <td rowspan="2"><p>UART0</p></td>
-  </tr>
-  <tr>
-    <td><p>37</p></td>
-    <td><p>TXD0</p></td>
-    <td><p>U1TXD</p></td>
-    <td><p>U0TXD</p></td>
-    <td><p>N</p></td>
-  </tr>
-  <tr>
-    <td><p>38</p></td>
-    <td><p>IO2</p></td>
-    <td><p>TF_CS</p></td>
-    <td><p>REMOTE_IN</p></td>
-    <td><p>N</p></td>
-    <td><p>1，	触摸IC的CS信号<br>2，	红外发送信号</p></td>
-  </tr>
-  <tr>
-    <td><p>39</p></td>
-    <td><p>IO1</p></td>
-    <td><p>LED1</p></td>
-    <td><p>LED0</p></td>
-    <td><p>N</p></td>
-    <td><p>LED信号</p></td>
-  </tr>
-  <tr>
-    <td rowspan="2" colspan="6"><p><strong>   引脚编号：</strong><strong>对应DNESP32S3的引脚编号<br>      </strong><strong>GPIO：</strong><strong>DNESP32S3的IO口<br>   </strong><strong>完全独立：</strong><strong>指该IO通过一定的方法，可以达到完全悬空的效果（即不接任何其他外设，且不接任何上拉/下拉电阻）<br></strong><strong>连接关系说明：</strong><strong>说明每个IO口与外设的连接关系<br>   </strong><strong>使用提示：</strong><strong>介绍每个IO的特点和使用方法，方便大家掌握开发板每一个IO口的使用</strong></p></td>
-  </tr>
-  <tr>
-  </tr>
-</table>
+## Sheet1
+| 广州市星翼电子科技有限公司（正点原子） | Unnamed: 1 | Unnamed: 2 | Unnamed: 3 | Unnamed: 4 | Unnamed: 5 |
+| --- | --- | --- | --- | --- | --- |
+| DNESP32S3 IO资源分配表 | NaN | NaN | NaN | NaN | NaN |
+| 引脚编号 | GPIO | 连接资源 | NaN | 完全\n独立 | 连接关系说明 |
+| 4 | IO4 | LCD\_DE | OV\_D0 | N | 1，\tRGBLCD的DE信号\n2，\t摄像头的D0信号 |
+| 5 | IO5 | LCD\_CLK | OV\_D1 | N | 1，\tRGBLCD的CLK信号\n2，\t摄像头的D1信号 |
+| 6 | IO6 | LCD\_B7 | OV\_D2 | N | 1，\tRGBLCD的B7信号\n2，\t摄像头的D2信号 |
+| 7 | IO7 | LCD\_B6 | OV\_D3 | N | 1，\tRGBLCD的B6信号\n2，\t摄像头的D3信号 |
+| 8 | IO15 | LCD\_B5 | OV\_D4 | N | 1，\tRGBLCD的B5信号\n2，\t摄像头的D4信号 |
+| 9 | IO16 | LCD\_B4 | OV\_D5 | N | 1，\tRGBLCD的B4信号\n2，\t摄像头的D5信号 |
+| 10 | IO17 | LCD\_B3 | OV\_D6 | N | 1，\tRGBLCD的B3信号\n2，\t摄像头的D6信号 |
+| 11 | IO18 | LCD\_G7 | OV\_D7 | N | 1，\tRGBLCD的G7信号\n2，\t摄像头的D7信号 |
+| 12 | IO8 | LCD\_G5、ADC\_IN | REMOTE\_OUT | N | 1，\tRGBLCD的G6信号\n2，\tADC输入信号\n3，\t红外发送信号 |
+| 13 | IO19 | USB\_D- | USB\_D- | N | USB |
+| 14 | IO20 | USB\_D+ | USB\_D+ | N | NaN |
+| 15 | IO3 | LCD\_G5 | I2S\_MCLK | N | 1，\tRGBLCD的G5信号\n2，\t音频的MCLK信号 |
+| 16 | IO46 | LCD\_G4 | I2S\_SCK | N | 1，\tRGBLCD的G4信号\n2，\t音频的SCK信号 |
+| 17 | IO9 | LCD\_G3 | I2S\_LRCK | N | 1，\tRGBLCD的G3信号\n2，\t音频的LRCK信号 |
+| 18 | IO10 | LCD\_G2 | I2S\_SDIN | N | 1，\tRGBLCD的G2信号\n2，\t音频的SDIN信号 |
+| 19 | IO11 | SPI\_MOSI | SPI\_MOSI | N | SPI2口的MOSI信号 |
+| 20 | IO12 | SPI\_SCK | SPI\_SCK | N | SPI2口的SCK信号 |
+| 21 | IO13 | SPI\_MISO | SPI\_MISO | N | SPI2口的MISO信号 |
+| 22 | IO14 | LCD\_R7 | I2S\_SDOUT | N | 1，\tRGBLCD的R7信号\n2，\t音频的SDOUT信号 |
+| 23 | IO21 | LCD\_R6 | LCD\_CS | N | 1，\tRGBLCD的R6信号\n2，\tSPILCD的CS信号 |
+| 24 | IO47 | LCD\_R5 | OV\_VSYNC | N | 1，\tRGBLCD的R5信号\n2，\t摄像头的VSYNC信号 |
+| 25 | IO48 | LCD\_R4 | OV\_HREF | N | 1，\tRGBLCD的R4信号\n2，\t摄像头的HREF信号 |
+| 26 | IO45 | LCD\_R3 | OV\_PCLK | N | 1，\tRGBLCD的R3信号\n2，\t摄像头的PCLK信号 |
+| 27 | IO0 | IIC\_INT、BOOT | 1WIRE\_DQ | N | 1，\tXL9555的INT信号\n2，\tBOOT按键信号\n3，\tDHT11/DS18B20信号 |
+| 28 | IO35 | NaN | NaN | Y | 不可用 |
+| 29 | IO36 | NaN | NaN | Y | NaN |
+| 30 | IO37 | NaN | NaN | Y | NaN |
+| 31 | IO38 | CT\_SDA | OV\_SDA | N | 1，\t触摸IC的SDA信号\n2，\t摄像头的SDA信号 |
+| 32 | IO39 | CT\_SCL | OV\_SCL | N | 1，\t触摸IC的SCL信号\n2，\t摄像头的SCL信号 |
+| 33 | IO40 | CT\_INT | LCD\_DC | N | 1，\t触摸IC的INT信号\n2，\tSPILCD的DC信号 |
+| 34 | IO41 | IIC\_SDA | IIC\_SDA | N | IIC0的SDA信号 |
+| 35 | IO42 | IIC\_SCL | IIC\_SCL | N | IIC0的SCL信号 |
+| 36 | RXD0 | U1RXD | U0RXD | N | UART0 |
+| 37 | TXD0 | U1TXD | U0TXD | N | NaN |
+| 38 | IO2 | TF\_CS | REMOTE\_IN | N | 1，\t触摸IC的CS信号\n2，\t红外发送信号 |
+| 39 | IO1 | LED1 | LED0 | N | LED信号 |
+| 引脚编号：对应DNESP32S3的引脚编号\n GPIO：DNESP32S3的IO口\n 完全独立：指该IO通过一定的方法，可以达到完全悬空的效果（即不接任何其他外设，且不接任何上拉/下拉电阻）\n连接关系说明：说明每个IO口与外设的连接关系\n 使用提示：介绍每个IO的特点和使用方法，方便大家掌握开发板每一个IO口的使用 | NaN | NaN | NaN | NaN | NaN |
+
+## Sheet2
+|
+|  |
+
+## Sheet3
+|
+|  |

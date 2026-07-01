@@ -47,10 +47,10 @@
 
 | IO / EXIO | 信号 | 备注 |
 |---|---|---|
-| `IO38` | `CT_SCL` | 触摸 I2C1 时钟 |
-| `IO39` | `CT_SDA` | 触摸 I2C1 数据 |
+| `IO38` | `CT_SDA` | 触摸 I2C1 数据 |
+| `IO39` | `CT_SCL` | 触摸 I2C1 时钟 |
 | `IO40` | `CT_INT` | 触摸中断输入 |
-| `EXIO9` | `CT_RST` | 触摸复位，低有效 |
+| `EXIO4` | `CT_RST` | 触摸复位，低有效 |
 
 ---
 
@@ -60,6 +60,8 @@
 |---|---|---|---|
 | `IO41` | `I2C0_SDA` | ES8388 + XL9555 | 共用 I2C 总线 |
 | `IO42` | `I2C0_SCL` | ES8388 + XL9555 | 共用 I2C 总线 |
+
+> `PA_EN` 当前未分配到 XL9555；原 `EXIO2` 已改为 `RGB_B`，如需功放使能需另行分配控制脚。
 
 ---
 
@@ -91,21 +93,21 @@
 
 | EXIO | 用途 | 信号名 | 备注 |
 |---|---|---|---|
-| `EXIO0` | 预留 | — | 未分配 |
-| `EXIO1` | 预留 | — | 未分配 |
-| `EXIO2` | 功放使能 | `PA_EN` | 高有效 |
-| `EXIO3` | RGB LED 红 | `RGB_R` | 高电平点亮 |
-| `EXIO4` | RGB LED 绿 | `RGB_G` | 高电平点亮 |
-| `EXIO5` | RGB LED 蓝 | `RGB_B` | 高电平点亮 |
-| `EXIO6` | 按键 0 | `KEY_0` | 慢速输入，需上拉 |
-| `EXIO7` | 按键 1 | `KEY_1` | 慢速输入，需上拉 |
+| `EXIO0` | RGB LED 红 | `RGB_R` | 高电平点亮 |
+| `EXIO1` | RGB LED 绿 | `RGB_G` | 高电平点亮 |
+| `EXIO2` | RGB LED 蓝 | `RGB_B` | 高电平点亮；原 `PA_EN` 位置已占用 |
+| `EXIO3` | 预留 | — | 未分配 |
+| `EXIO4` | 触摸复位 | `TOUCH_RST` | 低有效 |
+| `EXIO5` | 按键 1 | `KEY_1` | 慢速输入，需上拉 |
+| `EXIO6` | 按键 2 | `KEY_2` | 慢速输入，需上拉 |
+| `EXIO7` | 按键 3 | `KEY_3` | 慢速输入，需上拉 |
 
 ### 6.3 XL9555 P1 口（高 8 位）
 
 | EXIO | 用途 | 信号名 | 备注 |
 |---|---|---|---|
 | `EXIO8` | 背光总使能 | `LCD_BL_EN` | 高有效 |
-| `EXIO9` | 触摸复位 | `TOUCH_RST` | 低有效 |
+| `EXIO9` | 预留 | — | 引出到排针 H1 |
 | `EXIO10` | 预留 | — | 引出到排针 H1 |
 | `EXIO11` | 预留 | — | 引出到排针 H1 |
 | `EXIO12` | 预留 | — | 引出到排针 H1 |
@@ -178,8 +180,8 @@
 | `IO20` | 已用 | LCD BL_PWM（占 USB D+） |
 | `IO21` | 已用 | LCD R6 |
 | `IO26` ~ `IO37` | **禁用** | Octal PSRAM |
-| `IO38` | 已用 | Touch I2C1 SCL |
-| `IO39` | 已用 | Touch I2C1 SDA |
+| `IO38` | 已用 | Touch I2C1 SDA |
+| `IO39` | 已用 | Touch I2C1 SCL |
 | `IO40` | 已用 | Touch INT |
 | `IO41` | 已用 | I2C0 SDA |
 | `IO42` | 已用 | I2C0 SCL |
@@ -199,19 +201,19 @@
 
 ```
 ESP32-S3
-├── I2C0 (IO41/42) ─── XL9555 (0x20) ─┬── EXIO2 → PA_EN
-│                        │              ├── EXIO3 → RGB_R
-│                        │              ├── EXIO4 → RGB_G
-│                        │              ├── EXIO5 → RGB_B
-│                        │              ├── EXIO6 → KEY_0
-│                        │              ├── EXIO7 → KEY_1
+├── I2C0 (IO41/42) ─── XL9555 (0x20) ─┬── EXIO0 → RGB_R
+│                        │              ├── EXIO1 → RGB_G
+│                        │              ├── EXIO2 → RGB_B
+│                        │              ├── EXIO4 → TOUCH_RST
+│                        │              ├── EXIO5 → KEY_1
+│                        │              ├── EXIO6 → KEY_2
+│                        │              ├── EXIO7 → KEY_3
 │                        │              ├── EXIO8 → LCD_BL_EN
-│                        │              ├── EXIO9 → TOUCH_RST
-│                        │              └── EXIO10~15 → H1 排针预留
+│                        │              └── EXIO9~15 → H1 排针预留
 │                        │
-│                        └── ES8388 (0x10) ─── 模拟输出 → 功放 → 喇叭
+│                        └── ES8388 (0x10) ─── 模拟输出 → 功放（PA_EN 未分配）→ 喇叭
 │
-├── I2C1 (IO38/39) ─── 触摸 IC
+├── I2C1 (IO38=SDA, IO39=SCL) ─── 触摸 IC
 │
 ├── I2S (IO1/2/11/12/13) ─── ES8388
 │
