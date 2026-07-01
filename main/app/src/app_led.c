@@ -21,22 +21,13 @@ static void _app_led_task(void *arg)
 {
     while (1)
     {
-        LOG_INFO("red");
-        plat_led_dev_set(impl_led_r_dev(), 1);
-        plat_led_dev_set(impl_led_g_dev(), 0);
-        plat_led_dev_set(impl_led_b_dev(), 0);
+        plat_led_dev_toggle(impl_led_r_dev());
         vTaskDelay(pdMS_TO_TICKS(500));
 
-        LOG_INFO("green");
-        plat_led_dev_set(impl_led_r_dev(), 0);
-        plat_led_dev_set(impl_led_g_dev(), 1);
-        plat_led_dev_set(impl_led_b_dev(), 0);
+        plat_led_dev_toggle(impl_led_g_dev());
         vTaskDelay(pdMS_TO_TICKS(500));
 
-        LOG_INFO("blue");
-        plat_led_dev_set(impl_led_r_dev(), 0);
-        plat_led_dev_set(impl_led_g_dev(), 0);
-        plat_led_dev_set(impl_led_b_dev(), 1);
+        plat_led_dev_toggle(impl_led_b_dev());
         vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
