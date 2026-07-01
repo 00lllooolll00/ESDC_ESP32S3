@@ -223,4 +223,4 @@ void app_console_init(void)
 #endif // APP_DEBUG_CONSOLE
 }
 
-EK_EXPORT_APP(app_console_init, 6);
+// EK_EXPORT_APP(app_console_init, 6);
