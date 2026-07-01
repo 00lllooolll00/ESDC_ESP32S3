@@ -68,7 +68,7 @@ static int _cmd_weather_demo(int argc, char **argv)
     (void)argv;
 
     // 演示数据：20.0°C..28.0°C（×10）
-    static const int16_t demo[] = {200, 210, 230, 250, 270, 280, 270, 250, 230, 210};
+    static const int16_t demo[] = { 200, 210, 230, 250, 270, 280, 270, 250, 230, 210 };
     app_weather_set_forecast(demo, sizeof(demo) / sizeof(demo[0]));
     return 0;
 }
@@ -180,4 +180,4 @@ void app_console_init(void)
 #endif // APP_DEBUG_CONSOLE
 }
 
-EK_EXPORT_APP(app_console_init, 6);
+// EK_EXPORT_APP(app_console_init, 6);

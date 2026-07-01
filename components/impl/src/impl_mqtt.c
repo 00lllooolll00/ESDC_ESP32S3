@@ -51,7 +51,7 @@ static void impl_mqtt_register(void)
     plat_mqtt_dev_register(&s_mqtt_dev, "mqtt", &s_mqtt_base_ops, &s_mqtt_ops, NULL, NULL);
 }
 
-EK_EXPORT_COMPONENTS(impl_mqtt_register, 0);
+// EK_EXPORT_COMPONENTS(impl_mqtt_register, 0);
 
 static void _mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
 
@@ -158,8 +158,7 @@ static void _mqtt_event_handler(void *handler_args, esp_event_base_t base, int32
 
         case MQTT_EVENT_DATA:
             LOG_INFO("mqtt data: topic=%.*s", event->topic_len, event->topic);
-            if (s_mqtt_dev.data_cb)
-                s_mqtt_dev.data_cb(event->topic, event->topic_len, event->data, event->data_len);
+            if (s_mqtt_dev.data_cb) s_mqtt_dev.data_cb(event->topic, event->topic_len, event->data, event->data_len);
             break;
 
         case MQTT_EVENT_ERROR:

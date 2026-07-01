@@ -11,11 +11,11 @@ extern "C"
 #include "driver/i2s_std.h"
 
 #define BSP_I2S               (I2S_NUM_0)
-#define BSP_I2S_BCK_PIN       (GPIO_NUM_46)
-#define BSP_I2S_WS_PIN        (GPIO_NUM_9)
-#define BSP_I2S_DO_PIN        (GPIO_NUM_10)
-#define BSP_I2S_DI_PIN        (GPIO_NUM_14)
-#define BSP_I2S_MCK_PIN       (GPIO_NUM_3)
+#define BSP_I2S_BCK_PIN       (GPIO_NUM_12)
+#define BSP_I2S_WS_PIN        (GPIO_NUM_13)
+#define BSP_I2S_DO_PIN        (GPIO_NUM_1)
+#define BSP_I2S_DI_PIN        (GPIO_NUM_2)
+#define BSP_I2S_MCK_PIN       (GPIO_NUM_11)
 
 #define BSP_I2S_RECV_BUF_SIZE (2400)
 #define BSP_I2S_SAMPLE_RATE   (44100)

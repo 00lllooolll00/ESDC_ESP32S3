@@ -3,6 +3,7 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_ldo_regulator.h"
 #include "esp_lcd_panel_rgb.h"
+#include "driver/ledc.h"
 
 typedef struct
 {
@@ -14,6 +15,8 @@ static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rg
 static void _rgblcd_init(void);
 static void _rgblcd_exio_pin_config(void);
 static void _rgblcd_display_dir(uint8_t dir);
+static void _rgblcd_backlight_pwm_init(void);
+static void _rgblcd_backlight_pwm_set(bool on);
 
 static esp_lcd_panel_handle_t s_rgblcd_handle;
 static uint16_t s_width;
@@ -32,8 +35,10 @@ void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
     s_cb_data.arg = arg;
 
     _rgblcd_exio_pin_config();
+    _rgblcd_backlight_pwm_init();
 
     BSP_RGBLCD_BL(0);
+    _rgblcd_backlight_pwm_set(false);
 
     _rgblcd_init();
 
@@ -49,6 +54,7 @@ void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
     ESP_ERROR_CHECK(esp_lcd_rgb_panel_register_event_callbacks(s_rgblcd_handle, &rgb_cbs, &s_cb_data));
 
     BSP_RGBLCD_BL(1);
+    _rgblcd_backlight_pwm_set(true);
 }
 
 void bsp_rgblcd_clear(uint16_t color)
@@ -115,6 +121,7 @@ void *bsp_rgb_get_fb(uint8_t index)
 void bsp_rgblcd_display(bool on)
 {
     BSP_RGBLCD_BL(on);
+    _rgblcd_backlight_pwm_set(on);
 }
 
 static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rgb_panel_event_data_t *edata, void *arg)
@@ -169,6 +176,35 @@ static void _rgblcd_init(void)
     ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&panel_config, &s_rgblcd_handle)); /* 创建RGB对象 */
     ESP_ERROR_CHECK(esp_lcd_panel_reset(s_rgblcd_handle)); /* 复位RGB屏 */
     ESP_ERROR_CHECK(esp_lcd_panel_init(s_rgblcd_handle)); /* 初始化RGB */
+}
+
+static void _rgblcd_backlight_pwm_init(void)
+{
+    ledc_timer_config_t timer_config = {
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .duty_resolution = LEDC_TIMER_13_BIT,
+        .timer_num = LEDC_TIMER_0,
+        .freq_hz = 5000,
+        .clk_cfg = LEDC_AUTO_CLK,
+    };
+    ESP_ERROR_CHECK(ledc_timer_config(&timer_config));
+
+    ledc_channel_config_t channel_config = {
+        .gpio_num = BSP_RGBLCD_BL_PWM_PIN,
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .channel = LEDC_CHANNEL_0,
+        .intr_type = LEDC_INTR_DISABLE,
+        .timer_sel = LEDC_TIMER_0,
+        .duty = 0,
+        .hpoint = 0,
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&channel_config));
+}
+
+static void _rgblcd_backlight_pwm_set(bool on)
+{
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, on ? 8191 : 0));
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0));
 }
 
 static void _rgblcd_exio_pin_config(void)

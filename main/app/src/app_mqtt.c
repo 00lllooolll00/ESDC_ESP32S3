@@ -42,7 +42,7 @@ void app_mqtt_init(void)
     LOG_INFO("mqtt started, broker=%s", APP_MQTT_BROKER_URL);
 }
 
-EK_EXPORT_APP(app_mqtt_init, 5);
+// EK_EXPORT_APP(app_mqtt_init, 5);
 
 static void _mqtt_connected_cb(void)
 {

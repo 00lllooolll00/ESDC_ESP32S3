@@ -15,7 +15,7 @@ extern "C"
 
 /* 触摸芯片引脚相关定义 */
 #define BSP_TOUCH_INT_PIN   GPIO_NUM_40
-#define BSP_TOUCH_RST_PIN   BSP_EXIO_NUM9
+#define BSP_TOUCH_RST_PIN   BSP_EXIO_NUM4
 
 #define BSP_TOUCH_INT_GET() gpio_get_level(BSP_TOUCH_INT_PIN)
 #define BSP_TOUCH_CT_RST(x) bsp_exio_write_pin(BSP_TOUCH_RST_PIN, x)

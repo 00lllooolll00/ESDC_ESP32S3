@@ -41,7 +41,6 @@ void bsp_exio_init(void)
 
     ESP_ERROR_CHECK(bsp_exio_read(&temp));
 
-
     LOG_INFO("bsp exio init ok");
 }
 

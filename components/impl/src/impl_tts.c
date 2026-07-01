@@ -155,10 +155,8 @@ static int _tts_speak(const char *text)
 
 static int _tts_enable_amp(int enable)
 {
-    /* 正点原子 DNESP32S3：功放使能脚 = XL9555 EXIO_NUM2，低电平使能（0=开, 1=关）*/
-    bsp_exio_pin_config_t pa_cfg = { .pin = BSP_EXIO_NUM2, .mode = BSP_EXIO_PIN_MODE_OUTPUT };
-    bsp_exio_conifg_pin(&pa_cfg);
-    bsp_exio_write_pin(BSP_EXIO_NUM2, enable ? 0 : 1);  /* enable=1→写0使能, enable=0→写1关闭 */
+    __EK_UNUSED(enable);
+    LOG_WARN("PA_EN is not assigned on current IO map");
     return 0;
 }
 

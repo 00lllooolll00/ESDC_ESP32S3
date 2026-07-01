@@ -13,7 +13,7 @@ extern "C"
 #define BSP_EXIO_INT_STACK 2048
 
 // GPIO 映射
-#define BSP_EXIO_INT_IO   GPIO_NUM_0
+#define BSP_EXIO_INT_IO   GPIO_NUM_19
 
 #define BSP_EXIO_DEV_ADDR 0x20
 // 输入寄存器
@@ -69,22 +69,15 @@ typedef struct
 // #define BSP_EXIO_DEFAULT_CONFIG 0xF003
 
 // BSP_EXIO各个IO的功能
-// #define BSP_AP_INT_IO   BSP_EXIO_NUM0
-// #define BSP_QMA_INT_IO  BSP_EXIO_NUM1
-// #define BSP_SPK_EN_IO   BSP_EXIO_NUM2
-// #define BSP_BEEP_IO     BSP_EXIO_NUM3
-// #define BSP_OV_PWON_IO  BSP_EXIO_NUM4
-// #define BSP_OV_RESET_IO BSP_EXIO_NUM5
-// #define BSP_GBC_LED_IO  BSP_EXIO_NUM6
-// #define BSP_GBC_KEY_IO  BSP_EXIO_NUM7
-// #define BSP_LCD_BL_IO   BSP_EXIO_NUM8
-// #define BSP_CT_RST_IO   BSP_EXIO_NUM9
-// #define BSP_SLCD_RST_IO BSP_EXIO_NUM10
-// #define BSP_SLCD_PWR_IO BSP_EXIO_NUM11
-// #define BSP_KEY3_IO     BSP_EXIO_NUM12
-// #define BSP_KEY2_IO     BSP_EXIO_NUM13
-// #define BSP_KEY1_IO     BSP_EXIO_NUM14
-// #define BSP_KEY0_IO     BSP_EXIO_NUM15
+// #define BSP_RGB_LED_R_IO  BSP_EXIO_NUM0
+// #define BSP_RGB_LED_G_IO  BSP_EXIO_NUM1
+// #define BSP_RGB_LED_B_IO  BSP_EXIO_NUM2
+// #define BSP_CT_RST_IO     BSP_EXIO_NUM4
+// #define BSP_KEY1_IO       BSP_EXIO_NUM5
+// #define BSP_KEY2_IO       BSP_EXIO_NUM6
+// #define BSP_KEY3_IO       BSP_EXIO_NUM7
+// #define BSP_LCD_BL_IO     BSP_EXIO_NUM8
+
 
 void bsp_exio_init(void);
 void bsp_exio_int_enable(void);

@@ -24,8 +24,6 @@ void bsp_key_init(void)
     bsp_exio_conifg_pin(&exio_key_config);
     exio_key_config.pin = BSP_KEY2_PIN;
     bsp_exio_conifg_pin(&exio_key_config);
-    exio_key_config.pin = BSP_KEY3_PIN;
-    bsp_exio_conifg_pin(&exio_key_config);
 
     LOG_INFO("bsp key init ok");
 }
@@ -38,7 +36,6 @@ bsp_key_state_t bsp_key_read_raw(void)
     if (!bsp_exio_read_pin(BSP_KEY0_PIN)) temp |= BSP_KEY_STATE_0;
     if (!bsp_exio_read_pin(BSP_KEY1_PIN)) temp |= BSP_KEY_STATE_1;
     if (!bsp_exio_read_pin(BSP_KEY2_PIN)) temp |= BSP_KEY_STATE_2;
-    if (!bsp_exio_read_pin(BSP_KEY3_PIN)) temp |= BSP_KEY_STATE_3;
 
     return temp;
 }

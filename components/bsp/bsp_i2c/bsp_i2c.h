@@ -13,8 +13,8 @@ extern "C"
 
 #define BSP_I2C0_SDA_PIN GPIO_NUM_41
 #define BSP_I2C0_SCL_PIN GPIO_NUM_42
-#define BSP_I2C1_SDA_PIN GPIO_NUM_39
-#define BSP_I2C1_SCL_PIN GPIO_NUM_38
+#define BSP_I2C1_SDA_PIN GPIO_NUM_38
+#define BSP_I2C1_SCL_PIN GPIO_NUM_39
 
 void bsp_i2c_init(i2c_port_num_t port);
 void bsp_i2c_dev_register(i2c_port_num_t port, uint32_t freq, uint16_t addr, i2c_master_dev_handle_t *dev);

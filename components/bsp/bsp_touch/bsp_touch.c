@@ -6,6 +6,7 @@ FILE_TAG("bsp_touch.c");
 FORCE_INLINE_ATTR esp_err_t _touch_write_reg(uint16_t reg, uint8_t *txdata, uint8_t size);
 FORCE_INLINE_ATTR esp_err_t _touch_read_reg(uint16_t reg, uint8_t *rxdata, uint8_t size);
 static void _touch_exio_rst_pin_config(void);
+static esp_err_t _touch_wait_ready(void);
 static void IRAM_ATTR _touch_exti_cb(void *arg);
 
 static i2c_master_dev_handle_t s_touch_dev_handle;
@@ -41,7 +42,7 @@ void bsp_touch_init(void)
         vTaskDelay(pdMS_TO_TICKS(200));
     }
 
-    vTaskDelay(pdMS_TO_TICKS(100));
+    ESP_ERROR_CHECK(_touch_wait_ready());
 
     uint8_t temp[2] = { 0 };
 
@@ -161,6 +162,26 @@ FORCE_INLINE_ATTR esp_err_t _touch_read_reg(uint16_t reg, uint8_t *rxdata, uint8
     rx[0] = reg >> 8;
     rx[1] = reg & 0xFF;
     return i2c_master_transmit_receive(s_touch_dev_handle, rx, 2, rxdata, size, BSP_TOUCH_TIMEOUT);
+}
+
+static esp_err_t _touch_wait_ready(void)
+{
+    uint8_t pid[4] = { 0 };
+    esp_err_t err = ESP_FAIL;
+
+    for (int retry = 0; retry < 20; retry++)
+    {
+        err = _touch_read_reg(BSP_TOUCH_PID_REG, pid, sizeof(pid));
+        if (err == ESP_OK)
+        {
+            return ESP_OK;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(50));
+    }
+
+    LOG_ERROR("touch not ready after reset, err=0x%x", err);
+    return err;
 }
 
 static void _touch_exio_rst_pin_config(void)

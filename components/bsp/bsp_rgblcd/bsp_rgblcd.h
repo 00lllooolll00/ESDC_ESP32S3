@@ -40,6 +40,7 @@ extern "C"
 #define BSP_RGBLCD_B7_PIN    (GPIO_NUM_6)
 
 #define BSP_RGBLCD_BL_PIN    BSP_EXIO_NUM8
+#define BSP_RGBLCD_BL_PWM_PIN (GPIO_NUM_20)
 #define BSP_RGBLCD_BL(x)                                                                         \
     do                                                                                           \
     {                                                                                            \
