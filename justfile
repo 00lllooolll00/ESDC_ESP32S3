@@ -28,5 +28,5 @@ menuconfig:
     idf.py menuconfig 
 
 format:
-    find components/ \( -name '*.c' -o -name '*.h' \) | xargs clang-format -i
+    find components/ -path 'components/middlewares/ek_utils' -prune -o \( -name '*.c' -o -name '*.h' \) -print0 | xargs -0 clang-format -i
     find main/ \( -name '*.c' -o -name '*.h' \) -not -path 'main/ui/*' | xargs clang-format -i
