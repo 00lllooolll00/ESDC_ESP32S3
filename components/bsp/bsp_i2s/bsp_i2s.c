@@ -1,4 +1,5 @@
 #include "bsp_i2s.h"
+EK_LOG_FILE_TAG("bsp_i2s");
 
 static i2s_chan_handle_t s_bsp_tx_handle;
 static i2s_chan_handle_t s_bsp_rx_handle;
@@ -13,7 +14,7 @@ void bsp_i2s_init(void)
         .clk_cfg  = {
         /* 时钟配置 可用I2S_STD_CLK_DEFAULT_CONFIG(I2S_SAMPLE_RATE)宏函数辅助配置 */
             .sample_rate_hz = BSP_I2S_SAMPLE_RATE,              /* I2S采样率 */
-            .clk_src        = I2S_CLK_SRC_DEFAULT,          /* I2S时钟源 */
+            .clk_src        = I2S_CLK_SRC_DEFAULT,          /* I2S时钟源: PLL_160M,音频专用 */
             .mclk_multiple  = BSP_I2S_MCLK_MULTIPLE,            /* I2S主时钟MCLK相对于采样率的倍数(默认256) */
         },
 
@@ -51,6 +52,13 @@ void bsp_i2s_init(void)
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_bsp_rx_handle, &std_cfg)); /* 初始化RX通道 */
     ESP_ERROR_CHECK(i2s_channel_enable(s_bsp_tx_handle)); /* 启用TX通道 */
     ESP_ERROR_CHECK(i2s_channel_enable(s_bsp_rx_handle)); /* 启用RX通道 */
+
+    // 加大 I2S 输出引脚驱动能力,改善走线信号质量
+    gpio_set_drive_capability(BSP_I2S_MCK_PIN, GPIO_DRIVE_CAP_3);
+    gpio_set_drive_capability(BSP_I2S_BCK_PIN, GPIO_DRIVE_CAP_3);
+    gpio_set_drive_capability(BSP_I2S_WS_PIN, GPIO_DRIVE_CAP_3);
+    gpio_set_drive_capability(BSP_I2S_DO_PIN, GPIO_DRIVE_CAP_3);
+    EK_LOG_INFO("i2s init done: 16kHz, PLL_160M, drive=CAP_3");
 }
 
 /**
@@ -99,8 +107,10 @@ void bsp_i2s_set_samplerate_bits_sample(int samplerate, int bits_sample)
     /* 如果需要更新声道或时钟配置,需要在更新前先禁用通道 */
     s_cfg.slot_cfg.ws_width = bits_sample; /* 位宽 */
     ESP_ERROR_CHECK(i2s_channel_reconfig_std_slot(s_bsp_tx_handle, &s_cfg.slot_cfg));
+    ESP_ERROR_CHECK(i2s_channel_reconfig_std_slot(s_bsp_rx_handle, &s_cfg.slot_cfg));
     s_cfg.clk_cfg.sample_rate_hz = samplerate; /* 设置采样率 */
     ESP_ERROR_CHECK(i2s_channel_reconfig_std_clock(s_bsp_tx_handle, &s_cfg.clk_cfg));
+    ESP_ERROR_CHECK(i2s_channel_reconfig_std_clock(s_bsp_rx_handle, &s_cfg.clk_cfg));
     bsp_i2s_trx_start();
 }
 

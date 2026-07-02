@@ -126,6 +126,27 @@ void bsp_audio_spkvol_set(uint8_t volume)
 }
 
 /**
+ * @brief       设置 ADC 数字音量
+ * @param       volume : 衰减大小，0 表示 0dB，数值越大衰减越大
+ * @retval      无
+ */
+void bsp_audio_adcvol_set(uint8_t volume)
+{
+    _write_reg(0x10, volume);
+    _write_reg(0x11, volume);
+}
+
+/**
+ * @brief       设置麦克风偏置电源
+ * @param       enable : 1 开启偏置，0 关闭偏置
+ * @retval      无
+ */
+void bsp_audio_mic_bias(uint8_t enable)
+{
+    _write_reg(0x03, enable ? 0x0D : 0x09);
+}
+
+/**
  * @brief       设置3D环绕声
  * @param       depth : 0 ~ 7(3D强度,0关闭,7最强)
  * @retval      无
@@ -145,11 +166,14 @@ void bsp_audio_3d_set(uint8_t depth)
 void bsp_audio_adda_cfg(uint8_t dacen, uint8_t adcen)
 {
     uint8_t tempreg = 0;
-
-    tempreg |= !dacen << 0;
-    tempreg |= !adcen << 1;
-    tempreg |= !dacen << 2;
-    tempreg |= !adcen << 3;
+    tempreg |= !adcen << 7; // bit7: adc_DigPDN
+    tempreg |= !dacen << 6; // bit6: dac_DigPDN
+    tempreg |= !adcen << 5; // bit5: adc_stm_rst
+    tempreg |= !dacen << 4; // bit4: dac_stm_rst
+    tempreg |= !adcen << 3; // bit3: ADCDLL_PDN
+    tempreg |= !dacen << 2; // bit2: DACDLL_PDN
+    tempreg |= !adcen << 1; // bit1: adcVref_PDN
+    tempreg |= !dacen << 0; // bit0: dacVref_PDN
     _write_reg(0x02, tempreg);
 }
 
