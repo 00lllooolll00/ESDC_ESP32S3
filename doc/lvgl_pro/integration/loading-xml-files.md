@@ -1,0 +1,274 @@
+---
+url: https://lvgl.io/docs/pro/integration/loading-xml-files
+title: Loading XML at Runtime
+---
+
+# Loading XML at Runtime
+
+Source: <https://lvgl.io/docs/pro/integration/loading-xml-files>
+
+[Integration](https://lvgl.io/docs/pro/integration)
+
+# Loading XML at Runtime
+Guide to loading and using XML files in your embedded applications at runtime.
+Copy MarkdownOpen
+LVGL supports loading XML files at runtime without recompiling your application. XML files can be delivered to devices via Bluetooth, WiFi, Serial port, SD card, or downloaded from a server.
+
+Note that the engine that can load XML files at runtime is not publicly available.
+If you're interested in using this feature in your product [Contact Us](https://lvgl.io/pro#contact).
+
+Before creating instances, XML files must be registered with LVGL so it can parse their content and understand the blueprint of components and screens. Once registered, you can create instances of custom Components and Screens dynamically.
+
+**Widgets** are compiled into C code and cannot be loaded from XML at runtime. However, you can create custom components by combining these built-in widgets.
+
+## Registering XML Files
+
+### Manual Registration
+
+Register XML files using these functions:
+
+- `lv_xml_register_component_from_data(name, xml_string)` - Register from string data
+
+- `lv_xml_register_component_from_file("A:path/to/my.xml")` - Register from file path
+
+Use these to register Components, Screens, and `globals.xml`. LVGL then understands all views, styles, constants, and other content needed to create instances later.
+
+Similarly, register translations:
+
+- `lv_xml_register_translation_from_data()` - From string data
+
+- `lv_xml_register_translation_from_file()` - From file path
+
+Fonts and Images are automatically registered when you register `globals.xml`.
+
+### Registering External Data
+
+XML files cannot directly reference data stored in your application's flash memory. To make this data available to XML, register it using LVGL's registration functions.
+
+**External Data Types**
+
+Register the following application-level data:
+
+- Events - Event callbacks
+
+- Constants - Numeric or string constants
+
+- Subjects - Data binding subjects
+
+- Images - Image assets from memory
+
+- Fonts - Font assets from memory
+
+- Timeline animations - Custom animation definitions
+
+**Registering Events**
+
+Connect callbacks to XML elements by name:
+
+ 
+
+```
+lv_xml_register_event_cb(scope, "event_cb_name", the_callback);
+```
+
+After registration, the callback is available by name throughout your application.
+
+**Global vs. Component Scope**
+
+- `scope = NULL` registers assets globally for all components
+
+- `lv_xml_component_get_scope(component_name)` returns a scope for component-specific assets
+
+**Registering Images and Fonts**
+
+For assets stored in application memory:
+
+ 
+
+```
+lv_xml_register_image(scope, "image_name", path_or_pointer);
+lv_xml_register_font(scope, "font_name", path_or_pointer)
+```
+
+### Registering Widgets
+
+Although widgets are compiled into C code, they must be registered so the XML parser knows how to instantiate them. When the parser encounters `<lv_slider>` in XML, it needs to find the corresponding widget handler.
+
+Register custom widgets using:
+
+ 
+
+```
+lv_xml_register_widget("widget_name", create_cb, apply_cb);
+```
+
+LVGL's built-in widgets are pre-registered automatically. You only need to register custom widgets that extend or combine built-in ones.
+
+### Batch Registration from a Folder
+
+For convenience, load multiple files at once without registering each individually:
+
+ 
+
+```
+lv_xml_load_all_from_path("A:path/to/dir");
+```
+
+This function traverses a directory and automatically registers all XML Components, Screens, globals files, and translations found within it.
+
+### Registering from a Blob
+
+FrogFS enables packaging all XMLs, images, and fonts into a single binary blob file. This is easier to manage than many individual files.
+
+**Loading from Memory**
+
+If the blob is memory-mapped (flash, RAM, etc.), use `lv_xml_load_all_from_data`:
+
+ 
+
+```
+extern const unsigned char my_blob[];
+extern unsigned int my_blob_len;
+
+lv_xml_load_t * handle = lv_xml_load_all_from_data(my_blob, my_blob_len);
+if(handle == NULL) {
+    LV_LOG_USER("An error occurred while loading XML content from data");
+}
+/* `handle` can optionally be passed to `lv_xml_unload` later */
+```
+
+**Loading from File**
+
+If the blob is stored as a file (e.g., on an SD card), use `lv_xml_load_all_from_file`:
+
+ 
+
+```
+lv_xml_load_t * handle = lv_xml_load_all_from_file("A:path/to/frogfs.bin");
+if(handle == NULL) {
+    LV_LOG_USER("An error occurred while loading XML content from a file");
+}
+/* `handle` can optionally be passed to `lv_xml_unload` later */
+```
+
+## Creating Instances
+
+### Creating Screens
+
+After registering your XML files, no screens are created automatically. You must explicitly create the screens you need using the registered definitions.
+
+To create a screen, use:
+
+ 
+
+```
+lv_obj_t * screen = lv_xml_create_screen("screen_name");
+```
+
+Where `"screen_name"` is either:
+
+- The XML filename (without extension)
+
+- The name you provided when registering the XML data
+
+The returned `lv_obj_t *` can be loaded into view using:
+
+ 
+
+```
+lv_screen_load(screen);
+```
+
+### Creating Components
+
+Use the generic creation function to instantiate widgets, components, and styles at runtime:
+
+ 
+
+```
+lv_xml_create(parent, "name", attributes);
+```
+
+**Parameters:**
+
+- `parent` - The parent object (or container)
+
+- `name` - Widget or component name as a string
+
+- `attributes` - Array of property pairs (name, value, ..., NULL, NULL)
+
+**Example: Create a Widget**
+
+ 
+
+```
+const char * attrs[] = {
+    "width", "100",
+    "value", "35",
+    NULL, NULL
+};
+
+lv_obj_t * slider_1 = lv_xml_create(lv_screen_active(), "lv_slider", attrs);
+```
+
+**Example: Create a Custom Component**
+
+ 
+
+```
+const char * attrs[] = {
+    "width", "100",
+    "button_label", "Hello!",
+    "color", "0xff0000",
+    NULL, NULL
+};
+
+lv_obj_t * my_button_1 = lv_xml_create(lv_screen_active(), "my_button", attrs);
+```
+
+**Example: Create Non-Object Children (e.g., Chart Series)**
+
+ 
+
+```
+const char * attrs[] = {
+    "color", "0xff0000",
+    "axis", "primary_y",
+    NULL, NULL
+};
+
+lv_chart_series_t * ser_1 = lv_xml_create(chart1, "lv_chart-series", attrs);
+```
+
+**Example: Add Styles**
+
+ 
+
+```
+const char * attrs[] = {
+    "name", "style1",
+    "selector", "knob|pressed",
+    NULL, NULL
+};
+
+lv_xml_create(button1, "style", attrs);
+```
+
+## The Complete Runtime Loading Flow
+
+To successfully load XML at runtime, execute these steps in order:
+
+- Register custom widgets - Custom widgets must be registered before XML that uses them. Built-in widgets are registered automatically.
+
+- Register external data - Register events, fonts, images, and other application data that your XML components will reference.
+
+- Register XML definitions - Register `globals.xml`, Component XMLs, and Screen XMLs. This allows LVGL to understand your UI structure.
+
+- Create screens - Use `lv_xml_create_screen()` to instantiate the screens you need to display.
+
+- Load the initial screen - Use `lv_screen_load()` to show your first screen to the user.
+
+The order matters! Registering widgets after XML definitions will cause creation errors because the XML parser won't find the widget handlers.
+
+Last updated on
+[Using Exported C CodeLearn how to export and integrate C code from LVGL Pro Editor into your embedded firmware.](https://lvgl.io/docs/pro/integration/using-exported-c-code)[CMakeInstructions for integrating LVGL Pro Editor projects with CMake.](https://lvgl.io/docs/pro/integration/cmake)

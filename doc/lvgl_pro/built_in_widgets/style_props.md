@@ -1,0 +1,227 @@
+---
+url: https://lvgl.io/docs/pro/built_in_widgets/style_props
+title: Style Properties
+---
+
+# Style Properties
+
+Source: <https://lvgl.io/docs/pro/built_in_widgets/style_props>
+
+[Built-in Widgets](https://lvgl.io/docs/pro/built_in_widgets)
+
+# Style Properties
+Every style property usable as a style_* attribute or in a <style> sheet on any widget.
+Copy MarkdownOpen
+
+## Overview
+
+Every widget supports the style properties below. Use them as local
+`style_<name>` attributes (optionally with a `-<part>` or `-<state>`
+selector) or inside a named [`<style>`](https://lvgl.io/syntax/styles) sheet. See the
+[Styles](https://lvgl.io/syntax/styles) page for selectors, parts and states.
+
+### Position and size
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `x` | `coords` | Horizontal position relative to the parent's content area (px or %). Usually set `align` or use a layout instead. |
+| `y` | `coords` | Vertical position relative to the parent's content area (px or %). Usually set `align` or use a layout instead. |
+| `height` | `coords` | Widget height: px, % of the parent, or `content` to shrink-wrap the children. |
+| `min_height` | `coords` | Minimum height the widget may shrink to (px or %). Useful with `content` sizing. |
+| `max_height` | `coords` | Maximum height the widget may grow to (px or %). Useful with `content` sizing. |
+| `width` | `coords` | Widget width: px, % of the parent, or `content` to shrink-wrap the children. |
+| `min_width` | `coords` | Minimum width the widget may shrink to (px or %). Useful with `content` sizing. |
+| `max_width` | `coords` | Maximum width the widget may grow to (px or %). Useful with `content` sizing. |
+| `length` | `coords` | Size of a widget-specific element (e.g. scale tick length, arc/slider knob). Meaning depends on the widget. |
+
+### Padding and margin
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `pad_top` | `int` | Space between the top edge and the content/children (px). |
+| `pad_bottom` | `int` | Space between the bottom edge and the content/children (px). |
+| `pad_left` | `int` | Space between the left edge and the content/children (px). |
+| `pad_right` | `int` | Space between the right edge and the content/children (px). |
+| `pad_hor` | `int` | Shorthand for `pad_left` and `pad_right` together (px). |
+| `pad_ver` | `int` | Shorthand for `pad_top` and `pad_bottom` together (px). |
+| `pad_all` | `int` | Shorthand for all four paddings at once (px). |
+| `pad_row` | `int` | Gap between rows of children in a flex/grid layout (px). |
+| `pad_column` | `int` | Gap between columns of children in a flex/grid layout (px). |
+| `pad_gap` | `int` | Shorthand for both `pad_row` and `pad_column` (px). |
+| `pad_radial` | `int` | On round scales, distance of the tick labels from the scale (px). |
+| `margin_top` | `int` | Empty space kept above the widget in a layout, pushing neighbors away (px). |
+| `margin_bottom` | `int` | Empty space kept below the widget in a layout, pushing neighbors away (px). |
+| `margin_left` | `int` | Empty space kept left of the widget in a layout, pushing neighbors away (px). |
+| `margin_right` | `int` | Empty space kept right of the widget in a layout, pushing neighbors away (px). |
+| `margin_hor` | `int` | Shorthand for `margin_left` and `margin_right` (px). |
+| `margin_ver` | `int` | Shorthand for `margin_top` and `margin_bottom` (px). |
+| `margin_all` | `int` | Shorthand for all four margins at once (px). |
+
+### Geometry
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `radius` | `int` | Corner radius (px). 0 = square corners. Default: 0. |
+| `radial_offset` | `int` | Shifts the part radially out from (or into) the center on round widgets such as scales (px). Default: 0. |
+| `align` | `enum:lv_align` | Anchor point of the widget within the parent (e.g. center, top_left). `x`/`y` then act as offsets from it. |
+| `clip_corner` | `bool` | Clip the content/children to the rounded corners set by `radius`. Small performance cost. Default: false. |
+| `base_dir` | `enum:lv_base_dir` | Base text direction (LTR/RTL/auto). Affects bidirectional text order and which side the vertical scrollbar sits on. |
+
+### Background
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `bg_color` | `color` | Background fill color. Only visible when `bg_opa` is above 0. |
+| `bg_opa` | `opa` | Background opacity (0-255 or 0-100%). Default: 0 (transparent) — raise it to reveal `bg_color`/gradient. |
+| `bg_grad_dir` | `enum:lv_grad_dir` | Background gradient direction: none, hor or ver. Blends `bg_color` into `bg_grad_color`. Default: none. |
+| `bg_main_stop` | `int` | Position where the start color stops fading, 0-255 (0=start, 128=middle, 255=end). Default: 0. |
+| `bg_grad_stop` | `int` | Position where the end color begins, 0-255. Default: 255. |
+| `bg_grad_color` | `color` | Second color of the background gradient (used when `bg_grad_dir` is set). |
+
+### Background image
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `bg_image_src` | `image` | Background image (image name or symbol). Drawn over the background color and under the border. |
+| `bg_image_tiled` | `bool` | Repeat (tile) the background image to fill the area instead of drawing it once. Default: false. |
+| `bg_image_recolor` | `color` | Color blended onto the background image; intensity set by `bg_image_recolor_opa`. |
+| `bg_image_recolor_opa` | `opa` | Strength of `bg_image_recolor` (0-255 or 0-100%). Default: 0 (no recolor). |
+
+### Border
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `border_color` | `color` | Border color. Only visible when `border_width` is above 0. |
+| `border_width` | `int` | Border thickness (px). Drawn inside the bounds, so it doesn't change the widget's size. Default: 0. |
+| `border_opa` | `opa` | Border opacity (0-255 or 0-100%). Default: 255 (opaque). |
+| `border_side` | `enum:lv_border_side` | Which edges get a border: none/left/right/top/bottom/full (can be ORed). Default: full. |
+| `border_post` | `bool` | Draw the border after the children so it stays on top of them. Default: false. |
+
+### Outline
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `outline_color` | `color` | Outline color. Only visible when `outline_width` is above 0. |
+| `outline_width` | `int` | Outline thickness (px). Drawn outside the bounds and doesn't affect layout. Default: 0. |
+| `outline_opa` | `opa` | Outline opacity (0-255 or 0-100%). Default: 255 (opaque). |
+| `outline_pad` | `int` | Gap between the widget's edge and the outline (px); can be negative. |
+
+### Shadow
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `shadow_width` | `int` | Shadow blur size (px). Default: 0 (no shadow). Larger spreads a softer shadow. |
+| `shadow_color` | `color` | Shadow color. Only visible when `shadow_width` is above 0. |
+| `shadow_opa` | `opa` | Shadow opacity (0-255 or 0-100%). Default: 255 (opaque). |
+| `shadow_offset_x` | `int` | Horizontal shadow offset (px), positive = right. Default: 0. |
+| `shadow_offset_y` | `int` | Vertical shadow offset (px), positive = down. Default: 0. |
+| `shadow_spread` | `int` | Grow (or shrink, if negative) the shadow by this many px before blurring. Default: 0. |
+
+### Text
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `text_color` | `color` | Text color. |
+| `text_opa` | `opa` | Text opacity (0-255 or 0-100%). Default: 255 (opaque). |
+| `text_font` | `font` | Font used for the text. |
+| `text_align` | `enum:lv_text_align` | Horizontal text alignment: left/center/right/auto (auto follows the base direction). |
+| `text_letter_space` | `int` | Extra spacing between characters (px); can be negative. |
+| `text_line_space` | `int` | Extra spacing between lines (px); can be negative. |
+| `text_decor` | `enum:lv_text_decor` | Text decoration: none, underline or strikethrough. |
+
+### Image
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `image_opa` | `opa` | Opacity of images the widget draws (0-255 or 0-100%). Default: 255 (opaque). |
+| `image_recolor` | `color` | Color blended onto the image; intensity set by `image_recolor_opa`. |
+| `image_recolor_opa` | `opa` | Strength of `image_recolor` (0-255 or 0-100%). Default: 0 (no recolor). |
+
+### Line
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `line_width` | `int` | Line thickness (px). Default: 0 (nothing drawn). |
+| `line_color` | `color` | Line color. |
+| `line_opa` | `opa` | Line opacity (0-255 or 0-100%). Default: 255 (opaque). |
+| `line_dash_width` | `int` | Length of each dash (px). 0 = solid line. |
+| `line_dash_gap` | `int` | Gap between dashes (px). Needs `line_dash_width` above 0. |
+| `line_rounded` | `bool` | Round the line (and dash) endpoints. Default: false. |
+
+### Arc
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `arc_width` | `int` | Arc thickness (px). Default: 0. |
+| `arc_color` | `color` | Arc color. |
+| `arc_opa` | `opa` | Arc opacity (0-255 or 0-100%). Default: 255 (opaque). |
+| `arc_rounded` | `bool` | Round the arc endpoints. Default: false. |
+| `arc_image_src` | `image` | Image drawn along the arc instead of a solid color (e.g. a gradient/textured arc). |
+
+### Layout
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `layout` | `enum:lv_layout` | Layout engine that positions the children: none, flex or grid. |
+
+### Flex
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `flex_flow` | `enum:lv_flex_flow` | How children flow in a flex layout: row/column, optionally wrapping/reversed. Needs `layout`=flex. |
+| `flex_main_place` | `enum:lv_flex_align` | Distribution of children along the main axis (e.g. start, center, space_between). Default is `start`. |
+| `flex_cross_place` | `enum:lv_flex_align` | Alignment of children on the cross axis (perpendicular to the flow). Default is `start`. |
+| `flex_track_place` | `enum:lv_flex_align` | Alignment of the track(s). Default is `start`. |
+| `flex_grow` | `int` | Share of leftover track space this child claims relative to its siblings. 0 = don't grow. |
+
+### Grid
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `grid_column_dsc_array` | `grid_dsc[LV_GRID_TEMPLATE_LAST]` | Array of column track sizes, e.g. `20 1fr content`. Needs `layout`=grid. |
+| `grid_row_dsc_array` | `grid_dsc[LV_GRID_TEMPLATE_LAST]` | Array of row track sizes, e.g. `20 1fr content`. Needs `layout`=grid. |
+| `grid_column_align` | `enum:lv_grid_align` | How to distribute the columns when the grid has spare horizontal space. |
+| `grid_row_align` | `enum:lv_grid_align` | How to distribute the rows when the grid has spare vertical space. |
+| `grid_cell_column_pos` | `int` | On a grid child: the column index where its cell starts (0-based). |
+| `grid_cell_column_span` | `int` | On a grid child: how many columns its cell spans. |
+| `grid_cell_x_align` | `enum:lv_grid_align` | On a grid child: horizontal alignment within its grid cell. |
+| `grid_cell_row_pos` | `int` | On a grid child: the row index where its cell starts (0-based). |
+| `grid_cell_row_span` | `int` | On a grid child: how many rows its cell spans. |
+| `grid_cell_y_align` | `enum:lv_grid_align` | On a grid child: vertical alignment within its grid cell. |
+
+### Misc
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `opa` | `opa` | Opacity of the whole widget and its children (0-255 or 0-100%). Default: 255 (opaque). |
+| `opa_layered` | `opa` | Like `opa`, but composites the widget as one layer so overlapping parts don't show through. Slower. Default: 255. |
+| `anim_duration` | `int` | Length of the widget's built-in animation in ms (e.g. label scroll). Default: 0. Exact effect is widget-specific. |
+| `blend_mode` | `enum:lv_blend_mode` | How the widget's pixels mix with the background: normal, additive, subtractive, multiply or difference. |
+| `transform_width` | `int` | Enlarge (or shrink, if negative) the drawn widget horizontally without affecting layout (px). |
+| `transform_height` | `int` | Enlarge (or shrink, if negative) the drawn widget vertically without affecting layout (px). |
+| `translate_x` | `int` | Shift the widget horizontally after layout (px or %); siblings are not affected. |
+| `translate_y` | `int` | Shift the widget vertically after layout (px or %); siblings are not affected. |
+| `translate_radial` | `int` | On round/scale layouts, move the widget toward or away from the parent's center (px). |
+| `transform_scale_x` | `int` | Horizontal zoom: 256 = 100%, 128 = 50%, 512 = 200%. Default: 256 (no scaling). |
+| `transform_scale_y` | `int` | Vertical zoom: 256 = 100%, 128 = 50%, 512 = 200%. Default: 256 (no scaling). |
+| `transform_rotation` | `int` | Rotation in 0.1° units (450 = 45°, 3600 = 360°). Default: 0. Pivot set by `transform_pivot_x`/`y`. |
+| `transform_pivot_x` | `int` | X of the rotation/scale pivot, relative to the widget's top-left corner (px or %). Default: 0. |
+| `transform_pivot_y` | `int` | Y of the rotation/scale pivot, relative to the widget's top-left corner (px or %). Default: 0. |
+| `transform_skew_x` | `int` | Horizontal skew in 0.1° units. Not supported by the SW renderer. Default: 0. |
+| `transform_skew_y` | `int` | Vertical skew in 0.1° units. Not supported by the SW renderer. Default: 0. |
+| `bitmap_mask_src` | `image` | An A8/L8 image used as an alpha mask: the widget is drawn on a layer and masked by this bitmap. |
+| `rotary_sensitivity` | `int` | Scales rotary-encoder/Crown input in 1/256 units: 256 = 1:1, 128 = half, 512 = double. Default: 256. |
+| `recolor` | `color` | Color blended over the whole widget and its children; intensity set by `recolor_opa`. |
+| `recolor_opa` | `opa` | Strength of `recolor` (0-255 or 0-100%). Default: 0 (no recolor). |
+| `blur_radius` | `int` | Gaussian blur radius applied to the widget (px). Default: 0 (no blur). Has a performance cost. |
+| `blur_quality` | `enum:lv_blur_quality` | Blur rendering trade-off: prefer speed or precision. |
+| `blur_backdrop` | `bool` | true: blur what is behind the widget (frosted-glass effect); false: blur the widget itself. Default: false. |
+| `drop_shadow_radius` | `int` | Blur radius of the drop shadow (px). Default: 0 (no drop shadow). |
+| `drop_shadow_offset_x` | `int` | Horizontal drop-shadow offset (px). Default: 0. |
+| `drop_shadow_offset_y` | `int` | Vertical drop-shadow offset (px). Default: 0. |
+| `drop_shadow_color` | `color` | Drop-shadow color. |
+| `drop_shadow_opa` | `opa` | Drop-shadow opacity (0-255 or 0-100%). Default: 0 (invisible), raise it to show the shadow. |
+| `drop_shadow_quality` | `enum:lv_blur_quality` | Drop-shadow rendering trade-off: prefer speed or precision. |
+
+Last updated on
+[Built-in WidgetsXML API reference for every built-in LVGL widget — properties, parameters, elements, shared enums and style properties.](https://lvgl.io/docs/pro/built_in_widgets)[EnumsEnumerations shared by all built-in widgets in XML — states, parts, alignments, layouts and more.](https://lvgl.io/docs/pro/built_in_widgets/enums)

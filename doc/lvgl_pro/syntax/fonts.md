@@ -1,0 +1,188 @@
+---
+url: https://lvgl.io/docs/pro/syntax/fonts
+title: Fonts
+---
+
+# Fonts
+
+Source: <https://lvgl.io/docs/pro/syntax/fonts>
+
+[XML Syntax](https://lvgl.io/docs/pro/syntax)
+
+# Fonts
+Learn how to use and configure fonts in LVGL Pro Editor.
+Copy MarkdownOpen
+Discover how to register, configure, and use different font engines in your LVGL UI designs through XML configuration.
+
+## Overview
+
+In XML, fonts are considered external resources. A target font engine
+needs to be selected and named in order to be referenced in XML files
+later.
+
+## Registering Fonts
+
+In order to use fonts in the Editor add your TTF files in the `fonts` folder of your project, and list specific fonts you need in an `<fonts>` block in `globals.xml`.
+
+Right now the 3 Font engines are supported:
+
+- `<bin>` - Convert the glyphs (characters) to bitmaps in requested size. Each font with a different size will take space. A `range` and a list of `symbols` can be also specified
+
+- `<tiny_ttf>` - Parse the TTF files and render the bitmaps at runtime in the required size. Works on MCUs too.
+
+- `<freetype>` - Also renders from TTF files but it's design for MPUs
+
+### Path Resolution
+
+All `src_path` values are **relative to the project root** — the folder that contains `project.xml` and `globals.xml`. So `src_path="fonts/Montserrat-Regular.ttf"` refers to `<project_root>/fonts/Montserrat-Regular.ttf` on disk.
+
+When you export C code and load fonts as files (`as_file="true"`), the runtime needs to know where those files actually live on the target. This is handled by the path you pass to the project's init function:
+
+ 
+
+```
+my_ui_init("A:my_ui/v2.3/assets");
+```
+
+The init function concatenates this base with each `src_path`, so `src_path="fonts/Montserrat-Regular.ttf"` resolves at runtime to `"A:my_ui/v2.3/assets/fonts/Montserrat-Regular.ttf"`. Fonts compiled as **data** (`as_file="false"`) are embedded in the firmware and ignore this path entirely.
+
+See [Using Exported C Code](https://lvgl.io/integration/using-exported-c-code#initialization-and-setup) for the full init flow.
+
+### As Data
+
+The Editor can convert the TTF files to C array that can be compiled into the firmware. To use the fonts as C array set `as_file="false"`.
+
+For example:
+
+xml
+
+```
+<globals>
+ <fonts>
+   <bin as_file="false" name="medium" src_path="path/to/file.ttf" range="0x20-0x7f" symbols="°" size="24"/>
+
+   <tiny_ttf as_file="false" name="big" src_path="path/to/file.ttf" size="48"/>
+ </fonts>
+</globals>
+```
+
+### As File
+
+Fonts used directly from a TTF file can be listed in the `fonts`
+section of `globals.xml`.
+
+`as_file` must be set to `true` to indicate that the font is treated as
+a file.
+
+For example:
+
+xml
+
+```
+<globals>
+ <fonts>
+   <bin as_file="true" name="medium" src_path="path/to/file.ttf" range="0x20-0x7f" symbols="°" size="24"/>
+
+   <tiny_ttf as_file="true" name="big" src_path="path/to/file.ttf" range="0x20-0x7f" size="48"/>
+ </fonts>
+</globals>
+```
+
+## Usage in XML
+
+Once a font is registered, it can be referenced by its name in styles or
+even `api` properties:
+
+xml
+
+```
+<component>
+ <api>
+    <prop name="title_font" type="font" default="my_font_32"/>
+ </api>
+
+ <styles>
+    <style name="subtitle" text_font="my_font_24"/>
+ </styles>
+
+ <view flex_flow="column">
+    <lv_label style_text_font="$title_font" text="Title"/>
+    <lv_label text="I'm the subtitle">
+       <style name="subtitle"/>
+    </lv_label>
+ </view>
+```
+
+## Font Engines
+
+Learn more about the features and config option of each Font engine.
+
+### `bin`
+
+Binary fonts can either reference:
+
+- A ".bin" font file created by LVGL's Font converter from a TTF
+file (when `as_file="true"`). The font will be loaded by
+`lv_binfont_create`.
+
+- An `lv_font_t` pointer compiled
+into the firmware (`as_file="false"`).
+
+`bin` fonts require these properties:
+
+- `name` — The name to reference the font later
+
+- `src_path` — Path to the font file
+
+- `size` — Font size in px (e.g., "12")
+
+- `bpp` — Bits-per-pixel: 1, 2, 4, or 8
+
+- `as_file` — `true` if the font is a ".bin" file, `false` if it is an lv_font_t in C
+
+If `as_file` is:
+
+- `false`: It generates a C file with the `lv_font_t` structs.
+
+- `true`: It generates a ".bin" file.
+
+Binary fonts also support selecting a subset of characters:
+
+- `range` — For example, `"0x30-0x39 0x100-0x200"` to specify Unicode ranges to include. The default is `"0x20-0x7F"` to cover the ASCII range.
+
+- `symbols` — List of extra characters to add, e.g., `"°ÁŐÚ"`. Can be used together with `range`. Default is empty (no extras).
+
+### `tiny_ttf`
+
+TinyTTF fonts use the [tiny_ttf](https://lvgl.io/docs/open/libs/font_support/tiny_ttf) engine to load TTF files directly or from data.
+
+Required properties:
+
+- `name` — The name to reference the font later
+
+- `src_path` — Path to the font file
+
+- `size` — Font size in px (e.g., "12")
+
+- `as_file` — `true` or `false`
+
+If `as_file` is:
+
+- `false`: A C file with raw TTF file data is also generated.
+
+- `true`: Nothing else is generated, as the TTF file will be used directly.
+
+### `<freetype>`
+
+FreeType fonts use the [freetype](https://lvgl.io/docs/open/libs/font_support/freetype) engine to load TTF files directly. Loading from data is not supported, so `as_file` is always considered `true`.
+
+Required properties:
+
+- `name` — The name to reference the font later
+
+- `src_path` — Path to the font file
+
+- `size` — Font size in px (e.g., "12")
+
+Last updated on
+[ImagesGuide to using and optimizing images in LVGL Pro Editor.](https://lvgl.io/docs/pro/syntax/images)[APILearn how to define custom APIs for widgets and components in LVGL Pro Editor with properties, parameters, and elements.](https://lvgl.io/docs/pro/syntax/api)

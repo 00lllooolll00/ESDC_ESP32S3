@@ -1,0 +1,114 @@
+---
+url: https://lvgl.io/docs/pro/syntax/images
+title: Images
+---
+
+# Images
+
+Source: <https://lvgl.io/docs/pro/syntax/images>
+
+[XML Syntax](https://lvgl.io/docs/pro/syntax)
+
+# Images
+Guide to using and optimizing images in LVGL Pro Editor.
+Copy MarkdownOpen
+Before referencing images in your XML files, they must be registered as named external resources. Learn how to map images from files or compiled data arrays.
+
+## Overview
+
+In XML, images are considered external resources that need to be named
+in order to be referenced in XML files. Below is how to map images with
+names.
+
+## Registering Images
+
+In order to use images in the Editor add your PNG images in the `images` folder of your project, and list them in an `<images>` block in `globals.xml`. Note that only PNG files are supported at this moment.
+
+### Path Resolution
+
+All `src_path` values are **relative to the project root** — the folder that contains `project.xml` and `globals.xml`. So `src_path="images/logo.png"` refers to `<project_root>/images/logo.png` on disk.
+
+When you export C code and load images as files (`<file>` entries), the runtime needs to know where those files actually live on the target. This is handled by the path you pass to the project's init function:
+
+ 
+
+```
+my_ui_init("A:my_ui/v2.3/assets");
+```
+
+The init function concatenates this base with each `src_path`, so `src_path="images/logo.png"` resolves at runtime to `"A:my_ui/v2.3/assets/images/logo.png"`. Images registered as **data** (`<data>` entries) are compiled into the firmware and ignore this path entirely.
+
+See [Using Exported C Code](https://lvgl.io/integration/using-exported-c-code#initialization-and-setup) for the full init flow.
+
+### As Data
+
+The Editor converts PNG image files to a C array that can be compiled into the project:
+
+xml
+
+```
+<images>
+    <data name="logo" color_format="rgb565" src_path="images/logo.png"/>
+    <data name="icon_sun" color_format="argb8888" src_path="images/sun.png"/>
+</images>
+```
+
+All typical color formats are supported, like `i1-i8`,
+`a1-a8`, `rgb565`, `rgb888`, `argb8888`, etc. and even `rgb565a8`.
+
+As these kind of images are basically C code, you need to recompile the project in the editor to see them with the final color format. To show something on the screen before recompiling the Editor uses the PNG files as fallback which always has ARGB888 color format.
+
+### As File
+
+If the images are used as files (e.g., PNG images loaded from a file
+system), they can be simply added to `globals.xml`:
+
+xml
+
+```
+<images>
+  <file name="avatar" src_path="images/avatar1.png"/>
+  <file name="logo" src_path="images/path/to/my_logo.png"/>
+</images>
+```
+
+## Using the Images
+
+When the images are added to `globals.xml` they can be used in all places where a property has `image` type.
+
+In an image widget:
+
+xml
+
+```
+<lv_image src="avatar" align="center"/>
+```
+
+In a style property:
+
+xml
+
+```
+<styles>
+  <style name="style_bg" bg_image_src="wallpaper"/>
+</styles>
+```
+
+In custom properties:
+
+xml
+
+```
+<component>
+  <api>
+    <prop name="icon_src" type="image" default="arrow_left"/>
+  </api>
+
+  <view>
+    <lv_image src="$icon_src"/>
+  </view>
+</component>
+```
+
+Last updated on
+[AnimationsGuide to creating and controlling animations in LVGL Pro Editor using timeline-based animation system.](https://lvgl.io/docs/pro/syntax/animations)[FontsLearn how to use and configure fonts in LVGL Pro Editor.](https://lvgl.io/docs/pro/syntax/fonts)

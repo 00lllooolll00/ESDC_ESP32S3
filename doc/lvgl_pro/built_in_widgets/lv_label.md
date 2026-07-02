@@ -1,0 +1,62 @@
+---
+url: https://lvgl.io/docs/pro/built_in_widgets/lv_label
+title: Label (lv_label)
+---
+
+# Label (lv_label)
+
+Source: <https://lvgl.io/docs/pro/built_in_widgets/lv_label>
+
+[Built-in Widgets](https://lvgl.io/docs/pro/built_in_widgets)
+
+# Label (lv_label)
+The widget used to display text, with wrapping and long-text modes.
+Copy MarkdownOpen
+
+## Overview
+
+The Label is the widget used to display text. It supports line wrapping, several long-text modes (scroll, dots, clip), per-word recoloring, and binding its text to a subject with printf-style formatting.
+
+Learn more in the [LVGL Open documentation](https://lvgl.io/docs/open/widgets/label).
+
+PreviewCXML
+[lv_example_label.c](https://github.com/lvgl/lvgl_editor/blob/master/docs/examples/screens/lv_example_label.c)
+
+## Enumerations
+
+**`lv_label_long_mode`** — How to handle text that doesn’t fit
+
+| Value | Description |
+| --- | --- |
+| `wrap` | Wrap to next line |
+| `scroll` | Scroll horizontally |
+| `scroll_circular` | Scroll continuously in a loop |
+| `clip` | Clip at the boundary |
+| `dots` | Show dots (…) at the end |
+
+## Properties
+
+### Parts
+
+Style parts of the widget with local style (e.g. `style_bg_color-knob="0xff0000"`) or with style sheets (e.g. `<style name="style_knob" selector="knob">`). See [Styles](https://lvgl.io/syntax/styles) to learn more.
+
+| Part | Description |
+| --- | --- |
+| `main` | Style the text and its area: text properties (`text_color`, `text_font`, `text_letter_space`, `text_line_space`, `text_decor`, `text_align`) plus background/padding if needed. |
+| `selected` | Style the highlighted character range (text_selection_start/end). Only `text_color` and `bg_color` are used. |
+
+Properties below are the widget's XML [`<api>`](https://lvgl.io/syntax/api); see [API](https://lvgl.io/syntax/api) for how properties, parameters and elements work.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | Set label text |
+| `translation_tag` | `string` | Set translation tag |
+| `long_mode` | `enum:lv_label_long_mode` | Choose overflow mode |
+| `recolor` | `bool` | Allow recoloring words like: A #ff0000 red# word. |
+| `text_selection_start` | `int` | Beginning of text highlight |
+| `text_selection_end` | `int` | End of text highlight |
+| `bind_text` | `subject` | Bind text to a subject |
+| `bind_text-fmt` | `string` | Format string for bound text (printf style) (default: `NULL`) |
+
+Last updated on
+[Keyboard (lv_keyboard)An on-screen virtual keyboard, a specialized Button Matrix.](https://lvgl.io/docs/pro/built_in_widgets/lv_keyboard)[LED (lv_led)A rectangle or circle whose brightness simulates a glowing indicator.](https://lvgl.io/docs/pro/built_in_widgets/lv_led)

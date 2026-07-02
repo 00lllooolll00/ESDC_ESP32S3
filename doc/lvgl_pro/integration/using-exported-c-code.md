@@ -1,0 +1,161 @@
+---
+url: https://lvgl.io/docs/pro/integration/using-exported-c-code
+title: Using Exported C Code
+---
+
+# Using Exported C Code
+
+Source: <https://lvgl.io/docs/pro/integration/using-exported-c-code>
+
+[Integration](https://lvgl.io/docs/pro/integration)
+
+# Using Exported C Code
+Learn how to export and integrate C code from LVGL Pro Editor into your embedded firmware.
+Copy MarkdownOpen
+Both Editor and CLI can generate C code from the XML files.
+
+When C code is generated, the XML files are not needed anymore, (`LV_USE_XML` can be `0`).
+
+The C code follows the same patterns as hand-written C code. Simply drop the exported files into your project and compile them with your application.
+
+The generated code is fully platform independent and doesn't contain any drivers or references to any hardware. It's the user's responsibility to initialize LVGL and the required drivers. In [LVGL's Integration documentation](https://lvgl.io/docs/open/integration) you can learn how to use the built-in driver or port LVGL to a new hardware.
+
+## Quick Start
+
+- Press the code export button in the Editor
+
+- Add the generated C and H files into your embedded project
+
+- Add `#include "<project_name>.h"`.
+
+- Call `lv_init()`, create an `lv_display` and input devices if needed
+
+- Call `<project_name>_init("")` or pass the path to the image and font files if you have used them as files
+
+- Create and load screen by `lv_screen_load(main_screen_create());`
+
+- Call `lv_timer_handler()` periodically as usual for LVGL applications
+
+`<project_name>` refers to the name set in `project.xml`, or if it's not set it's the name of the project folder.
+
+## Structure of the Generated Code
+
+### Naming Conventions
+
+The file names  follows specific naming conventions:
+
+- Generated files end with `_gen.c` or `_gen.h` and are always overwritten on code export. Never modify these files as changes will be lost.
+
+- User files are skeleton files created only once (if they don't exist). Add your custom code in these.
+
+### `create` Functions
+
+The generated "create" functions are structured like these:
+
+- screens - `lv_obj_t * main_screen_create(void)` from `main_screen.xml`
+
+- components - `lv_obj_t * my_button_create(lv_obj_t * parent, const char * button_text)` from `my_button.xml`
+
+For Components, all parameters are passed to the create function instead of using individual setters.
+
+### Assets
+
+Four files are generated from `globals.xml`:
+
+- Generated files containing all subjects, fonts, images, styles, and other initializations
+
+- User files as wrappers around generated code where custom initialization can be added
+
+The default filename is the folder name containing `globals.xml`. Override this with `<project name="my_lib">` in the XML.
+
+## Initialization and Setup
+
+### Project Initialization
+
+The main entry point is a `project_name_init("asset_path")` function located in `project_name.c`, where `project_name` defaults to the parent folder name. This can be customized in `project.xml` using `<project name="my_project">`.
+
+The function requires a single parameter: the path where file-based assets (fonts and images) are located. For example, if PNG and TTF files are in `"A:my_ui/v2.3/assets"`, pass this path to the init function so all asset paths are properly prefixed. If your UI Editor project uses `images/logo.png`, the full resolved path will be `"A:my_ui/v2.3/assets/images/logo.png"`.
+
+### Screen Creation and Loading
+
+The initialization function creates the [permanent screens](https://lvgl.io/syntax/screens) but doesn't load them automatically. To display a screen:
+
+- Use `lv_screen_load(screen_name)` to load a pre-created permanent screen, or
+
+- Use e.g. `main_screen_create()` to create screens from their generated functions
+
+This gives you flexibility to control when screens are created and displayed.
+
+## Adding Custom Code
+
+### Extending Generated Code
+
+You can extend generated code by adding custom styles, timers, subjects, animations, and observers in the non-generated files (e.g., `<project_name>.c`).
+
+**Example: Adding Style Properties**
+
+ 
+
+```
+void my_ui_init(const char * asset_path)
+{
+    my_ui_init_gen(asset_path);
+
+    lv_style_set_bg_color(&style_1, get_special_color());
+}
+```
+
+**Example: Creating a Custom Subject with Observer**
+
+This example creates a subject that formats an integer temperature value with decimal precision:
+
+ 
+
+```
+/* Assume subject_temperature_int stores value with 0.1 degree resolution */
+/* E.g. 345 means 34.5 */
+
+void temperature_to_string_observer_cb(lv_observer_t * observer,
+                                        lv_subject_t * subject)
+{
+    int32_t upscaled_value = lv_subject_get_int(&subject_temperature_int);
+
+    int32_t int_part = upscaled_value / 10;
+    int32_t fract_part = upscaled_value % 10;
+
+    char buf[64];
+    lv_snprintf(buf, sizeof(buf), "%d.%d", int_part, fract_part);
+    lv_subject_copy_string(&subject_temperature_string, buf);
+}
+void my_ui_init(const char * asset_path)
+{
+    my_ui_init_gen(asset_path);
+
+    lv_subject_add_observer(&subject_temperature_int,
+                         temperature_to_string_observer_cb, NULL);
+}
+```
+
+### Creating Component Wrappers
+
+If a component needs features or APIs not supported by the Editor, create a wrapper component. This approach keeps the generated code untouched while adding custom functionality.
+
+**Example: Wrapper Component**
+
+ 
+
+```
+lv_obj_t * super_button_create(lv_obj_t * parent, ...some_arguments...)
+{
+    lv_obj_t * my_button = my_button_create(parent, ...some_arguments...);
+
+    /* Add custom functionality to the created button */
+
+    return my_button;
+}
+```
+
+This pattern lets you compose generated components with additional features, event handlers, or custom logic without modifying the generated files.
+
+Last updated on
+[IntegrationGuides for integrating LVGL Pro Editor content into your projects using C code, XML files, and various platforms.](https://lvgl.io/docs/pro/integration)[Loading XML at RuntimeGuide to loading and using XML files in your embedded applications at runtime.](https://lvgl.io/docs/pro/integration/loading-xml-files)
