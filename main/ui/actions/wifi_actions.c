@@ -111,7 +111,7 @@ static void _wifi_btn_click_cb(lv_event_t *e)
     // 标题
     lv_obj_t *label = lv_label_create(s_password_cont);
     lv_label_set_text_fmt(label, "输入密码: %s", s_connect_ssid);
-    lv_obj_set_style_text_font(label, g_ui_font_chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(label, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
 
     // 密码输入框
@@ -119,7 +119,7 @@ static void _wifi_btn_click_cb(lv_event_t *e)
     lv_textarea_set_one_line(s_password_ta, true);
     lv_textarea_set_password_mode(s_password_ta, true);
     lv_textarea_set_placeholder_text(s_password_ta, "请输入密码");
-    lv_obj_set_style_text_font(s_password_ta, g_ui_font_chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(s_password_ta, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_width(s_password_ta, 460);
     lv_obj_align(s_password_ta, LV_ALIGN_TOP_MID, 0, 30);
 
@@ -195,7 +195,7 @@ static void _show_connect_status(const char *text)
 
     s_connect_status_item = lv_label_create(s_wifi_list_panel);
     lv_label_set_text(s_connect_status_item, text);
-    lv_obj_set_style_text_font(s_connect_status_item, g_ui_font_chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(s_connect_status_item, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(s_connect_status_item, lv_color_hex(0x333333), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(s_connect_status_item, LV_OPA_80, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(s_connect_status_item, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -244,7 +244,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 
                 if (label)
                 {
-                    lv_obj_set_style_text_font(label, g_ui_font_chinese_3500_14, 0);
+                    lv_obj_set_style_text_font(label, chinese_3500_14, 0);
                 }
 
                 lv_obj_set_user_data(btn, (void *)(uintptr_t)i);
@@ -271,20 +271,30 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
             break;
 
         case APP_WIFI_EVT_CONNECTED:
+        {
             lv_subject_set_int(&wifi_is_connected, 1);
+            // 更新 wifi_state 图标为已连接（勾）
+            lv_obj_t *state = lv_obj_find_by_name(lv_screen_active(), "wifi_state");
+            if (state) lv_label_set_text(state, LV_SYMBOL_OK);
             if (s_connecting)
             {
                 _finish_connect_attempt("连接成功", lv_color_hex(0x00C853));
             }
             break;
+        }
 
         case APP_WIFI_EVT_DISCONNECTED:
+        {
             lv_subject_set_int(&wifi_is_connected, 0);
+            // 更新 wifi_state 图标为未连接（叉）
+            lv_obj_t *state = lv_obj_find_by_name(lv_screen_active(), "wifi_state");
+            if (state) lv_label_set_text(state, LV_SYMBOL_CLOSE);
             if (s_connecting)
             {
                 _finish_connect_attempt("密码错误", lv_color_hex(0xFF1744));
             }
             break;
+        }
 
         default:
             break;

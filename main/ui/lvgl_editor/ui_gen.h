@@ -67,6 +67,8 @@ extern lv_style_t style_func_card;
  * Fonts
  *----------------*/
 
+extern lv_font_t * chinese_3500_14;
+
 /*----------------
  * Images
  *----------------*/

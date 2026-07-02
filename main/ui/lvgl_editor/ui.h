@@ -27,8 +27,6 @@ extern "C" {
  * GLOBAL VARIABLES
  **********************/
 
-// 中文字体（从 VFS 加载）
-extern lv_font_t *g_ui_font_chinese_3500_14;
 
 /**********************
  * GLOBAL PROTOTYPES

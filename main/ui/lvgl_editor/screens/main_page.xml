@@ -7,7 +7,7 @@
             <lv_label name="func_smart_home_icon" width="content" height="content"
                       style_text_color="0xffffff"/>
             <lv_label name="func_smart_home_label" width="content" height="content"
-                      text="智能家具" style_text_color="0xffffff"/>
+                      text="智能家具" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
             <screen_load_event screen="smart_home" trigger="clicked" anim_type="move_left" duration="500"/>
         </lv_button>
         <!-- 天气功能卡片 -->
@@ -17,7 +17,7 @@
             <lv_label name="func_weather_icon" width="content" height="content"
                       style_text_color="0xffffff"/>
             <lv_label name="func_weather_label" width="content" height="content"
-                      text="天气" style_text_color="0xffffff"/>
+                      text="天气" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
             <screen_load_event screen="weather" trigger="clicked" anim_type="move_left" duration="500"/>
         </lv_button>
         <!-- AI对话功能卡片 -->
@@ -27,7 +27,7 @@
             <lv_label name="func_ai_chat_icon" width="content" height="content"
                       style_text_color="0xffffff"/>
             <lv_label name="func_ai_chat_label" width="content" height="content"
-                      text="AI对话" style_text_color="0xffffff"/>
+                      text="AI对话" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
             <screen_load_event screen="ai_chat" trigger="clicked" anim_type="move_left" duration="500"/>
         </lv_button>
         <!-- 音量组件 -->

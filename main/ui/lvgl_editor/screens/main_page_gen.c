@@ -65,6 +65,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(func_smart_home_label, LV_SIZE_CONTENT);
     lv_label_set_text(func_smart_home_label, "智能家具");
     lv_obj_set_style_text_color(func_smart_home_label, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_font(func_smart_home_label, chinese_3500_14, 0);
 
     lv_obj_add_screen_load_event(func_smart_home, LV_EVENT_CLICKED, smart_home, LV_SCREEN_LOAD_ANIM_MOVE_LEFT, 500, 0);
 
@@ -87,6 +88,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(func_weather_label, LV_SIZE_CONTENT);
     lv_label_set_text(func_weather_label, "天气");
     lv_obj_set_style_text_color(func_weather_label, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_font(func_weather_label, chinese_3500_14, 0);
 
     lv_obj_add_screen_load_event(func_weather, LV_EVENT_CLICKED, weather, LV_SCREEN_LOAD_ANIM_MOVE_LEFT, 500, 0);
 
@@ -109,6 +111,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(func_ai_chat_label, LV_SIZE_CONTENT);
     lv_label_set_text(func_ai_chat_label, "AI对话");
     lv_obj_set_style_text_color(func_ai_chat_label, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_font(func_ai_chat_label, chinese_3500_14, 0);
 
     lv_obj_add_screen_load_event(func_ai_chat, LV_EVENT_CLICKED, ai_chat, LV_SCREEN_LOAD_ANIM_MOVE_LEFT, 500, 0);
 

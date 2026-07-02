@@ -54,6 +54,7 @@ lv_obj_t * weather_create(void)
     lv_obj_set_height(weather_title, LV_SIZE_CONTENT);
     lv_label_set_text(weather_title, "天气查看");
     lv_obj_set_style_text_color(weather_title, lv_color_hex(0x212121), 0);
+    lv_obj_set_style_text_font(weather_title, chinese_3500_14, 0);
 
     wifi_btn_create(lv_obj_0);
 

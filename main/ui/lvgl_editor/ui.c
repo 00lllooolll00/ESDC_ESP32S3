@@ -34,8 +34,6 @@ static lv_obj_t *_nav_peek(void);
 
 EK_LOG_FILE_TAG("ui");
 
-// 中文字体（从 VFS 加载）
-lv_font_t *g_ui_font_chinese_3500_14;
 
 // 屏幕导航历史栈（用于 nav_back 返回上一页）
 static ek_stack_t *s_nav_stack;
@@ -53,9 +51,6 @@ void ui_init(const char *asset_path)
     // 调用生成的 init（创建 permanent screens、styles、subjects）
     ui_init_gen(asset_path);
 
-    // 加载中文字体
-    g_ui_font_chinese_3500_14 = lv_binfont_create("S:/ui_font_chinese_3500_14.bin");
-    assert(g_ui_font_chinese_3500_14);
 
     // 为所有 permanent screen 设置字体和图标
     _set_fonts_and_icons(main_page);
@@ -141,6 +136,12 @@ static lv_obj_t *_nav_peek(void)
     return NULL;
 }
 
+// 面板滑出动画完成回调：从 anim 结构体取出 var 和 user_data 来设置 flag
+static void _hide_panel_anim_ready(lv_anim_t *a)
+{
+    lv_obj_add_flag((lv_obj_t *)a->var, (lv_obj_flag_t)(intptr_t)a->user_data);
+}
+
 // ============================================================================
 // 面板回调函数（由 XML event_cb 引用，用户实现，不会被生成器覆盖）
 // ============================================================================
@@ -182,7 +183,7 @@ void hide_wifi_panel(lv_event_t *e)
         lv_anim_set_duration(&a, 300);
         lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
         lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
-        lv_anim_set_ready_cb(&a, (lv_anim_completed_cb_t)lv_obj_add_flag);
+        lv_anim_set_ready_cb(&a, _hide_panel_anim_ready);
         lv_anim_set_user_data(&a, (void *)LV_OBJ_FLAG_HIDDEN);
         lv_anim_start(&a);
     }
@@ -225,7 +226,7 @@ void hide_volume_panel(lv_event_t *e)
         lv_anim_set_duration(&a, 300);
         lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
         lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
-        lv_anim_set_ready_cb(&a, (lv_anim_completed_cb_t)lv_obj_add_flag);
+        lv_anim_set_ready_cb(&a, _hide_panel_anim_ready);
         lv_anim_set_user_data(&a, (void *)LV_OBJ_FLAG_HIDDEN);
         lv_anim_start(&a);
     }
@@ -273,18 +274,12 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
     _set_widget_font_by_name(screen, "nav_back_icon", &lv_font_montserrat_20);
     _set_widget_font_by_name(screen, "nav_home_icon", &lv_font_montserrat_20);
 
-    // 中文文字 label：g_ui_font_chinese_3500_14
-    _set_widget_font_by_name(screen, "func_smart_home_label", g_ui_font_chinese_3500_14);
-    _set_widget_font_by_name(screen, "func_weather_label", g_ui_font_chinese_3500_14);
-    _set_widget_font_by_name(screen, "func_ai_chat_label", g_ui_font_chinese_3500_14);
-    _set_widget_font_by_name(screen, "smart_home_title", g_ui_font_chinese_3500_14);
-    _set_widget_font_by_name(screen, "weather_title", g_ui_font_chinese_3500_14);
-    _set_widget_font_by_name(screen, "ai_chat_title", g_ui_font_chinese_3500_14);
 
     // 设置图标文本（EEZ 中通过 Flow 表达式设置，这里直接用 LVGL 符号宏）
     _set_widget_text_by_name(screen, "wifi_refresh_icon", LV_SYMBOL_REFRESH);
     _set_widget_text_by_name(screen, "wifi_cancel_icon", LV_SYMBOL_CLOSE);
     _set_widget_text_by_name(screen, "wifi_icon", LV_SYMBOL_WIFI);
+    _set_widget_text_by_name(screen, "wifi_state", LV_SYMBOL_CLOSE);
     _set_widget_text_by_name(screen, "nav_back_icon", LV_SYMBOL_LEFT);
     _set_widget_text_by_name(screen, "nav_home_icon", LV_SYMBOL_HOME);
     _set_widget_text_by_name(screen, "volume_icon", LV_SYMBOL_VOLUME_MAX);

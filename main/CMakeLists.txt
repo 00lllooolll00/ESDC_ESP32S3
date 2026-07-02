@@ -36,7 +36,12 @@ file(GLOB_RECURSE bin_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/*.
 set(copy_cmds)
 foreach(bin_file ${bin_files})
     get_filename_component(file_name ${bin_file} NAME)
-    list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/${file_name}")
+    if(${file_name} STREQUAL "ui_font_chinese_3500_14.bin")
+        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E make_directory "${vfs_staging}/fonts")
+        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/fonts/chinese_3500_14.bin")
+    else()
+        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/${file_name}")
+    endif()
 endforeach()
 # 将 esp-sr 的中文 TTS voice 数据打包到 vfs FAT 分区
 set(esp_sr_tts_dir "${CMAKE_CURRENT_LIST_DIR}/../managed_components/espressif__esp-sr/esp-tts/esp_tts_chinese")
