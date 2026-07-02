@@ -24,7 +24,7 @@ static void _auto_lv_core_init(void)
     lv_tick_set_cb(_lv_port_tick_get_cb);
 }
 
-// EK_EXPORT_APP(_auto_lv_core_init, 0);
+EK_EXPORT_APP(_auto_lv_core_init, 0);
 
 // 显示端口初始化：依赖 lv_init 与 rgblcd register，用访问器取设备
 void lv_port_disp_init(void)
@@ -61,7 +61,7 @@ void lv_port_disp_init(void)
     EK_LOG_INFO("lvgl port display driver init ok");
 }
 
-// EK_EXPORT_APP(lv_port_disp_init, 1);
+EK_EXPORT_APP(lv_port_disp_init, 1);
 
 static bool _lv_port_trans_done_cb(void *ctx)
 {

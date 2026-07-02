@@ -29,7 +29,7 @@ extern "C"
 #define EKCFG_VEC          (0)
 #define EKCFG_RINGBUF      (1)
 #define EKCFG_RINGBUF_SPSC (1)
-#define EKCFG_STACK        (0)
+#define EKCFG_STACK        (1)
 #define EKCFG_EVOKE        (0)
 
 #define EKCFG_HEAP_TLSF    (0)

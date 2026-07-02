@@ -1,0 +1,59 @@
+<component>
+    <view width="800" height="480" scrollable="false" clickable="false"
+          style_bg_opa="0" style_border_width="0"
+          style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+        <!-- WiFi 列表面板（初始隐藏，从顶部滑入） -->
+        <lv_obj name="wifi_list_panel"
+                x="150" y="-480" width="500" height="480"
+                hidden="true"
+                clickable="false" scrollable="false" gesture_bubble="false"
+                press_lock="false" scroll_chain_hor="false" scroll_chain_ver="false"
+                scroll_elastic="false" scroll_momentum="false" scroll_with_arrow="false"
+                snappable="false" click_focusable="false"
+                style_bg_color="0xeae9e7"
+                style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
+                style_border_width="0">
+            <!-- 刷新按钮 -->
+            <lv_button name="wifi_refresh_btn"
+                       x="11" y="389" width="70" height="40"
+                       style_layout="flex" style_flex_main_place="center" style_flex_cross_place="center" style_flex_track_place="center">
+                <style name="style_user_btn"/>
+                <lv_label name="wifi_refresh_icon" width="content" height="content">
+                    <style name="style_user_icon_label"/>
+                </lv_label>
+                <event_cb callback="action_wifi_start_scan" trigger="clicked"/>
+            </lv_button>
+            <!-- 取消按钮 -->
+            <lv_button name="wifi_cancel_btn"
+                       x="376" y="389" width="70" height="40">
+                <style name="style_user_btn"/>
+                <lv_label name="wifi_cancel_icon" width="content" height="content">
+                    <style name="style_user_icon_label"/>
+                </lv_label>
+                <event_cb callback="hide_wifi_panel" trigger="clicked"/>
+            </lv_button>
+            <!-- WiFi 列表 -->
+            <lv_obj name="wifi_list"
+                     x="-22" y="-22" width="500" height="392"
+                     style_bg_color="0xd5d3d3"
+                     style_layout="flex" style_flex_main_place="center" style_flex_track_place="center" style_flex_cross_place="center">
+                <!-- 加载 spinner -->
+                <lv_spinner name="wifi_loader" width="80" height="80"
+                            style_arc_color-indicator="0x69727a"/>
+            </lv_obj>
+        </lv_obj>
+        <!-- WiFi 入口按钮 -->
+        <lv_button name="wifi_btn"
+                   x="730" y="0" width="70" height="40">
+            <style name="style_user_btn"/>
+            <lv_label name="wifi_icon" width="content" height="content">
+                <style name="style_user_icon_label"/>
+            </lv_label>
+            <lv_label name="wifi_state" width="content" height="content">
+                <style name="style_user_icon_label"/>
+            </lv_label>
+            <event_cb callback="action_wifi_start_scan" trigger="pressed"/>
+            <event_cb callback="show_wifi_panel" trigger="clicked"/>
+        </lv_button>
+    </view>
+</component>

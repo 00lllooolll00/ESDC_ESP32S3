@@ -4,7 +4,7 @@
 
 - 这是一个基于 `ESP-IDF 5.5.4` 的 `ESP32-S3` 固件项目，目标是带 `800×480` 触摸屏的嵌入式显示终端。
 - 主要能力集中在 `LVGL` 图形界面、`WiFi`、`LED`、按键，以及已分层接入的 LCD / Touch / SDCard / Audio / MQTT 等外设能力。
-- UI 使用 `EEZ Studio + EEZ Flow` 生成，运行时依赖 `LVGL 9.5.0`；二进制 UI 资源会被打包进 `vfs` FAT 分区。
+- UI 使用 `LVGL Editor` 通过编写 `XML` 文件生成（工作目录 `main/ui/lvgl_editor/`），运行时依赖 `LVGL 9.5.0`；二进制 UI 资源会被打包进 `vfs` FAT 分区。
 
 ## Architecture & Data Flow
 
@@ -13,18 +13,18 @@
 - `components/platform/inc/plat_base.h` 定义统一设备抽象：`plat_dev_t + plat_dev_ops_t + state + lock`。上层不要绕过 `plat_*` 直接碰底层驱动。
 - `components/impl/src/impl_*.c` 负责把 `ESP-IDF` / `BSP` 适配到 `plat_*` 接口；例如 `components/impl/src/impl_wifi.c` 把 WiFi 扫描、连接、状态回调桥接为 `plat_wifi_*`。
 - `main/app/src/app_*.c` 是任务级业务编排层：通常一个功能一个 `FreeRTOS` task。例：`main/app/src/app_wifi.c` 用队列接收 `SCAN/CONNECT/DISCONNECT` 命令，再把结果通过回调送回 UI。
-- `main/ui` 是界面层：`ui.c` / `screens.c` / `styles.c` / `screens.h` / `eez-flow.*` 为 EEZ 生成；`actions/*.c` 与 `vars/*.c` 是手写桥接层。
-- 典型 WiFi 数据流：`main/ui/actions/wifi_actions.c` 里的 LVGL 事件 → `app_wifi_send_cmd()` → `main/app/src/app_wifi.c` 队列任务 → `plat_wifi_*` / `impl_wifi.c` → 回调返回 UI，并在 `lv_lock()` / `lv_unlock()` 保护下更新界面。
+- `main/ui` 是界面层：`lvgl_editor/` 下以 `XML` 为事实来源，由 LVGL Editor 生成 `*_gen.c` / `*_gen.h`；`lvgl_editor/ui.c` / `ui.h` 与 `actions/*.c` 是手写层（回调实现等）。
+- 典型 WiFi 数据流：XML `event_cb` 绑定的 `main/ui/actions/wifi_actions.c` 回调 → `app_wifi_send_cmd()` → `main/app/src/app_wifi.c` 队列任务 → `plat_wifi_*` / `impl_wifi.c` → 回调返回 UI，并在 `lv_lock()` / `lv_unlock()` 保护下更新界面。
 - UI 资源流：`main/CMakeLists.txt` 会把 `main/ui/*.bin` 打进 `vfs` 镜像；`main/app/src/app_ui.c` 运行时加载 `S:/ui_font_chinese_3500_14.bin`，然后驱动 `ui_init()` / `ui_tick()`。
 
 ## Key Directories
 
 - `main/`：入口与顶层装配。
 - `main/app/`：应用层任务与跨层编排，`inc/` 头文件、`src/` 实现。
-- `main/ui/`：LVGL / EEZ UI。重点区分：
-  - 自动生成：`main/ui/ui.c`、`main/ui/screens.c`、`main/ui/styles.c`、`main/ui/screens.h`、`main/ui/eez-flow.*`
-  - 手写：`main/ui/actions/*.c`、`main/ui/vars/*.c`
-  - UI 源文件：`main/ui/eez/eez.eez-project`
+- `main/ui/`：LVGL UI（LVGL Editor + XML 工作流）。重点区分：
+  - XML 事实来源（可编辑）：`main/ui/lvgl_editor/project.xml`（项目配置）、`globals.xml`（样式 / subject / 常量）、`screens/*.xml`（屏幕，以 `<screen>` 标签开头）、`components/*.xml`（可复用组件，以 `<component>` 标签开头）、`widgets/`（自定义 widget）
+  - 生成产物（禁止手改，文件头标注 "Generated file, do not edit"）：`main/ui/lvgl_editor/ui_gen.c` / `ui_gen.h`、`screens/*_gen.*`、`components/*_gen.*`、`file_list_gen.cmake` / `component_lib_list_gen.cmake`
+  - 手写（可编辑，不会被生成器覆盖）：`main/ui/lvgl_editor/ui.c` / `ui.h`（入口、导航与面板回调）、`main/ui/actions/*.c`（业务行为回调）、`user_config.cmake`（追加自定义源文件）
 - `components/common/inc/`：公共宏、日志、错误字符串等基础设施。
 - `components/platform/`：平台抽象层，定义 `plat_*` 设备接口与共性状态机。
 - `components/impl/`：具体实现层，把 `platform` 接口接到 `BSP` / `ESP-IDF`。
@@ -65,20 +65,21 @@
   - 只在确有必要说明的一段加注释，不要给每一句代码都加注释。
 - 平台设备要走 `plat_dev_register()` / `plat_*_dev_init()` 生命周期，并尊重 `PLAT_DEV_LOCK` / `PLAT_DEV_UNLOCK` 状态与锁语义。
 - `main/app/src/app_*.c` 偏向“一功能一任务”；跨线程触碰 LVGL 时必须像 `main/app/src/app_wifi.c` 那样包 `lv_lock()` / `lv_unlock()`。
-- UI 原生变量遵循 `get_var_g_*` / `set_var_g_*` 命名，见 `main/ui/vars/wifi_vars.c`、`main/ui/vars/volume_vars.c`。
-- 自动生成的 UI 控件通过全局 `objects` 访问，定义在 `main/ui/screens.h`。改动对象名会直接影响 `actions/*.c`。
-- **重要边界（不可违反）**：修改 LVGL 界面（布局、控件树、z-order 层级、Flow 绑定、样式等）时，必须先改 `main/ui/eez/eez.eez-project`，再用 EEZ Studio 重新生成代码。绝对不要直接修改 EEZ 生成的文件，包括：`main/ui/screens.c`、`main/ui/screens.h`、`main/ui/ui.c`、`main/ui/styles.c`、`main/ui/styles.h`、`main/ui/eez-flow.cpp`、`main/ui/eez-flow.h`、`main/ui/actions.h`、`main/ui/vars.h`、`main/ui/structs.h`、`main/ui/images.h` 等。直接改生成代码会被下次重新生成覆盖，且破坏工程一致性。
-- `main/ui/eez-flow.cpp` 和 `main/ui/eez-flow.h` 体积很大且为框架/生成产物；非必要不要做大范围人工修改。
+- UI 数据走 LVGL subject 机制：在 `globals.xml` 的 `<subjects>` 中声明（如 `wifi_is_connected`、`volume`），生成 `lv_subject_t` 全局变量（见 `ui_gen.h`），用 `lv_subject_*` API 读写。
+- 生成的 UI 控件 / 屏幕通过 `ui_gen.h` 及各 `*_gen.h` 中 extern 的全局 `lv_obj_t *`（如 `main_page`、`weather`）访问；改动 XML 中的 name 会直接影响 `ui.c` 与 `actions/*.c` 里的引用。
+- **重要边界（不可违反）**：修改 LVGL 界面（布局、控件树、z-order 层级、样式、subject 等）时，只能改 `main/ui/lvgl_editor/` 下的 `XML` 文件（`project.xml` / `globals.xml` / `screens/*.xml` / `components/*.xml`），再用 LVGL Editor 重新生成。绝对不要直接修改生成产物，包括：`ui_gen.c` / `ui_gen.h`、`screens/*_gen.*`、`components/*_gen.*`、`file_list_gen.cmake` / `component_lib_list_gen.cmake` 等（文件头均标注 "Generated file, do not edit"）。直接改生成代码会被下次重新生成覆盖，且破坏工程一致性。
+- **回调函数例外**：XML 中通过 `event_cb="函数名"` 引用的回调，其函数体在 `main/ui/lvgl_editor/ui.c`（面板显示/隐藏、`nav_back` 等）或 `main/ui/actions/*.c`（业务 action，如 `action_wifi_start_scan`）中手写实现，这部分可编辑且不会被生成器覆盖；但回调的原型声明由 `ui_gen.h` 生成，不要手改声明，只改实现。
 
 ## Important Files
 
 - `main/main.c`：启动顺序与设备装配的唯一入口。
 - `main/app/src/app_ui.c`：UI 任务、字体加载、`ui_tick()` 驱动。
 - `main/app/src/app_wifi.c`：WiFi 队列任务、状态回调到 UI 的桥梁。
-- `main/ui/eez/eez.eez-project`：UI 设计事实来源；改布局先改这里。
+- `main/ui/lvgl_editor/` 下的 `XML`：UI 设计事实来源；改布局先改这里（屏幕改 `screens/*.xml`，组件改 `components/*.xml`，样式/数据改 `globals.xml`）。
 - `main/ui/actions/wifi_actions.c`：WiFi UI 行为、密码输入、连接状态提示。
 - `main/ui/actions/volume_actions.c`：音量滑块与图标联动。
-- `main/ui/vars/wifi_vars.c`、`main/ui/vars/volume_vars.c`：EEZ native vars 手写桥接。
+- `main/ui/lvgl_editor/globals.xml`：UI 全局样式、subject（如 `wifi_is_connected` / `volume`）、常量的事实来源。
+- `main/ui/lvgl_editor/ui.c` / `ui.h`：手写 UI 入口（`ui_init()`、字体/图标设置）与 `event_cb` 回调实现（`nav_back`、面板显示/隐藏）。
 - `main/CMakeLists.txt`：主组件注册，以及 `main/ui/*.bin` → `vfs` 镜像的打包逻辑。
 - `justfile`：本仓库最直接的开发命令入口。
 - `sdkconfig`：项目级 `ESP-IDF` 配置，包含目标、Flash、PSRAM、断言等行为。
@@ -103,5 +104,5 @@
   - `just run`：烧录到板子并观察串口输出。
   - UI/交互改动：按 `plan.md` 的清单做手工验收。
 - 代码里的主要质量护栏是 `assert()`、`ESP_ERROR_CHECK()`、设备状态机、以及启动期日志（NVS / VFS / 外设初始化）。
-- `just format` 可用于普通 C 代码，但不会处理 `main/ui/*`，因为那里大多是自动生成文件。
+- `just format` 可用于普通 C 代码，但不会处理 `main/ui/*`，因为其中含大量 LVGL Editor 生成产物（`*_gen.*`）与手写 UI 代码混排。
 - 仓库未发现 CI、覆盖率工具或统一 lint 入口；不要在说明里假设存在自动化 QA 管线。

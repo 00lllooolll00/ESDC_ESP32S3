@@ -1,0 +1,47 @@
+<component>
+    <view width="800" height="480" scrollable="false" clickable="false"
+          style_bg_opa="0" style_border_width="0"
+          style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+        <!-- 音量面板（初始隐藏，从顶部滑入） -->
+        <lv_obj name="volume_panel"
+                x="149" y="-480" width="500" height="360"
+                hidden="true"
+                clickable="false"
+                style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
+                style_border_width="0">
+            <!-- 取消按钮 -->
+            <lv_button name="volume_canel"
+                       x="374" y="286" width="70" height="40">
+                <style name="style_user_btn"/>
+                <lv_label name="volume_canel_icon" width="content" height="content"
+                          align="center">
+                    <style name="style_user_icon_label"/>
+                </lv_label>
+                <event_cb callback="hide_volume_panel" trigger="clicked"/>
+            </lv_button>
+            <!-- 音量滑块 -->
+            <lv_slider name="volume_slider"
+                        x="85" y="147" width="289" height="22"
+                        value="25"
+                        style_layout="flex" style_flex_main_place="center" style_flex_cross_place="center" style_flex_track_place="center"
+                        style_bg_color="0xffffff" style_outline_width="1"
+                        style_bg_color-indicator="0x6f6e6e"
+                        style_bg_color-knob="0xfafafa" style_outline_color-knob="0x2d2c2c" style_outline_width-knob="2"
+                       style_pad_top-knob="3" style_pad_bottom-knob="3" style_pad_left-knob="3" style_pad_right-knob="3">
+                <style name="style_volume_slider_main"/>
+                <style name="style_volume_slider_knob" selector="knob"/>
+                <event_cb callback="action_volume_change" trigger="value_changed"/>
+            </lv_slider>
+        </lv_obj>
+        <!-- 音量入口按钮 -->
+        <lv_button name="volume_entry_btn"
+                   x="0" y="0" width="70" height="40">
+            <style name="style_user_btn"/>
+            <lv_label name="volume_icon" width="content" height="content"
+                      align="center">
+                <style name="style_user_icon_label"/>
+            </lv_label>
+            <event_cb callback="show_volume_panel" trigger="clicked"/>
+        </lv_button>
+    </view>
+</component>

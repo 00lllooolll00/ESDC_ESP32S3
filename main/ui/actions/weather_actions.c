@@ -1,5 +1,5 @@
 #include "common_header.h"
-#include "screens.h"
+#include "ui.h"
 #include "app_weather.h"
 #include "lvgl.h"
 
@@ -30,8 +30,8 @@ static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
 
 void weather_ui_init(void)
 {
-    // 在 weather 屏幕上动态创建折线图（不修改 EEZ 生成的 screens.c）
-    s_chart = lv_chart_create(objects.weather);
+    // 在 weather 屏幕上动态创建折线图
+    s_chart = lv_chart_create(weather);
     if (!s_chart)
     {
         EK_LOG_ERROR("failed to create weather chart");

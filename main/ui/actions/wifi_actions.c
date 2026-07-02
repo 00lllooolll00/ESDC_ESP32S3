@@ -1,9 +1,7 @@
 #include "common_header.h"
-#include "styles.h"
-#include "vars.h"
+#include "ui.h"
 #include "plat_wifi.h"
 #include "app_wifi.h"
-#include "screens.h"
 
 EK_LOG_FILE_TAG("wifi_actions");
 
@@ -21,6 +19,11 @@ static char s_connect_ssid[33];
 static bool s_connecting;
 static lv_obj_t *s_connect_status_item;
 
+// 缓存的 widget 指针（每次屏幕加载时更新）
+static lv_obj_t *s_wifi_list;
+static lv_obj_t *s_wifi_loader;
+static lv_obj_t *s_wifi_list_panel;
+
 static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg);
 static void _wifi_btn_click_cb(lv_event_t *e);
 static void _password_ready_cb(lv_event_t *e);
@@ -30,7 +33,7 @@ static void _clear_connect_status(void);
 static void _show_connect_status(const char *text);
 static void _finish_connect_attempt(const char *text, lv_color_t color);
 
-extern lv_font_t *g_ui_font_chinese_3500_14;
+// 面板显示/隐藏回调（show_wifi_panel / hide_wifi_panel）已在 ui.c 中实现
 
 // ============================================================================
 // Public
@@ -38,7 +41,12 @@ extern lv_font_t *g_ui_font_chinese_3500_14;
 
 void action_wifi_start_scan(lv_event_t *e)
 {
-    lv_obj_t *list = objects.obj2__wifi_list;
+    // 查找当前屏幕的 wifi_list 和 wifi_loader
+    s_wifi_list = lv_obj_find_by_name(lv_screen_active(), "wifi_list");
+    s_wifi_loader = lv_obj_find_by_name(lv_screen_active(), "wifi_loader");
+    s_wifi_list_panel = lv_obj_find_by_name(lv_screen_active(), "wifi_list_panel");
+
+    lv_obj_t *list = s_wifi_list;
 
     s_scan_count = 0;
     s_connecting = false;
@@ -50,21 +58,31 @@ void action_wifi_start_scan(lv_event_t *e)
     for (int32_t i = (int32_t)child_cnt - 1; i >= 0; i--)
     {
         lv_obj_t *child = lv_obj_get_child(list, i);
-        if (child != objects.obj2__wifi_loader) lv_obj_delete(child);
+        if (child != s_wifi_loader)
+        {
+            lv_obj_delete(child);
+        }
     }
 
     // 显示 spinner
-    lv_obj_clear_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
+    if (s_wifi_loader)
+    {
+        lv_obj_clear_flag(s_wifi_loader, LV_OBJ_FLAG_HIDDEN);
+    }
 
     // 注册事件回调
     app_wifi_register_evt_cb(_wifi_evt_cb, NULL);
 
     // 发送扫描命令
-    app_wifi_cmd_msg_t msg = { .cmd = APP_WIFI_CMD_SCAN };
+    app_wifi_cmd_msg_t msg = {.cmd = APP_WIFI_CMD_SCAN};
     if (app_wifi_send_cmd(&msg, pdMS_TO_TICKS(1000)) != 0)
     {
-        lv_obj_add_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
-        lv_list_add_btn(list, NULL, "发送失败");
+        if (s_wifi_loader)
+        {
+            lv_obj_add_flag(s_wifi_loader, LV_OBJ_FLAG_HIDDEN);
+        }
+        lv_obj_t *btn = lv_list_add_btn(list, NULL, "发送失败");
+        (void)btn;
         app_wifi_unregister_evt_cb();
     }
 }
@@ -77,7 +95,10 @@ static void _wifi_btn_click_cb(lv_event_t *e)
 {
     lv_obj_t *btn = lv_event_get_current_target(e);
     int idx = (int)(uintptr_t)lv_obj_get_user_data(btn);
-    if (idx < 0 || idx >= s_scan_count) return;
+    if (idx < 0 || idx >= s_scan_count)
+    {
+        return;
+    }
 
     strlcpy(s_connect_ssid, s_scan_results[idx].ssid, sizeof(s_connect_ssid));
 
@@ -126,7 +147,7 @@ static void _password_ready_cb(lv_event_t *e)
     s_connecting = true;
     _show_connect_status("连接中...");
 
-    app_wifi_cmd_msg_t msg = { .cmd = APP_WIFI_CMD_CONNECT };
+    app_wifi_cmd_msg_t msg = {.cmd = APP_WIFI_CMD_CONNECT};
     strlcpy(msg.data.connect.ssid, s_connect_ssid, sizeof(msg.data.connect.ssid));
     strlcpy(msg.data.connect.password, password, sizeof(msg.data.connect.password));
     if (app_wifi_send_cmd(&msg, pdMS_TO_TICKS(1000)) != 0)
@@ -172,7 +193,7 @@ static void _show_connect_status(const char *text)
 {
     _clear_connect_status();
 
-    s_connect_status_item = lv_label_create(objects.obj2__wifi_list_panel);
+    s_connect_status_item = lv_label_create(s_wifi_list_panel);
     lv_label_set_text(s_connect_status_item, text);
     lv_obj_set_style_text_font(s_connect_status_item, g_ui_font_chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(s_connect_status_item, lv_color_hex(0x333333), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -198,42 +219,47 @@ static void _finish_connect_attempt(const char *text, lv_color_t color)
 
 static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 {
-    lv_obj_t *list = objects.obj2__wifi_list;
+    lv_obj_t *list = s_wifi_list;
 
     switch (evt)
     {
         case APP_WIFI_EVT_SCAN_DONE:
+        {
+            app_wifi_scan_result_t *result = (app_wifi_scan_result_t *)data;
+
+            if (s_wifi_loader)
             {
-                app_wifi_scan_result_t *result = (app_wifi_scan_result_t *)data;
-
-                lv_obj_add_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
-
-                s_scan_count = result->count;
-                for (int i = 0; i < result->count; i++)
-                {
-                    s_scan_results[i] = result->aps[i];
-
-                    char buf[48];
-                    snprintf(buf, sizeof(buf), "%s", result->aps[i].ssid);
-                    lv_obj_t *btn = lv_list_add_btn(list, LV_SYMBOL_WIFI, buf);
-                    add_style_user_btn(btn);
-                    lv_obj_t *label = lv_obj_get_child(btn, 1);
-
-                    if (label)
-                    {
-                        lv_obj_set_style_text_font(label, g_ui_font_chinese_3500_14, 0);
-                    }
-
-                    lv_obj_set_user_data(btn, (void *)(uintptr_t)i);
-                    lv_obj_add_event_cb(btn, _wifi_btn_click_cb, LV_EVENT_CLICKED, NULL);
-                }
-
-                free(result);
-                break;
+                lv_obj_add_flag(s_wifi_loader, LV_OBJ_FLAG_HIDDEN);
             }
 
+            s_scan_count = result->count;
+            for (int i = 0; i < result->count; i++)
+            {
+                s_scan_results[i] = result->aps[i];
+
+                char buf[48];
+                snprintf(buf, sizeof(buf), "%s", result->aps[i].ssid);
+                lv_obj_t *btn = lv_list_add_btn(list, LV_SYMBOL_WIFI, buf);
+                lv_obj_t *label = lv_obj_get_child(btn, 1);
+
+                if (label)
+                {
+                    lv_obj_set_style_text_font(label, g_ui_font_chinese_3500_14, 0);
+                }
+
+                lv_obj_set_user_data(btn, (void *)(uintptr_t)i);
+                lv_obj_add_event_cb(btn, _wifi_btn_click_cb, LV_EVENT_CLICKED, NULL);
+            }
+
+            free(result);
+            break;
+        }
+
         case APP_WIFI_EVT_SCAN_FAIL:
-            lv_obj_add_flag(objects.obj2__wifi_loader, LV_OBJ_FLAG_HIDDEN);
+            if (s_wifi_loader)
+            {
+                lv_obj_add_flag(s_wifi_loader, LV_OBJ_FLAG_HIDDEN);
+            }
             lv_list_add_btn(list, NULL, "扫描失败");
             break;
 
@@ -245,7 +271,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
             break;
 
         case APP_WIFI_EVT_CONNECTED:
-            set_var_g_wifi_is_connected(true);
+            lv_subject_set_int(&wifi_is_connected, 1);
             if (s_connecting)
             {
                 _finish_connect_attempt("连接成功", lv_color_hex(0x00C853));
@@ -253,7 +279,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
             break;
 
         case APP_WIFI_EVT_DISCONNECTED:
-            set_var_g_wifi_is_connected(false);
+            lv_subject_set_int(&wifi_is_connected, 0);
             if (s_connecting)
             {
                 _finish_connect_attempt("密码错误", lv_color_hex(0xFF1744));

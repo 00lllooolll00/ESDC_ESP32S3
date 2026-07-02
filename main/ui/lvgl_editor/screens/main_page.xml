@@ -1,0 +1,40 @@
+<screen permanent="true">
+    <view>
+        <!-- 智能家具功能卡片 -->
+        <lv_button name="func_smart_home"
+                   x="60" y="200" width="330" height="150">
+            <style name="style_func_card"/>
+            <lv_label name="func_smart_home_icon" width="content" height="content"
+                      style_text_color="0xffffff"/>
+            <lv_label name="func_smart_home_label" width="content" height="content"
+                      text="智能家具" style_text_color="0xffffff"/>
+            <screen_load_event screen="smart_home" trigger="clicked" anim_type="move_left" duration="500"/>
+        </lv_button>
+        <!-- 天气功能卡片 -->
+        <lv_button name="func_weather"
+                   x="60" y="60" width="680" height="110">
+            <style name="style_func_card"/>
+            <lv_label name="func_weather_icon" width="content" height="content"
+                      style_text_color="0xffffff"/>
+            <lv_label name="func_weather_label" width="content" height="content"
+                      text="天气" style_text_color="0xffffff"/>
+            <screen_load_event screen="weather" trigger="clicked" anim_type="move_left" duration="500"/>
+        </lv_button>
+        <!-- AI对话功能卡片 -->
+        <lv_button name="func_ai_chat"
+                   x="410" y="200" width="330" height="150">
+            <style name="style_func_card"/>
+            <lv_label name="func_ai_chat_icon" width="content" height="content"
+                      style_text_color="0xffffff"/>
+            <lv_label name="func_ai_chat_label" width="content" height="content"
+                      text="AI对话" style_text_color="0xffffff"/>
+            <screen_load_event screen="ai_chat" trigger="clicked" anim_type="move_left" duration="500"/>
+        </lv_button>
+        <!-- 音量组件 -->
+        <volume_slider/>
+        <!-- WiFi 组件 -->
+        <wifi_btn/>
+        <!-- nav_bar 组件 -->
+        <nav_bar/>
+    </view>
+</screen>

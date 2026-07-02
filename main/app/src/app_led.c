@@ -15,7 +15,7 @@ void app_led_init(void)
     plat_led_dev_init(impl_led_r_dev());
     plat_led_dev_init(impl_led_g_dev());
     plat_led_dev_init(impl_led_b_dev());
-    // xTaskCreate(_app_led_task, "app led", 2048, NULL, 1, &g_led_handle);
+    xTaskCreate(_app_led_task, "app led", 2048, NULL, 1, &g_led_handle);
 }
 
 EK_EXPORT_APP(app_led_init, 3);

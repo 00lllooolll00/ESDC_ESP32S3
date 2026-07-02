@@ -47,7 +47,7 @@ static void impl_touch_register(void)
     plat_touch_dev_register(&s_touch_dev, "touch", &s_touch_base_ops, &s_touch_ops, IMPL_TOUCH_POINT_MAX, NULL);
 }
 
-// EK_EXPORT_COMPONENTS(impl_touch_register, 0);
+EK_EXPORT_COMPONENTS(impl_touch_register, 0);
 
 static int _touch_dev_init(void)
 {

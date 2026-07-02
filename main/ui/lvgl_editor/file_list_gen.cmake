@@ -1,0 +1,13 @@
+set(LV_EDITOR_PROJECT_SOURCES)
+list(
+  APPEND
+  LV_EDITOR_PROJECT_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/components/nav_bar_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/volume_slider_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/wifi_btn_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/ai_chat_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/main_page_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/smart_home_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/weather_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/ui_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/ui.c)
