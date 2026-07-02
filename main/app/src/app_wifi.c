@@ -23,7 +23,7 @@ void app_wifi_init(void)
     xTaskCreate(_app_wifi_task, "app wifi", 4096, NULL, 3, &g_wifi_task_handle);
 }
 
-// EK_EXPORT_APP(app_wifi_init, 3);
+EK_EXPORT_APP(app_wifi_init, 3);
 
 int app_wifi_send_cmd(const app_wifi_cmd_msg_t *msg, TickType_t timeout)
 {

@@ -25,6 +25,9 @@ idf_component_register(
     WHOLE_ARCHIVE
 )
 
+# LVGL editor 生成的代码需要 LV_LVGL_H_INCLUDE_SIMPLE 来正确 include lvgl.h
+target_compile_definitions(${COMPONENT_LIB} PUBLIC LV_LVGL_H_INCLUDE_SIMPLE)
+
 # 将 ui/ 下的 .bin 文件打包到 vfs FAT 分区
 set(vfs_staging "${CMAKE_CURRENT_BINARY_DIR}/vfs_stage")
 
