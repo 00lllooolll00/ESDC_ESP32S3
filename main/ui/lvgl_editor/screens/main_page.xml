@@ -14,8 +14,7 @@
         <lv_button name="func_weather"
                    x="60" y="60" width="680" height="110">
             <style name="style_func_card"/>
-            <lv_label name="func_weather_icon" width="content" height="content"
-                      style_text_color="0xffffff"/>
+            <lv_image name="func_weather_icon" width="48" height="48"/>
             <lv_label name="func_weather_label" width="content" height="content"
                       text="天气" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
             <screen_load_event screen="weather" trigger="clicked" anim_type="move_left" duration="500"/>

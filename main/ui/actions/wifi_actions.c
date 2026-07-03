@@ -3,6 +3,7 @@
 #include "plat_wifi.h"
 #include "app_wifi.h"
 #include "app_ip_location.h"
+#include "app_wifi_store.h"
 
 EK_LOG_FILE_TAG("wifi_actions");
 
@@ -17,6 +18,7 @@ static lv_obj_t *s_password_kb;
 
 // 连接状态
 static char s_connect_ssid[33];
+static char s_connect_password[64];
 static bool s_connecting;
 static lv_obj_t *s_connect_status_item;
 
@@ -27,6 +29,7 @@ static lv_obj_t *s_wifi_list_panel;
 
 static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg);
 static void _wifi_btn_click_cb(lv_event_t *e);
+static void _wifi_forget_cb(lv_event_t *e);
 static void _password_ready_cb(lv_event_t *e);
 static void _password_cancel_cb(lv_event_t *e);
 static void _cleanup_password_ui(void);
@@ -103,6 +106,25 @@ static void _wifi_btn_click_cb(lv_event_t *e)
 
     strlcpy(s_connect_ssid, s_scan_results[idx].ssid, sizeof(s_connect_ssid));
 
+    // 已记住密码 → 直接连接，免输入
+    char saved_pwd[64];
+    if (app_wifi_store_find(s_connect_ssid, saved_pwd, sizeof(saved_pwd)))
+    {
+        strlcpy(s_connect_password, saved_pwd, sizeof(s_connect_password));
+        s_connecting = true;
+        _show_connect_status("连接中...");
+
+        app_wifi_cmd_msg_t msg = {.cmd = APP_WIFI_CMD_CONNECT};
+        strlcpy(msg.data.connect.ssid, s_connect_ssid, sizeof(msg.data.connect.ssid));
+        strlcpy(msg.data.connect.password, saved_pwd, sizeof(msg.data.connect.password));
+        if (app_wifi_send_cmd(&msg, pdMS_TO_TICKS(1000)) != 0)
+        {
+            _finish_connect_attempt("发送失败", lv_color_hex(0xFF1744));
+        }
+        return;
+    }
+
+    // 未记住 → 弹密码键盘
     // 容器
     s_password_cont = lv_obj_create(lv_screen_active());
     lv_obj_set_size(s_password_cont, 500, LV_SIZE_CONTENT);
@@ -133,6 +155,20 @@ static void _wifi_btn_click_cb(lv_event_t *e)
     lv_obj_add_event_cb(s_password_kb, _password_cancel_cb, LV_EVENT_CANCEL, NULL);
 }
 
+// 忘记密码：删除凭据并重新扫描刷新列表
+static void _wifi_forget_cb(lv_event_t *e)
+{
+    lv_obj_t *btn = lv_event_get_current_target(e);
+    int idx = (int)(uintptr_t)lv_obj_get_user_data(btn);
+    if (idx < 0 || idx >= s_scan_count)
+    {
+        return;
+    }
+    app_wifi_store_remove(s_scan_results[idx].ssid);
+    // 重新扫描刷新列表（该 WiFi 仍在扫描结果，但变为未记住状态）
+    action_wifi_start_scan(NULL);
+}
+
 // ============================================================================
 // 密码确认 → 发起连接
 // ============================================================================
@@ -143,6 +179,7 @@ static void _password_ready_cb(lv_event_t *e)
     // 否则 textarea 被删除后指针失效
     char password[64];
     strlcpy(password, lv_textarea_get_text(s_password_ta), sizeof(password));
+    strlcpy(s_connect_password, password, sizeof(s_connect_password));
 
     _cleanup_password_ui();
     s_connecting = true;
@@ -250,6 +287,21 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 
                 lv_obj_set_user_data(btn, (void *)(uintptr_t)i);
                 lv_obj_add_event_cb(btn, _wifi_btn_click_cb, LV_EVENT_CLICKED, NULL);
+
+                // 已记住的项：加“忘记”按钮
+                char _tmp_pwd[64];
+                if (app_wifi_store_find(result->aps[i].ssid, _tmp_pwd, sizeof(_tmp_pwd)))
+                {
+                    lv_obj_t *forget_btn = lv_button_create(btn);
+                    lv_obj_set_size(forget_btn, 50, 30);
+                    lv_obj_set_style_bg_color(forget_btn, lv_color_hex(0xFF1744), 0);
+                    lv_obj_t *flbl = lv_label_create(forget_btn);
+                    lv_label_set_text(flbl, "忘记");
+                    lv_obj_set_style_text_font(flbl, chinese_3500_14, 0);
+                    lv_obj_center(flbl);
+                    lv_obj_set_user_data(forget_btn, (void *)(uintptr_t)i);
+                    lv_obj_add_event_cb(forget_btn, _wifi_forget_cb, LV_EVENT_CLICKED, NULL);
+                }
             }
 
             free(result);
@@ -275,6 +327,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
         {
             lv_subject_set_int(&wifi_is_connected, 1);
             app_ip_location_request();
+            app_wifi_store_add(s_connect_ssid, s_connect_password);
             // 更新 wifi_state 图标为已连接（勾）
             lv_obj_t *state = lv_obj_find_by_name(lv_screen_active(), "wifi_state");
             if (state) lv_label_set_text(state, LV_SYMBOL_OK);

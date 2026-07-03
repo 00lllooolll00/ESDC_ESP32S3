@@ -48,8 +48,8 @@ lv_obj_t * weather_create(void)
 
     lv_obj_t * weather_city = lv_label_create(lv_obj_0);
     lv_obj_set_name(weather_city, "weather_city");
-    lv_obj_set_x(weather_city, 90);
-    lv_obj_set_y(weather_city, 55);
+    lv_obj_set_x(weather_city, 340);
+    lv_obj_set_y(weather_city, 54);
     lv_obj_set_width(weather_city, LV_SIZE_CONTENT);
     lv_obj_set_height(weather_city, LV_SIZE_CONTENT);
     lv_label_set_text(weather_city, "");
@@ -58,12 +58,12 @@ lv_obj_t * weather_create(void)
 
     lv_obj_t * weather_title = lv_label_create(lv_obj_0);
     lv_obj_set_name(weather_title, "weather_title");
-    lv_obj_set_x(weather_title, 90);
-    lv_obj_set_y(weather_title, 80);
+    lv_obj_set_x(weather_title, 340);
+    lv_obj_set_y(weather_title, 78);
     lv_obj_set_width(weather_title, LV_SIZE_CONTENT);
     lv_obj_set_height(weather_title, LV_SIZE_CONTENT);
     lv_label_set_text(weather_title, "天气查看");
-    lv_obj_set_style_text_color(weather_title, lv_color_hex(0x212121), 0);
+    lv_obj_set_style_text_color(weather_title, lv_color_hex(0x6b7682), 0);
     lv_obj_set_style_text_font(weather_title, chinese_3500_14, 0);
 
     wifi_btn_create(lv_obj_0);
