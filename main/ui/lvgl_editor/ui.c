@@ -62,6 +62,14 @@ void ui_init(const char *asset_path)
         lv_obj_set_style_image_recolor(wicon, lv_color_white(), 0);
         lv_obj_set_style_image_recolor_opa(wicon, LV_OPA_COVER, 0);
     }
+    // AI 对话图标：从 vfs 加载 LVGL bin 图片
+    lv_obj_t *aicon = lv_obj_find_by_name(main_page, "func_ai_chat_icon");
+    if (aicon)
+    {
+        lv_image_set_src(aicon, "S:/images/ai_chat.bin");
+        lv_obj_set_style_image_recolor(aicon, lv_color_white(), 0);
+        lv_obj_set_style_image_recolor_opa(aicon, LV_OPA_COVER, 0);
+    }
     _set_fonts_and_icons(smart_home);
     _set_fonts_and_icons(weather);
     _set_fonts_and_icons(ai_chat);
@@ -273,7 +281,6 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
     _set_widget_font_by_name(screen, "volume_icon", &lv_font_montserrat_24);
     _set_widget_font_by_name(screen, "volume_canel_icon", &lv_font_montserrat_24);
     _set_widget_font_by_name(screen, "func_smart_home_icon", &lv_font_montserrat_24);
-    _set_widget_font_by_name(screen, "func_ai_chat_icon", &lv_font_montserrat_24);
 
     // 特殊字体
     _set_widget_font_by_name(screen, "wifi_cancel_icon", &lv_font_montserrat_26);
@@ -293,5 +300,4 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
     _set_widget_text_by_name(screen, "volume_canel_icon", LV_SYMBOL_CLOSE);
     // 功能卡片图标
     _set_widget_text_by_name(screen, "func_smart_home_icon", LV_SYMBOL_HOME);
-    _set_widget_text_by_name(screen, "func_ai_chat_icon", LV_SYMBOL_KEYBOARD);
 }

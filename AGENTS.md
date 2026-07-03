@@ -45,6 +45,24 @@
 - 仓库里没有 `just test`，也没有项目级 `pytest` / `ctest` 入口。
 - 命令别名（`justfile` 顶部 `alias`，日常高频）：`just b`=build、`just c`=clean、`just f`=flash、`just ff`=flash-full、`just r`=run、`just cfg`=menuconfig、`just m`=monitor、`just fmt`=format。
 
+## UI Image Resources
+
+- UI 图片（图标等）一律用 LVGL 官方脚本 `managed_components/lvgl__lvgl/scripts/LVGLImage.py` 转换，不要自写转换器（自写容易在 header/颜色格式/绘制后端支持上踩坑）。
+- 源 PNG 放 `main/ui/lvgl_editor/images/`；转换后的 `.bin` 放 `main/ui/assets/`（与字体 bin 同目录，不要放 `lvgl_editor/images/`）。
+- 颜色格式固定 `RGB565A8`（`--cf RGB565A8`）。原因：`sdkconfig` 只启用了 `CONFIG_LV_DRAW_SW_SUPPORT_RGB565/RGB565A8`，**未启用** `ARGB8888` 软件绘制；用 `ARGB8888` 的 bin 能被 decoder 读到但在 RGB565 屏幕上画不出来。
+- 脚本依赖 `pypng` 和 `lz4`，安装：`python3 -m pip install pypng lz4`（用 ESP-IDF venv 的 python）。若 venv 的 pip 损坏，用 `uv pip install --python <venv-python> --force-reinstall pip` 修复。
+- 转换示例：
+  ```bash
+  python3 managed_components/lvgl__lvgl/scripts/LVGLImage.py \
+         --ofmt BIN --cf RGB565A8 \
+         -o /tmp/lvgl_img_out \
+         main/ui/lvgl_editor/images/weather.png
+  cp /tmp/lvgl_img_out/weather.bin main/ui/assets/
+  ```
+- `main/CMakeLists.txt` 会 `GLOB main/ui/assets/*.bin` 打包到 vfs：字体 bin（`ui_font_*`）→ `vfs/fonts/`，其余 → `vfs/images/`。运行时用路径 `S:/images/<name>.bin` 加载（`S:` = vfs 挂载盘符，见 `CONFIG_LV_FS_POSIX_LETTER=83` / `CONFIG_LV_FS_POSIX_PATH="/vfs"`）。
+- 源图若是黑色 alpha 图标（灰度+透明），在深色卡片上不可见；在 C 里给 `lv_image` 设白色 recolor：`lv_obj_set_style_image_recolor(obj, lv_color_white(), 0)` + `lv_obj_set_style_image_recolor_opa(obj, LV_OPA_COVER, 0)`。
+- 新增/替换图片后必须 `just flash-full`（全量烧录含 vfs 分区），`just flash` 只烧 app 不烧 vfs。
+
 ## Code Conventions & Common Patterns
 
 - C 文件通常先引入 `common_header.h`，再用 `EK_LOG_FILE_TAG("...")` 声明日志标签；统一使用 `EK_LOG_DEBUG/INFO/WARN/ERROR`。

@@ -78,8 +78,8 @@ lv_obj_t * main_page_create(void)
     lv_obj_add_style(func_weather, &style_func_card, 0);
     lv_obj_t * func_weather_icon = lv_image_create(func_weather);
     lv_obj_set_name(func_weather_icon, "func_weather_icon");
-    lv_obj_set_width(func_weather_icon, 48);
-    lv_obj_set_height(func_weather_icon, 48);
+    lv_obj_set_width(func_weather_icon, 36);
+    lv_obj_set_height(func_weather_icon, 36);
 
     lv_obj_t * func_weather_label = lv_label_create(func_weather);
     lv_obj_set_name(func_weather_label, "func_weather_label");
@@ -98,11 +98,10 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_width(func_ai_chat, 330);
     lv_obj_set_height(func_ai_chat, 150);
     lv_obj_add_style(func_ai_chat, &style_func_card, 0);
-    lv_obj_t * func_ai_chat_icon = lv_label_create(func_ai_chat);
+    lv_obj_t * func_ai_chat_icon = lv_image_create(func_ai_chat);
     lv_obj_set_name(func_ai_chat_icon, "func_ai_chat_icon");
-    lv_obj_set_width(func_ai_chat_icon, LV_SIZE_CONTENT);
-    lv_obj_set_height(func_ai_chat_icon, LV_SIZE_CONTENT);
-    lv_obj_set_style_text_color(func_ai_chat_icon, lv_color_hex(0xffffff), 0);
+    lv_obj_set_width(func_ai_chat_icon, 36);
+    lv_obj_set_height(func_ai_chat_icon, 36);
 
     lv_obj_t * func_ai_chat_label = lv_label_create(func_ai_chat);
     lv_obj_set_name(func_ai_chat_label, "func_ai_chat_label");
