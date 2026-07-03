@@ -49,9 +49,14 @@ void weather_ui_init(void)
         return;
     }
 
-    // 位置和尺寸
-    lv_obj_set_pos(s_chart, 50, 60);
-    lv_obj_set_size(s_chart, 700, 300);
+    // 位置和尺寸 + 卡片样式
+    lv_obj_set_pos(s_chart, 40, 108);
+    lv_obj_set_size(s_chart, 720, 300);
+    lv_obj_set_style_bg_color(s_chart, lv_color_hex(0xf5f5f5), 0);
+    lv_obj_set_style_bg_opa(s_chart, LV_OPA_COVER, 0);
+    lv_obj_set_style_radius(s_chart, 12, 0);
+    lv_obj_set_style_border_width(s_chart, 0, 0);
+    lv_obj_set_style_pad_all(s_chart, 12, 0);
 
     // 配置折线图
     lv_chart_set_type(s_chart, LV_CHART_TYPE_LINE);
@@ -72,6 +77,10 @@ void weather_ui_init(void)
     // 缓存城市名 label 并注册 IP 定位回调
     s_city_lbl = lv_obj_find_by_name(weather, "weather_city");
     app_ip_location_register_ui_cb(_city_ui_cb, NULL);
+
+    char city_buf[64];
+    app_ip_location_get_city(city_buf, sizeof(city_buf));
+    _city_ui_cb(city_buf, NULL);
 
     EK_LOG_INFO("weather chart initialized");
 }

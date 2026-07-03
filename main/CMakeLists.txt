@@ -31,7 +31,7 @@ target_compile_definitions(${COMPONENT_LIB} PUBLIC LV_LVGL_H_INCLUDE_SIMPLE)
 # 将 ui/ 下的 .bin 文件打包到 vfs FAT 分区
 set(vfs_staging "${CMAKE_CURRENT_BINARY_DIR}/vfs_stage")
 
-file(GLOB_RECURSE bin_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/*.bin")
+file(GLOB_RECURSE bin_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/assets/*.bin")
 
 set(copy_cmds)
 foreach(bin_file ${bin_files})
