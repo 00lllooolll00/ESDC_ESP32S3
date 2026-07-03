@@ -2,6 +2,7 @@
 #include "ui.h"
 #include "plat_wifi.h"
 #include "app_wifi.h"
+#include "app_ip_location.h"
 
 EK_LOG_FILE_TAG("wifi_actions");
 
@@ -273,6 +274,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
         case APP_WIFI_EVT_CONNECTED:
         {
             lv_subject_set_int(&wifi_is_connected, 1);
+            app_ip_location_request();
             // 更新 wifi_state 图标为已连接（勾）
             lv_obj_t *state = lv_obj_find_by_name(lv_screen_active(), "wifi_state");
             if (state) lv_label_set_text(state, LV_SYMBOL_OK);

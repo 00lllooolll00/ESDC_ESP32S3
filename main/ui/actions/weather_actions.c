@@ -1,12 +1,14 @@
 #include "common_header.h"
 #include "ui.h"
 #include "app_weather.h"
+#include "app_ip_location.h"
 #include "lvgl.h"
 
 EK_LOG_FILE_TAG("weather_actions");
 
 static lv_chart_series_t *s_temp_series;
 static lv_obj_t *s_chart;
+static lv_obj_t *s_city_lbl;
 
 // UI 回调：预报数据更新时刷新折线图
 static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
@@ -26,6 +28,15 @@ static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
 
     lv_chart_set_series_values(s_chart, s_temp_series, buf, fc->count);
     lv_chart_refresh(s_chart);
+}
+// UI 回调：城市名更新时刷新 weather_city label
+static void _city_ui_cb(const char *city, void *arg)
+{
+    (void)arg;
+    if (s_city_lbl && city && city[0])
+    {
+        lv_label_set_text(s_city_lbl, city);
+    }
 }
 
 void weather_ui_init(void)
@@ -58,6 +69,9 @@ void weather_ui_init(void)
 
     // 注册天气数据回调
     app_weather_register_ui_cb(_weather_ui_cb, NULL);
+    // 缓存城市名 label 并注册 IP 定位回调
+    s_city_lbl = lv_obj_find_by_name(weather, "weather_city");
+    app_ip_location_register_ui_cb(_city_ui_cb, NULL);
 
     EK_LOG_INFO("weather chart initialized");
 }

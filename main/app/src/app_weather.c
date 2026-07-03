@@ -1,9 +1,9 @@
+#include "common_header.h"
+
 #include "app_weather.h"
 #include "ek_export.h"
 #include "lvgl.h"
-
 #include "cJSON.h"
-#include <string.h>
 
 EK_LOG_FILE_TAG("app_weather");
 
