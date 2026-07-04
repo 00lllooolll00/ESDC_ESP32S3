@@ -4,15 +4,34 @@
           style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
         <!-- 音量面板（初始隐藏，从顶部滑入） -->
         <lv_obj name="volume_panel"
-                x="149" y="-480" width="500" height="360"
+                x="200" y="-480" width="400" height="180"
                 hidden="true"
                 clickable="false"
-                style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
-                style_border_width="0"
-                style_bg_color="0x1a2c42">
+                style_radius="12"
+                style_bg_color="0x1a2c42" style_bg_opa="255"
+                style_border_width="1" style_border_color="0x2a4055"
+                style_layout="flex" style_flex_flow="column"
+                style_flex_main_place="center" style_flex_cross_place="center" style_flex_track_place="center"
+                style_pad_left="0" style_pad_top="16" style_pad_right="0" style_pad_bottom="16"
+                style_pad_row="16">
+            <!-- 标题 -->
+            <lv_label name="volume_title" width="content" height="content"
+                      text="音量调节" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+            <!-- 音量滑块 -->
+            <lv_slider name="volume_slider"
+                        width="320" height="22"
+                        value="25"
+                        style_bg_color="0x2a4055"
+                        style_bg_color-indicator="0xff9f43"
+                        style_bg_color-knob="0xffffff" style_outline_color-knob="0xffffff" style_outline_width-knob="2"
+                        style_pad_top-knob="3" style_pad_bottom-knob="3" style_pad_left-knob="3" style_pad_right-knob="3">
+                <style name="style_volume_slider_main"/>
+                <style name="style_volume_slider_knob" selector="knob"/>
+                <event_cb callback="action_volume_change" trigger="value_changed"/>
+            </lv_slider>
             <!-- 取消按钮 -->
             <lv_button name="volume_canel"
-                       x="374" y="286" width="70" height="40">
+                       width="80" height="36">
                 <style name="style_user_btn"/>
                 <lv_label name="volume_canel_icon" width="content" height="content"
                           align="center">
@@ -20,19 +39,6 @@
                 </lv_label>
                 <event_cb callback="hide_volume_panel" trigger="clicked"/>
             </lv_button>
-            <!-- 音量滑块 -->
-            <lv_slider name="volume_slider"
-                        x="85" y="147" width="289" height="22"
-                        value="25"
-                        style_layout="flex" style_flex_main_place="center" style_flex_cross_place="center" style_flex_track_place="center"
-                        style_bg_color="0x2a4055" style_outline_width="1"
-                        style_bg_color-indicator="0xff9f43"
-                        style_bg_color-knob="0xffffff" style_outline_color-knob="0xffffff" style_outline_width-knob="2"
-                       style_pad_top-knob="3" style_pad_bottom-knob="3" style_pad_left-knob="3" style_pad_right-knob="3">
-                <style name="style_volume_slider_main"/>
-                <style name="style_volume_slider_knob" selector="knob"/>
-                <event_cb callback="action_volume_change" trigger="value_changed"/>
-            </lv_slider>
         </lv_obj>
         <!-- 音量入口按钮 -->
         <lv_button name="volume_entry_btn"

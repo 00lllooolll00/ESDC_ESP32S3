@@ -90,8 +90,8 @@ extern lv_subject_t volume;
  *----------------*/
 
 void nav_back(lv_event_t * e);
-void hide_volume_panel(lv_event_t * e);
 void action_volume_change(lv_event_t * e);
+void hide_volume_panel(lv_event_t * e);
 void show_volume_panel(lv_event_t * e);
 void action_wifi_start_scan(lv_event_t * e);
 void hide_wifi_panel(lv_event_t * e);

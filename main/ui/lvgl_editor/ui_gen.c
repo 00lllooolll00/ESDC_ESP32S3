@@ -165,8 +165,8 @@ void ui_init_gen(const char * asset_path)
 
     /* Register callbacks */
     lv_xml_register_event_cb(NULL, "nav_back", nav_back);
-    lv_xml_register_event_cb(NULL, "hide_volume_panel", hide_volume_panel);
     lv_xml_register_event_cb(NULL, "action_volume_change", action_volume_change);
+    lv_xml_register_event_cb(NULL, "hide_volume_panel", hide_volume_panel);
     lv_xml_register_event_cb(NULL, "show_volume_panel", show_volume_panel);
     lv_xml_register_event_cb(NULL, "action_wifi_start_scan", action_wifi_start_scan);
     lv_xml_register_event_cb(NULL, "hide_wifi_panel", hide_wifi_panel);
@@ -206,15 +206,15 @@ void __attribute__((weak)) nav_back(lv_event_t * e)
     LV_UNUSED(e);
     LV_LOG("nav_back was called\n");
 }
-void __attribute__((weak)) hide_volume_panel(lv_event_t * e)
-{
-    LV_UNUSED(e);
-    LV_LOG("hide_volume_panel was called\n");
-}
 void __attribute__((weak)) action_volume_change(lv_event_t * e)
 {
     LV_UNUSED(e);
     LV_LOG("action_volume_change was called\n");
+}
+void __attribute__((weak)) hide_volume_panel(lv_event_t * e)
+{
+    LV_UNUSED(e);
+    LV_LOG("hide_volume_panel was called\n");
 }
 void __attribute__((weak)) show_volume_panel(lv_event_t * e)
 {

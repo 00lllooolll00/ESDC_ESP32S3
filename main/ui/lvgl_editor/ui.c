@@ -27,6 +27,7 @@ static void _set_widget_font_by_name(lv_obj_t *screen, const char *name, const l
 static void _set_widget_text_by_name(lv_obj_t *screen, const char *name, const char *text);
 static void _on_screen_loaded_cb(lv_event_t *e);
 static lv_obj_t *_nav_peek(void);
+static void _hide_all_panels(lv_obj_t *screen);
 
 /**********************
  *  STATIC VARIABLES
@@ -117,6 +118,7 @@ void nav_back(lv_event_t *e)
 // 由 ui_init 末尾和 screen_load_event 触发时自动调用
 void _on_screen_loaded(lv_obj_t *screen)
 {
+    _hide_all_panels(screen);
     // 回到主界面时清空栈，只保留 main_page
     if (screen == main_page)
     {
@@ -157,6 +159,28 @@ static void _hide_panel_anim_ready(lv_anim_t *a)
     lv_obj_add_flag((lv_obj_t *)a->var, (lv_obj_flag_t)(intptr_t)a->user_data);
 }
 
+
+// 切换屏幕时自动收起所有浮窗（音量面板 + WiFi 面板）
+static void _hide_all_panels(lv_obj_t *screen)
+{
+    lv_obj_t *vol = lv_obj_find_by_name(screen, "volume_panel");
+    if (vol && !lv_obj_has_flag(vol, LV_OBJ_FLAG_HIDDEN))
+    {
+        lv_obj_add_flag(vol, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_y(vol, -480);
+    }
+    lv_obj_t *wifi = lv_obj_find_by_name(screen, "wifi_list_panel");
+    if (wifi && !lv_obj_has_flag(wifi, LV_OBJ_FLAG_HIDDEN))
+    {
+        lv_obj_add_flag(wifi, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_y(wifi, -480);
+    }
+    lv_obj_t *btn = lv_obj_find_by_name(screen, "wifi_btn");
+    if (btn && lv_obj_has_flag(btn, LV_OBJ_FLAG_HIDDEN))
+    {
+        lv_obj_clear_flag(btn, LV_OBJ_FLAG_HIDDEN);
+    }
+}
 // ============================================================================
 // 面板回调函数（由 XML event_cb 引用，用户实现，不会被生成器覆盖）
 // ============================================================================
@@ -220,7 +244,7 @@ void show_volume_panel(lv_event_t *e)
         lv_anim_t a;
         lv_anim_init(&a);
         lv_anim_set_var(&a, panel);
-        lv_anim_set_values(&a, -480, 0);
+        lv_anim_set_values(&a, -480, 150);
         lv_anim_set_duration(&a, 400);
         lv_anim_set_path_cb(&a, lv_anim_path_ease_in);
         lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
@@ -237,7 +261,7 @@ void hide_volume_panel(lv_event_t *e)
         lv_anim_t a;
         lv_anim_init(&a);
         lv_anim_set_var(&a, panel);
-        lv_anim_set_values(&a, 0, -480);
+        lv_anim_set_values(&a, 150, -480);
         lv_anim_set_duration(&a, 300);
         lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
         lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
