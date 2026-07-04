@@ -7,7 +7,6 @@ extern "C"
 #endif
 
 #include "common_header.h"
-#include "bsp_exio.h"
 #include "driver/gpio.h"
 
 #define BSP_RGBLCD_FB_COUNT 2
@@ -39,13 +38,7 @@ extern "C"
 #define BSP_RGBLCD_B6_PIN     (GPIO_NUM_7)
 #define BSP_RGBLCD_B7_PIN     (GPIO_NUM_6)
 
-#define BSP_RGBLCD_BL_PIN     BSP_EXIO_NUM8
 #define BSP_RGBLCD_BL_PWM_PIN (GPIO_NUM_20)
-#define BSP_RGBLCD_BL(x)                                                                         \
-    do                                                                                           \
-    {                                                                                            \
-        x ? bsp_exio_write_pin(BSP_RGBLCD_BL_PIN, 1) : bsp_exio_write_pin(BSP_RGBLCD_BL_PIN, 0); \
-    } while (0)
 
 typedef bool (*bsp_rgblcd_trans_done_cb_t)(void *);
 
