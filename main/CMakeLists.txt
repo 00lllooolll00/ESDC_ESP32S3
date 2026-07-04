@@ -34,18 +34,21 @@ target_compile_definitions(${COMPONENT_LIB} PUBLIC LV_LVGL_H_INCLUDE_SIMPLE)
 # 将 ui/ 下的 .bin 文件打包到 vfs FAT 分区
 set(vfs_staging "${CMAKE_CURRENT_BINARY_DIR}/vfs_stage")
 
-file(GLOB_RECURSE bin_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/assets/*.bin")
+# 字体 bin → vfs/fonts/，图片 bin → vfs/images/（按源目录分类）
+file(GLOB_RECURSE font_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/assets/fonts/*.bin")
+file(GLOB_RECURSE image_files CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/ui/assets/images/*.bin")
 
 set(copy_cmds)
-foreach(bin_file ${bin_files})
+foreach(bin_file ${font_files})
     get_filename_component(file_name ${bin_file} NAME)
-    if(${file_name} STREQUAL "font_chinese_6500_14.bin")
-        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E make_directory "${vfs_staging}/fonts")
-        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/fonts/font_chinese_6500_14.bin")
-    else()
-        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E make_directory "${vfs_staging}/images")
-        list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/images/${file_name}")
-    endif()
+    list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E make_directory "${vfs_staging}/fonts")
+    list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/fonts/${file_name}")
+endforeach()
+
+foreach(bin_file ${image_files})
+    get_filename_component(file_name ${bin_file} NAME)
+    list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E make_directory "${vfs_staging}/images")
+    list(APPEND copy_cmds COMMAND ${CMAKE_COMMAND} -E copy_if_different "${bin_file}" "${vfs_staging}/images/${file_name}")
 endforeach()
 # 将 esp-sr 的中文 TTS voice 数据打包到 vfs FAT 分区
 set(esp_sr_tts_dir "${CMAKE_CURRENT_LIST_DIR}/../managed_components/espressif__esp-sr/esp-tts/esp_tts_chinese")

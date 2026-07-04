@@ -49,6 +49,7 @@ lv_obj_t * weather = NULL;
  *----------------*/
 
 lv_font_t * font_chinese_6500_14;
+lv_font_t * font_chinese_3500_18;
 
 /*----------------
  * Images
@@ -93,6 +94,9 @@ void ui_init_gen(const char * asset_path)
     /* create bin font 'font_chinese_6500_14' from file */
     lv_snprintf(buf, 256, "%s%s", asset_path, "fonts/font_chinese_6500_14.bin");
     font_chinese_6500_14 = lv_binfont_create(buf);
+    /* create bin font 'font_chinese_3500_18' from file */
+    lv_snprintf(buf, 256, "%s%s", asset_path, "fonts/font_chinese_3500_18.bin");
+    font_chinese_3500_18 = lv_binfont_create(buf);
 
 
     /*----------------
@@ -158,6 +162,7 @@ void ui_init_gen(const char * asset_path)
 
     /* Register fonts */
     lv_xml_register_font(NULL, "font_chinese_6500_14", font_chinese_6500_14);
+    lv_xml_register_font(NULL, "font_chinese_3500_18", font_chinese_3500_18);
 
     /* Register subjects */
     lv_xml_register_subject(NULL, "wifi_is_connected", &wifi_is_connected);

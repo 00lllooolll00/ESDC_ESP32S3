@@ -90,7 +90,7 @@ lv_obj_t * weather_create(void)
     lv_obj_set_height(weather_city, LV_SIZE_CONTENT);
     lv_label_set_text(weather_city, "");
     lv_obj_set_style_text_color(weather_city, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(weather_city, font_chinese_6500_14, 0);
+    lv_obj_set_style_text_font(weather_city, font_chinese_3500_18, 0);
 
     lv_obj_t * weather_type = lv_label_create(lv_obj_1);
     lv_obj_set_name(weather_type, "weather_type");

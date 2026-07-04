@@ -70,6 +70,8 @@ extern lv_style_t style_weather_card;
 
 extern lv_font_t * font_chinese_6500_14;
 
+extern lv_font_t * font_chinese_3500_18;
+
 /*----------------
  * Images
  *----------------*/

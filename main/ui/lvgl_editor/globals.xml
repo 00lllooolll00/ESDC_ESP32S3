@@ -51,6 +51,7 @@
     </images>
 
     <fonts>
-        <bin as_file="true" name="font_chinese_6500_14" src_path="../assets/font_chinese_6500_14.bin" size="14" bpp="4"/>
+        <bin as_file="true" name="font_chinese_6500_14" src_path="../assets/fonts/font_chinese_6500_14.bin" size="14" bpp="4"/>
+        <bin as_file="true" name="font_chinese_3500_18" src_path="../assets/fonts/font_chinese_3500_18.bin" size="18" bpp="4"/>
     </fonts>
 </globals>

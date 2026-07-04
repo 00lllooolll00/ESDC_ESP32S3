@@ -1,7 +1,7 @@
 <screen permanent="true">
     <view style_bg_color="0x1a2c42" style_bg_opa="255">
         <lv_label name="smart_home_title" x="300" y="10" width="200" height="24"
-                  text="智能家具" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"
+                  text="智能家具" style_text_color="0xffffff" style_text_font="font_chinese_3500_18"
                   style_text_align="center"/>
         <!-- 可滚动按钮区：2 列布局，顶部 y=50 避开 wifi/音量入口按钮(y=0~40) -->
         <lv_obj name="sh_scroll_cont" x="0" y="50" width="800" height="370"

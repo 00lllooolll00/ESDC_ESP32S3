@@ -17,7 +17,7 @@
                     style_bg_opa="0" style_border_width="0"
                     style_pad_row="2">
                 <lv_label name="weather_city" width="content" height="content"
-                          text="" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                          text="" style_text_color="0xffffff" style_text_font="font_chinese_3500_18"/>
                 <lv_label name="weather_type" width="content" height="content"
                           text="未知" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
             </lv_obj>
