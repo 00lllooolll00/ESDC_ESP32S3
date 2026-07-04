@@ -1,7 +1,6 @@
 #include "bsp_rgblcd.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_ops.h"
-#include "esp_ldo_regulator.h"
 #include "esp_lcd_panel_rgb.h"
 #include "driver/ledc.h"
 
@@ -13,7 +12,6 @@ typedef struct
 
 static bool _rgblcd_trans_done_cb(esp_lcd_panel_handle_t panel, const esp_lcd_rgb_panel_event_data_t *edata, void *arg);
 static void _rgblcd_init(void);
-static void _rgblcd_exio_pin_config(void);
 static void _rgblcd_display_dir(uint8_t dir);
 static void _rgblcd_backlight_pwm_init(void);
 static void _rgblcd_backlight_pwm_set(bool on);
@@ -34,10 +32,8 @@ void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
     s_cb_data.cb = cb;
     s_cb_data.arg = arg;
 
-    _rgblcd_exio_pin_config();
     _rgblcd_backlight_pwm_init();
 
-    BSP_RGBLCD_BL(0);
     _rgblcd_backlight_pwm_set(false);
 
     _rgblcd_init();
@@ -53,7 +49,6 @@ void bsp_rgblcd_init(bsp_rgblcd_trans_done_cb_t cb, void *arg)
 
     ESP_ERROR_CHECK(esp_lcd_rgb_panel_register_event_callbacks(s_rgblcd_handle, &rgb_cbs, &s_cb_data));
 
-    BSP_RGBLCD_BL(1);
     _rgblcd_backlight_pwm_set(true);
 }
 
@@ -120,7 +115,6 @@ void *bsp_rgb_get_fb(uint8_t index)
 
 void bsp_rgblcd_display(bool on)
 {
-    BSP_RGBLCD_BL(on);
     _rgblcd_backlight_pwm_set(on);
 }
 
@@ -207,13 +201,3 @@ static void _rgblcd_backlight_pwm_set(bool on)
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0));
 }
 
-static void _rgblcd_exio_pin_config(void)
-{
-    bsp_exio_pin_config_t exio_lcd_config = {
-        .mode = BSP_EXIO_PIN_MODE_OUTPUT,
-        .pin = BSP_RGBLCD_BL_PIN,
-    };
-    bsp_exio_conifg_pin(&exio_lcd_config);
-    exio_lcd_config.pin = BSP_RGBLCD_BL_PIN;
-    bsp_exio_conifg_pin(&exio_lcd_config);
-}

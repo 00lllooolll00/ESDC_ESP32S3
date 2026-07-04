@@ -68,15 +68,23 @@ typedef struct
 // BSP_EXIO输出端口默认配置
 // #define BSP_EXIO_DEFAULT_CONFIG 0xF003
 
-// BSP_EXIO各个IO的功能
-// #define BSP_RGB_LED_R_IO  BSP_EXIO_NUM0
-// #define BSP_RGB_LED_G_IO  BSP_EXIO_NUM1
-// #define BSP_RGB_LED_B_IO  BSP_EXIO_NUM2
-// #define BSP_CT_RST_IO     BSP_EXIO_NUM4
-// #define BSP_KEY1_IO       BSP_EXIO_NUM5
-// #define BSP_KEY2_IO       BSP_EXIO_NUM6
-// #define BSP_KEY3_IO       BSP_EXIO_NUM7
-// #define BSP_LCD_BL_IO     BSP_EXIO_NUM8
+// BSP_EXIO各个IO的功能（基于 io_map_new.md）:
+// #define BSP_RGB_LED_R_IO  BSP_EXIO_NUM0   // XL9555 IO0_0 → RGB-LED 红色
+// #define BSP_RGB_LED_G_IO  BSP_EXIO_NUM1   // XL9555 IO0_1 → RGB-LED 绿色
+// #define BSP_RGB_LED_B_IO  BSP_EXIO_NUM2   // XL9555 IO0_2 → RGB-LED 蓝色
+// #define BSP_AMP_SD_IO     BSP_EXIO_NUM3   // XL9555 IO0_3 → MD8002A SHUTDOWN
+// #define BSP_CT_RST_IO     BSP_EXIO_NUM4   // XL9555 IO0_4 → 触摸复位
+// #define BSP_KEY1_IO       BSP_EXIO_NUM5   // XL9555 IO0_5 → KEY1
+// #define BSP_KEY2_IO       BSP_EXIO_NUM6   // XL9555 IO0_6 → KEY2
+// #define BSP_KEY3_IO       BSP_EXIO_NUM7   // XL9555 IO0_7 → KEY3
+// #define BSP_H1_P2_IO      BSP_EXIO_NUM8   // XL9555 IO1_0 → H1 排针 Pin2（新版取消 LCD_BL）
+// #define BSP_H1_P1_IO      BSP_EXIO_NUM9   // XL9555 IO1_1 → H1 排针 Pin1
+// #define BSP_H1_P4_IO      BSP_EXIO_NUM10  // XL9555 IO1_2 → H1 排针 Pin4
+// #define BSP_H1_P3_IO      BSP_EXIO_NUM11  // XL9555 IO1_3 → H1 排针 Pin3
+// #define BSP_H1_P6_IO      BSP_EXIO_NUM12  // XL9555 IO1_4 → H1 排针 Pin6
+// #define BSP_H1_P5_IO      BSP_EXIO_NUM13  // XL9555 IO1_5 → H1 排针 Pin5
+// #define BSP_H1_P8_IO      BSP_EXIO_NUM14  // XL9555 IO1_6 → H1 排针 Pin8
+// #define BSP_H1_P7_IO      BSP_EXIO_NUM15  // XL9555 IO1_7 → H1 排针 Pin7
 
 void bsp_exio_init(void);
 void bsp_exio_int_enable(void);

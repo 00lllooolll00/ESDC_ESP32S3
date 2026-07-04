@@ -1,3 +1,7 @@
+#include "common_header.h"
+
+EK_LOG_FILE_TAG("bsp_spi.c");
+
 #include "bsp_spi.h"
 
 volatile static bool s_init_flag;
@@ -9,6 +13,14 @@ volatile static bool s_init_flag;
 void bsp_spi_init(void)
 {
     if (s_init_flag) return;
+
+    // 新板 SPI 总线未分配引脚，跳过初始化避免 spi_bus_initialize 传入 NC 崩溃
+    if (BSP_SPI_SCLK_PIN == GPIO_NUM_NC)
+    {
+        EK_LOG_WARN("bsp_spi_init skipped: SPI pins not assigned on this board revision");
+        s_init_flag = true;
+        return;
+    }
 
     s_init_flag = true;
 

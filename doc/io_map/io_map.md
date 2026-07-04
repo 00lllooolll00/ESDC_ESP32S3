@@ -1,229 +1,149 @@
-# ESP32-S3 新板 IO 引脚分布图
+# ESP32-S3 IO 引脚分布图
 
-> 基于 `ESP32S3_RGB_Touch_I2S建议引脚图.md` (2026-06-19)。
-> 含 Strapping 引脚约束、禁用引脚清单。
-
----
-
-## 一、启动 & 串口下载
-
-| IO | 信号 | 连接 | 备注 |
-|---|---|---|---|
-| `IO0` | `BOOT` | BOOT 按键 + USB-UART DTR | 仅用于 BOOT / 自动下载 |
-| `EN` | `RESET` | RESET 按键 + USB-UART RTS | 芯片复位，不可复用 |
-| `IO43` | `U0TXD` | UART0 TX → USB-UART RXD | ESP32-S3 UART0 默认脚 |
-| `IO44` | `U0RXD` | UART0 RX → USB-UART TXD | ESP32-S3 UART0 默认脚 |
+> 基于 `io_map_new.md`（新版 PCB 引脚分配）。
 
 ---
 
-## 二、RGB LCD（16bit DE 模式，565 格式）
+## 1. LCD 显示模块（经 FPC1 连接器）
 
-| LCD 信号 | IO | 备注 |
-|---|---|---|
-| `DE` | `IO4` | 数据使能 |
-| `PCLK` | `IO5` | 像素时钟 |
-| `R3` | `IO45` | ⚠️ Strapping：VDD_SPI 电压选择，复位必须高电平 |
-| `R4` | `IO48` | |
-| `R5` | `IO47` | |
-| `R6` | `IO21` | |
-| `R7` | `IO14` | |
-| `G2` | `IO10` | |
-| `G3` | `IO9` | |
-| `G4` | `IO46` | ⚠️ Strapping：启动模式，复位必须高电平 |
-| `G5` | `IO3` | ⚠️ Strapping：JTAG 信号源选择，复位必须高电平 |
-| `G6` | `IO8` | |
-| `G7` | `IO18` | |
-| `B3` | `IO17` | |
-| `B4` | `IO16` | |
-| `B5` | `IO15` | |
-| `B6` | `IO7` | |
-| `B7` | `IO6` | |
-| `BL_PWM` | `IO20` | 背光亮度 PWM（LEDC）；前提：不使用原生 USB（占 USB D+） |
-| `BL_EN` | `EXIO8` | 背光总使能，高有效 |
-
----
-
-## 三、触摸模块（I2C1 独立总线）
-
-| IO / EXIO | 信号 | 备注 |
-|---|---|---|
-| `IO38` | `CT_SDA` | 触摸 I2C1 数据 |
-| `IO39` | `CT_SCL` | 触摸 I2C1 时钟 |
-| `IO40` | `CT_INT` | 触摸中断输入 |
-| `EXIO4` | `CT_RST` | 触摸复位，低有效 |
-
----
-
-## 四、音频 Codec（ES8388）— I2C0 控制总线
-
-| IO | 信号 | 连接 | 备注 |
-|---|---|---|---|
-| `IO41` | `I2C0_SDA` | ES8388 + XL9555 | 共用 I2C 总线 |
-| `IO42` | `I2C0_SCL` | ES8388 + XL9555 | 共用 I2C 总线 |
-
-> `PA_EN` 当前未分配到 XL9555；原 `EXIO2` 已改为 `RGB_B`，如需功放使能需另行分配控制脚。
-
----
-
-## 五、I2S 音频（全双工：播放 + 录音）
-
-| IO | 信号 | 方向 | 备注 |
-|---|---|---|---|
-| `IO11` | `MCLK` | ESP32 → ES8388 | 音频主时钟 |
-| `IO12` | `BCLK` | ESP32 → ES8388 | 位时钟 |
-| `IO13` | `LRCK` | ESP32 → ES8388 | 声道时钟 |
-| `IO1` | `DOUT` | ESP32 → ES8388 | 播放数据 |
-| `IO2` | `DIN` | ES8388 → ESP32 | 录音数据 |
-
----
-
-## 六、XL9555 IO 扩展器
-
-> I2C 地址 `0x20`（A0/A1/A2 全接 GND），与 ES8388 共享 I2C0 总线。
-
-### 6.1 XL9555 控制信号
-
-| IO | 信号 | 备注 |
-|---|---|---|
-| `IO19` | `XL_INT` | XL9555 中断输入；前提：不使用原生 USB（占 USB D-） |
-| `IO41` | `I2C0_SDA` | 与 ES8388 共用 |
-| `IO42` | `I2C0_SCL` | 与 ES8388 共用 |
-
-### 6.2 XL9555 P0 口（低 8 位）
-
-| EXIO | 用途 | 信号名 | 备注 |
-|---|---|---|---|
-| `EXIO0` | RGB LED 红 | `RGB_R` | 高电平点亮 |
-| `EXIO1` | RGB LED 绿 | `RGB_G` | 高电平点亮 |
-| `EXIO2` | RGB LED 蓝 | `RGB_B` | 高电平点亮；原 `PA_EN` 位置已占用 |
-| `EXIO3` | 功放使能 | `PA_EN` / `MD8002A_SHUTDOWN` | 低电平驱动喇叭，高电平关断 |
-| `EXIO4` | 触摸复位 | `TOUCH_RST` | 低有效 |
-| `EXIO5` | 按键 1 | `KEY_1` | 慢速输入，需上拉 |
-| `EXIO6` | 按键 2 | `KEY_2` | 慢速输入，需上拉 |
-| `EXIO7` | 按键 3 | `KEY_3` | 慢速输入，需上拉 |
-
-### 6.3 XL9555 P1 口（高 8 位）
-
-| EXIO | 用途 | 信号名 | 备注 |
-|---|---|---|---|
-| `EXIO8` | 背光总使能 | `LCD_BL_EN` | 高有效 |
-| `EXIO9` | 预留 | — | 引出到排针 H1 |
-| `EXIO10` | 预留 | — | 引出到排针 H1 |
-| `EXIO11` | 预留 | — | 引出到排针 H1 |
-| `EXIO12` | 预留 | — | 引出到排针 H1 |
-| `EXIO13` | 预留 | — | 引出到排针 H1 |
-| `EXIO14` | 预留 | — | 引出到排针 H1 |
-| `EXIO15` | 预留 | — | 引出到排针 H1 |
-
----
-
-## 七、Strapping 引脚约束
-
-> 芯片复位期间采样，**外设必须保证正确电平**，否则启动失败或 Flash 不可用。
-
-| IO | 功能 | 复位时要求 | 外设负载 | 硬件处理 |
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 | FPC1引脚号 |
 |---|---|---|---|---|
-| `IO3` | JTAG 信号源选择 | **高电平** | LCD G5 | 外部 10kΩ 上拉至 3.3V |
-| `IO45` | VDD_SPI 电压选择 | **高电平**（低→1.8V Flash 不工作） | LCD R3 | 外部 10kΩ 上拉至 3.3V |
-| `IO46` | 启动模式 | **高电平** | LCD G4 | 外部 10kΩ 上拉至 3.3V |
-
-> 这三个脚被 LCD 数据线占用。LCD 模组未初始化时数据脚通常为高阻态，上拉电阻保证复位期间电平正确。
-
----
-
-## 八、禁用引脚清单（Octal PSRAM 占用）
-
-> 基于 `CONFIG_SPIRAM_MODE_OCT=y`（当前 sdkconfig 配置）。
-> **这些 IO 不可用于任何外部连接。**
-
-| 禁用 IO | 占用原因 |
-|---|---|
-| `IO26` | PSRAM CS |
-| `IO27` | Flash/PSRAM SPIHD |
-| `IO28` | Flash/PSRAM SPIWP |
-| `IO29` | Flash CS |
-| `IO30` | Flash/PSRAM CLK |
-| `IO31` | Flash/PSRAM SPIQ |
-| `IO32` | Flash/PSRAM SPID |
-| `IO33` | Octal SPIIO4 |
-| `IO34` | Octal SPIIO5 |
-| `IO35` | Octal SPIIO6 |
-| `IO36` | Octal SPIIO7 |
-| `IO37` | Octal SPIDQS |
+| 4 | IO4 | LCD_DE | 数据使能 | 8 |
+| 5 | IO5 | LCD_CLK | 像素时钟 | 11 |
+| 6 | IO6 | LCD_B7 | 蓝色 Bit7 | 13 |
+| 7 | IO7 | LCD_B6 | 蓝色 Bit6 | 14 |
+| 8 | IO15 | LCD_B5 | 蓝色 Bit5 | 15 |
+| 9 | IO16 | LCD_B4 | 蓝色 Bit4 | 16 |
+| 10 | IO17 | LCD_B3 | 蓝色 Bit3 | 17 |
+| 11 | IO18 | LCD_G7 | 绿色 Bit7 | 22 |
+| 12 | IO8 | LCD_G6 | 绿色 Bit6 | 23 |
+| 14 | IO20 | LCD_BL | 背光控制 | 7 |
+| 15 | IO3 | LCD_G5 | 绿色 Bit5 | 24 |
+| 16 | IO46 | LCD_G4 | 绿色 Bit4 | 25 |
+| 17 | IO9 | LCD_G3 | 绿色 Bit3 | 26 |
+| 18 | IO10 | LCD_G2 | 绿色 Bit2 | 27 |
+| 19 | IO11 | LCD_R7 | 红色 Bit7 | 31 |
+| 20 | IO12 | LCD_R6 | 红色 Bit6 | 32 |
+| 21 | IO13 | LCD_R5 | 红色 Bit5 | 33 |
+| 22 | IO14 | LCD_R4 | 红色 Bit4 | 34 |
+| 23 | IO21 | LCD_R3 | 红色 Bit3 | 35 |
 
 ---
 
-## 九、ESP32-S3 GPIO 状态速查
+## 2. 触摸控制器（经 FPC1 连接器）
 
-| IO | 状态 | 用途 |
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 | FPC1引脚号 |
+|---|---|---|---|---|
+| 31 | IO38 | CT_SDA | 触摸I2C数据 | 5 |
+| 32 | IO39 | CT_SCL | 触摸I2C时钟 | 3 |
+| 33 | IO40 | CT_INT | 触摸中断输出 | 2 |
+
+> 触摸复位 CT_RST 由 XL9555 的 IO0_4（Pin8）输出，经 FPC1 Pin6 连接触摸芯片。
+
+---
+
+## 3. I2C 总线（XL9555 + ES8388 共用）
+
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 | 连接目标 |
+|---|---|---|---|---|
+| 34 | IO41 | I2C0_SCL | I2C时钟 | U2 Pin22 (XL9555 SCL), U6 Pin28 (ES8388 CCLK) |
+| 35 | IO42 | I2C0_SDA | I2C数据 | U2 Pin23 (XL9555 SDA), U6 Pin27 (ES8388 CDATA) |
+
+---
+
+## 4. XL9555 IO 扩展模块（U2）
+
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 |
+|---|---|---|---|
+| 13 | IO19 | XL_INT | XL9555中断输出到MCU |
+| 34 | IO41 | I2C0_SCL | I2C时钟（共用总线） |
+| 35 | IO42 | I2C0_SDA | I2C数据（共用总线） |
+
+**XL9555 扩展 IO 分配表：**
+
+| XL9555引脚 | 网络名 | 连接目标 |
 |---|---|---|
-| `IO0` | 已用 | BOOT |
-| `IO1` | 已用 | I2S DOUT |
-| `IO2` | 已用 | I2S DIN |
-| `IO3` | 已用 | LCD G5 ⚠️ |
-| `IO4` | 已用 | LCD DE |
-| `IO5` | 已用 | LCD PCLK |
-| `IO6` | 已用 | LCD B7 |
-| `IO7` | 已用 | LCD B6 |
-| `IO8` | 已用 | LCD G6 |
-| `IO9` | 已用 | LCD G3 |
-| `IO10` | 已用 | LCD G2 |
-| `IO11` | 已用 | I2S MCK |
-| `IO12` | 已用 | I2S BCK |
-| `IO13` | 已用 | I2S LRCK |
-| `IO14` | 已用 | LCD R7 |
-| `IO15` | 已用 | LCD B5 |
-| `IO16` | 已用 | LCD B4 |
-| `IO17` | 已用 | LCD B3 |
-| `IO18` | 已用 | LCD G7 |
-| `IO19` | 已用 | XL9555 INT（占 USB D-） |
-| `IO20` | 已用 | LCD BL_PWM（占 USB D+） |
-| `IO21` | 已用 | LCD R6 |
-| `IO26` ~ `IO37` | **禁用** | Octal PSRAM |
-| `IO38` | 已用 | Touch I2C1 SDA |
-| `IO39` | 已用 | Touch I2C1 SCL |
-| `IO40` | 已用 | Touch INT |
-| `IO41` | 已用 | I2C0 SDA |
-| `IO42` | 已用 | I2C0 SCL |
-| `IO43` | 已用 | UART0 TX |
-| `IO44` | 已用 | UART0 RX |
-| `IO45` | 已用 | LCD R3 ⚠️ |
-| `IO46` | 已用 | LCD G4 ⚠️ |
-| `IO47` | 已用 | LCD R5 |
-| `IO48` | 已用 | LCD R4 |
-| `EN` | 已用 | 复位 |
-
-> ⚠️ = Strapping 引脚，见第七章约束。
+| IO0_0 (Pin4) | EXIO0 | R23(330R) 驱动 U8 RGB-LED 红色 |
+| IO0_1 (Pin5) | EXIO1 | R24(100R) 驱动 U8 RGB-LED 绿色 |
+| IO0_2 (Pin6) | EXIO2 | R25(100R) 驱动 U8 RGB-LED 蓝色 |
+| IO0_3 (Pin7) | EXIO3 | U7 (MD8002A) SHUTDOWN 引脚 |
+| IO0_4 (Pin8) | CT_RST | FPC1 Pin6 连接触摸芯片复位 |
+| IO0_5 (Pin9) | EXIO5 | KEY1 按键 |
+| IO0_6 (Pin10) | EXIO6 | KEY2 按键 |
+| IO0_7 (Pin11) | EXIO7 | KEY3 按键 |
+| IO1_0 (Pin13) | EXIO8 | H1 排针 Pin2 |
+| IO1_1 (Pin14) | EXIO9 | H1 排针 Pin1 |
+| IO1_2 (Pin15) | EXIO10 | H1 排针 Pin4 |
+| IO1_3 (Pin16) | EXIO11 | H1 排针 Pin3 |
+| IO1_4 (Pin17) | EXIO12 | H1 排针 Pin6 |
+| IO1_5 (Pin18) | EXIO13 | H1 排针 Pin5 |
+| IO1_6 (Pin19) | EXIO14 | H1 排针 Pin8 |
+| IO1_7 (Pin20) | EXIO15 | H1 排针 Pin7 |
 
 ---
 
-## 十、外设总线拓扑
+## 5. I2S 音频模块（ES8388 编解码器 U6）
 
-```
-ESP32-S3
-├── I2C0 (IO41/42) ─── XL9555 (0x20) ─┬── EXIO0 → RGB_R
-│                        │              ├── EXIO1 → RGB_G
-│                        │              ├── EXIO2 → RGB_B
-│                        │              ├── EXIO3 → PA_EN / MD8002A_SHUTDOWN
-│                        │              ├── EXIO4 → TOUCH_RST
-│                        │              ├── EXIO5 → KEY_1
-│                        │              ├── EXIO6 → KEY_2
-│                        │              ├── EXIO7 → KEY_3
-│                        │              ├── EXIO8 → LCD_BL_EN
-│                        │              └── EXIO9~15 → H1 排针预留
-│                        │
-│                        └── ES8388 (0x10) ─── 模拟输出 → MD8002A 功放（EXIO3 PA_EN）→ 喇叭
-│
-├── I2C1 (IO38=SDA, IO39=SCL) ─── 触摸 IC
-│
-├── I2S (IO1/2/11/12/13) ─── ES8388
-│
-├── RGB LCD (IO3~10,14~18,21,45~48) + BL_PWM (IO20)
-│
-├── UART0 (IO43/44) ─── USB-UART (CH340C) ─── Type-C
-│
-├── XL9555 INT ←── IO19
-│
-├── BOOT (IO0)
-└── EN
-```
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 | ES8388对应引脚 |
+|---|---|---|---|---|
+| 24 | IO47 | I2S_SDOUT | 数据输出(MCU到ES8388) | Pin6 (DSDIN), 经R16(22R)串联 |
+| 25 | IO48 | I2S_LRCK | 左右声道时钟 | Pin7 (LRCK), 经R15(22R)串联 |
+| 26 | IO45 | I2S_SDIN | 数据输入(ES8388到MCU) | Pin8 (ASDOUT), 经R14(22R)串联 |
+| 28 | IO35 | I2S_SCK | 位时钟(BCLK) | Pin5 (SCLK), 经R13(22R)串联 |
+| 29 | IO36 | I2S_MCLK | 主时钟 | Pin1 (MCLK) |
+
+**音频信号链路：**
+- 扬声器输出：ES8388 LOUT2/ROUT2 (Pin15/14) 经 C18/C19(1uF) 耦合到 SPK_IN，再经 R18(5.6K) 到 U7 (MD8002A)，驱动 SPK1 扬声器
+- 麦克风输入：MIC1 经 C32/C33(100nF) 耦合到 MIC_P/MIC_N，送入 ES8388 LIN1/RIN1 (Pin24/23)
+- 功放控制：XL9555 EXIO3 控制 U7 (MD8002A) SHUTDOWN 引脚
+
+---
+
+## 6. USB 转串口模块（CH340C U3 + Type-C USB2）
+
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 | CH340C对应引脚 |
+|---|---|---|---|---|
+| 36 | RXD0 | RXD0 | MCU串口接收 | Pin2 (TXD) |
+| 37 | TXD0 | TXD0 | MCU串口发送 | Pin3 (RXD) |
+
+**自动下载电路（Q1/Q2 + R6/R7）：**
+- CH340C RTS# (Pin14) 经 R6(10K) 到 Q2 基极，Q2 集电极控制 RESET
+- CH340C DTR# (Pin13) 经 R7(10K) 到 Q1 基极，Q1 集电极控制 BOOT
+
+**USB信号：** CH340C D+/D- (Pin5/6) 连接 Type-C (USB2) 的 D+/D-
+
+---
+
+## 7. BOOT / RESET 按键模块
+
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 | 按键 |
+|---|---|---|---|---|
+| 3 | EN | RESET | 复位引脚 | RESET按键(另一端GND) |
+| 27 | IO0 | BOOT | 启动模式选择 | BOOT按键(另一端GND) |
+
+> 复位电路：R1(10K) 上拉至 VCC + C3(100nF) 滤波
+
+---
+
+## 8. 电源模块
+
+| MCU引脚号 | MCU引脚名 | 网络名 | 功能 |
+|---|---|---|---|
+| 2 | 3V3 | VCC | 3.3V主电源(U4 RT9013-33GB输出) |
+| 1 | GND | GND | 数字地 |
+| 40 | GND | GND | 数字地 |
+| 41 | GND | GND | 数字地 |
+
+**电源链路：** USB Type-C VBUS 经 SW3开关 和 F1(自恢复保险丝) 到 +5V，再分别经 U4 (RT9013-33GB) 输出 VCC(3.3V数字电源) 和 U5 (RT9013-33GB) 输出 VCC_A(3.3V模拟电源供ES8388)
+
+---
+
+## 9. 未使用引脚
+
+| MCU引脚号 | MCU引脚名 | 网络名 | 状态 |
+|---|---|---|---|
+| 30 | IO37 | (空) | 未连接 |
+| 38 | IO2 | (空) | 未连接 |
+| 39 | IO1 | (空) | 未连接 |
+
+---

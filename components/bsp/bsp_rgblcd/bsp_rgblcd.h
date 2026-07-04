@@ -7,7 +7,6 @@ extern "C"
 #endif
 
 #include "common_header.h"
-#include "bsp_exio.h"
 #include "driver/gpio.h"
 
 #define BSP_RGBLCD_FB_COUNT 2
@@ -20,11 +19,11 @@ extern "C"
 #define BSP_RGBLCD_HSYNC_PIN  (GPIO_NUM_NC)
 #define BSP_RGBLCD_PCLK_PIN   (GPIO_NUM_5)
 
-#define BSP_RGBLCD_R3_PIN     (GPIO_NUM_45)
-#define BSP_RGBLCD_R4_PIN     (GPIO_NUM_48)
-#define BSP_RGBLCD_R5_PIN     (GPIO_NUM_47)
-#define BSP_RGBLCD_R6_PIN     (GPIO_NUM_21)
-#define BSP_RGBLCD_R7_PIN     (GPIO_NUM_14)
+#define BSP_RGBLCD_R3_PIN     (GPIO_NUM_21)
+#define BSP_RGBLCD_R4_PIN     (GPIO_NUM_14)
+#define BSP_RGBLCD_R5_PIN     (GPIO_NUM_13)
+#define BSP_RGBLCD_R6_PIN     (GPIO_NUM_12)
+#define BSP_RGBLCD_R7_PIN     (GPIO_NUM_11)
 
 #define BSP_RGBLCD_G2_PIN     (GPIO_NUM_10)
 #define BSP_RGBLCD_G3_PIN     (GPIO_NUM_9)
@@ -39,13 +38,8 @@ extern "C"
 #define BSP_RGBLCD_B6_PIN     (GPIO_NUM_7)
 #define BSP_RGBLCD_B7_PIN     (GPIO_NUM_6)
 
-#define BSP_RGBLCD_BL_PIN     BSP_EXIO_NUM8
+// 背光：新板 LCD_BL 由 IO20 直连 FPC1 Pin7，无 XL9555 EXIO 使能
 #define BSP_RGBLCD_BL_PWM_PIN (GPIO_NUM_20)
-#define BSP_RGBLCD_BL(x)                                                                         \
-    do                                                                                           \
-    {                                                                                            \
-        x ? bsp_exio_write_pin(BSP_RGBLCD_BL_PIN, 1) : bsp_exio_write_pin(BSP_RGBLCD_BL_PIN, 0); \
-    } while (0)
 
 typedef bool (*bsp_rgblcd_trans_done_cb_t)(void *);
 

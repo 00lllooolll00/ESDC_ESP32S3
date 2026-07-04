@@ -16,8 +16,9 @@ extern "C"
 
 #define BSP_SPILCD_RST_PIN     BSP_EXIO_NUM10
 #define BSP_SPILCD_PWR_PIN     BSP_EXIO_NUM11
-#define BSP_SPILCD_DC_PIN      GPIO_NUM_40
-#define BSP_SPILCD_CS_PIN      GPIO_NUM_21
+// 新板不可用：DC(IO40) 已分配给 CT_INT，CS(IO21) 已分配给 LCD_R3
+#define BSP_SPILCD_DC_PIN      GPIO_NUM_NC
+#define BSP_SPILCD_CS_PIN      GPIO_NUM_NC
 
 typedef bool (*bsp_spilcd_trans_done_cb_t)(void *);
 
