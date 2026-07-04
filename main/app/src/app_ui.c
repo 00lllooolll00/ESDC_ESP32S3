@@ -1,6 +1,7 @@
 #include "app_ui.h"
 #include "ek_export.h"
 #include "ui.h"
+#include "esp_heap_caps.h"
 
 EK_LOG_FILE_TAG("app_ui.c");
 
@@ -8,6 +9,7 @@ EK_LOG_FILE_TAG("app_ui.c");
 extern void weather_ui_init(void);
 extern void wifi_actions_init(void);
 extern void main_page_actions_init(void);
+extern void smart_home_actions_init(void);
 
 static void _app_ui_task(void *arg);
 
@@ -20,6 +22,10 @@ void app_ui_init(void)
     weather_ui_init();
     wifi_actions_init();
     main_page_actions_init();
+    smart_home_actions_init();
+    EK_LOG_INFO("after ui init: internal free=%u, total free=%u",
+                (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
+                (unsigned)esp_get_free_heap_size());
     xTaskCreatePinnedToCore(_app_ui_task, "app gui", 10240, NULL, 5, &g_ui_handle, 1);
 }
 

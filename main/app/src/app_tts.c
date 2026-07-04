@@ -22,12 +22,11 @@ static void _app_tts_task(void *arg);
 static QueueHandle_t s_tts_queue = NULL;
 static TaskHandle_t s_tts_handle = NULL;
 
-// 初始化 TTS 应用任务，供 console/UI 调用 app_tts_say 播放文本
+// 初始化 TTS 应用队列，音频链和 TTS 任务延迟到首次 app_tts_say 时创建
 void app_tts_init(void)
 {
     s_tts_queue = xQueueCreate(APP_TTS_QUEUE_LEN, sizeof(tts_msg_t));
     assert(s_tts_queue);
-    xTaskCreate(_app_tts_task, "app tts", APP_TTS_STACK_SIZE, NULL, APP_TTS_PRIORITY, &s_tts_handle);
 }
 
 EK_EXPORT_APP(app_tts_init, 5);
@@ -38,6 +37,18 @@ void app_tts_say(const char *text)
     {
         return;
     }
+
+    if (s_tts_handle == NULL)
+    {
+        BaseType_t ok = xTaskCreate(_app_tts_task, "app tts", APP_TTS_STACK_SIZE, NULL, APP_TTS_PRIORITY, &s_tts_handle);
+        if (ok != pdPASS)
+        {
+            s_tts_handle = NULL;
+            EK_LOG_ERROR("create app tts task failed");
+            return;
+        }
+    }
+
     tts_msg_t msg = { 0 };
     strncpy(msg.text, text, APP_TTS_MAX_TEXT - 1);
     xQueueSend(s_tts_queue, &msg, 0);
@@ -45,11 +56,12 @@ void app_tts_say(const char *text)
 
 static void _app_tts_task(void *arg)
 {
-    /* 初始化 TTS（音频链 + voice 加载 + esp_tts 实例）—— 耗时操作放 task 内不阻塞启动序列 */
+    // 首次播放时才初始化 TTS（音频链 + voice 加载 + esp_tts 实例），避免启动期抢占 WiFi 内部 RAM
     int ret = plat_tts_dev_init(impl_tts_dev());
     if (ret != 0)
     {
         EK_LOG_ERROR("plat_tts_dev_init failed: %d", ret);
+        s_tts_handle = NULL;
         vTaskDelete(NULL);
         return;
     }

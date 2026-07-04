@@ -96,6 +96,8 @@ void show_volume_panel(lv_event_t * e);
 void action_wifi_start_scan(lv_event_t * e);
 void hide_wifi_panel(lv_event_t * e);
 void show_wifi_panel(lv_event_t * e);
+void action_sh_btn_click(lv_event_t * e);
+void action_sh_reset(lv_event_t * e);
 void action_weather_refresh(lv_event_t * e);
 
 /**

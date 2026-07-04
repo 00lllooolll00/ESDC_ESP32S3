@@ -1,9 +1,85 @@
 <screen permanent="true">
     <view style_bg_color="0x1a2c42" style_bg_opa="255">
-        <lv_label name="smart_home_title" x="300" y="220" width="content" height="content"
-                  text="智能家具" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+        <lv_label name="smart_home_title" x="300" y="10" width="200" height="24"
+                  text="智能家具" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"
+                  style_text_align="center"/>
+        <!-- 可滚动按钮区：2 列布局，顶部 y=50 避开 wifi/音量入口按钮(y=0~40) -->
+        <lv_obj name="sh_scroll_cont" x="0" y="50" width="800" height="370"
+                scrollable="true"
+                style_bg_opa="0" style_border_width="0"
+                style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+            <!-- 第 1 行 -->
+            <lv_button name="sh_btn_0" x="20" y="0" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_0" width="content" height="content"
+                          text="IO1" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+            <lv_button name="sh_btn_1" x="410" y="0" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_1" width="content" height="content"
+                          text="IO2" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+            <!-- 第 2 行 -->
+            <lv_button name="sh_btn_2" x="20" y="132" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_2" width="content" height="content"
+                          text="IO3" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+            <lv_button name="sh_btn_3" x="410" y="132" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_3" width="content" height="content"
+                          text="IO4" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+            <!-- 第 3 行 -->
+            <lv_button name="sh_btn_4" x="20" y="264" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_4" width="content" height="content"
+                          text="IO5" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+            <lv_button name="sh_btn_5" x="410" y="264" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_5" width="content" height="content"
+                          text="IO6" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+            <!-- 第 4 行（仅 1 个） -->
+            <lv_button name="sh_btn_6" x="20" y="396" width="370" height="120"
+                       style_bg_color="0x3a5066" style_bg_opa="255" style_radius="12" style_border_width="0"
+                       style_layout="flex" style_flex_flow="column"
+                       style_flex_main_place="center" style_flex_cross_place="center">
+                <lv_label name="sh_lbl_6" width="content" height="content"
+                          text="IO7" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <event_cb callback="action_sh_btn_click" trigger="clicked"/>
+            </lv_button>
+        </lv_obj>
         <wifi_btn/>
         <volume_slider/>
         <nav_bar/>
+        <!-- 恢复默认按钮：放在 nav_bar 中间（与 nav_home/nav_back 同行 y=430），最上层确保可点击 -->
+        <lv_button name="sh_reset_btn" x="365" y="430" width="70" height="40">
+            <style name="style_user_btn"/>
+            <lv_label name="sh_reset_lbl" width="content" height="content"
+                      text="恢复默认" style_text_color="0xffffff" style_text_font="font_chinese_6500_14">
+                <style name="style_user_icon_label"/>
+            </lv_label>
+            <event_cb callback="action_sh_reset" trigger="clicked"/>
+        </lv_button>
     </view>
 </screen>
