@@ -9,3 +9,4 @@ managed_components
 .agents
 .auto-embedded
 .codegraph
+main/secrets.h

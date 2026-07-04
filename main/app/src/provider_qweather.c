@@ -7,11 +7,16 @@
 #include "miniz.h"
 #include <stdlib.h>
 #include <string.h>
+#include "secrets.h"
+#ifndef QWEATHER_API_KEY
+#error "QWEATHER_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
+#endif
+#ifndef QWEATHER_API_HOST
+#error "QWEATHER_API_HOST not defined. Copy main/secrets.h.example to main/secrets.h and fill in your host."
+#endif
 
 EK_LOG_FILE_TAG("provider_qweather");
 
-#define QWEATHER_API_KEY     "YOUR_QWEATHER_KEY"
-#define QWEATHER_API_HOST    "p52r6yxrx2.re.qweatherapi.com"
 #define QWEATHER_TIMEOUT_MS  30000
 #define QWEATHER_NOW_BUF_MAX 4096
 #define QWEATHER_24H_BUF_MAX 8192

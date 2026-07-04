@@ -8,11 +8,16 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdlib.h>
+#include "secrets.h"
+#ifndef DEEPSEEK_API_KEY
+#error "DEEPSEEK_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
+#endif
+#ifndef DEEPSEEK_API_URL
+#error "DEEPSEEK_API_URL not defined. Copy main/secrets.h.example to main/secrets.h and fill in your URL."
+#endif
 
 EK_LOG_FILE_TAG("app_ai_advice");
 
-#define DEEPSEEK_API_URL    "https://api.deepseek.com/chat/completions"
-#define DEEPSEEK_API_KEY    "YOUR_DEEPSEEK_KEY"
 #define DEEPSEEK_MODEL      "deepseek-v4-flash"
 #define DEEPSEEK_TIMEOUT_MS 30000
 #define DEEPSEEK_BUF_MAX    4096
