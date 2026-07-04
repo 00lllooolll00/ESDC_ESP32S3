@@ -1,4 +1,5 @@
 alias b := build
+alias rb := rebuild
 alias c := clean
 alias f := flash
 alias ff := flash-full
@@ -10,8 +11,11 @@ alias fmt := format
 build:
     idf.py build size
 
+rebuild:
+    idf.py reconfigure build size
+
 clean:
-    rm -rf build
+    idf.py fullclean
     
 flash:build
     idf.py app-flash -b 2000000  
