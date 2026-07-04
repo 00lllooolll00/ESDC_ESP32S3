@@ -49,6 +49,14 @@ void app_ip_location_set_city(const char *city);
 void app_ip_location_get_city(char *buf, size_t len);
 
 /**
+ * @brief 获取经纬度快照（线程安全）
+ *
+ * @param lat 输出纬度；无定位时写 0
+ * @param lon 输出经度；无定位时写 0
+ */
+void app_ip_location_get_latlon(float *lat, float *lon);
+
+/**
  * @brief 注册 UI 回调，城市名更新时在 lv_lock 保护下调用
  *
  * @param cb 回调函数指针

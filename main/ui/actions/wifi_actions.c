@@ -36,12 +36,30 @@ static void _cleanup_password_ui(void);
 static void _clear_connect_status(void);
 static void _show_connect_status(const char *text);
 static void _finish_connect_attempt(const char *text, lv_color_t color);
+static void _set_wifi_state_on_screen(lv_obj_t *screen, const char *symbol);
+static void _set_wifi_state_on_all_screens(const char *symbol);
 
 // 面板显示/隐藏回调（show_wifi_panel / hide_wifi_panel）已在 ui.c 中实现
 
 // ============================================================================
 // Public
 // ============================================================================
+
+// UI 初始化时注册 WiFi 事件回调，并同步当前 WiFi 状态到界面
+// 覆盖自动连接场景：自动连上 WiFi 时 UI 回调已注册，能收到状态事件
+void wifi_actions_init(void)
+{
+    app_wifi_register_evt_cb(_wifi_evt_cb, NULL);
+
+    // 如果 WiFi 已连接（自动连接在注册回调前完成），手动同步 UI 状态
+    if (app_wifi_is_connected())
+    {
+        lv_lock();
+        lv_subject_set_int(&wifi_is_connected, 1);
+        _set_wifi_state_on_all_screens(LV_SYMBOL_OK);
+        lv_unlock();
+    }
+}
 
 void action_wifi_start_scan(lv_event_t *e)
 {
@@ -87,7 +105,7 @@ void action_wifi_start_scan(lv_event_t *e)
         }
         lv_obj_t *btn = lv_list_add_btn(list, NULL, "发送失败");
         (void)btn;
-        app_wifi_unregister_evt_cb();
+        // 保留已注册回调，避免清掉天气 API 的 WiFi 事件监听
     }
 }
 
@@ -304,7 +322,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
                 }
             }
 
-            free(result);
+            // 扫描结果由 app_wifi 统一释放，这里不能 free(result)
             break;
         }
 
@@ -327,10 +345,13 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
         {
             lv_subject_set_int(&wifi_is_connected, 1);
             app_ip_location_request();
-            app_wifi_store_add(s_connect_ssid, s_connect_password);
-            // 更新 wifi_state 图标为已连接（勾）
-            lv_obj_t *state = lv_obj_find_by_name(lv_screen_active(), "wifi_state");
-            if (state) lv_label_set_text(state, LV_SYMBOL_OK);
+            // 只有用户手动连接时才存凭据（自动连接的凭据已在 store 里）
+            if (s_connect_ssid[0] != '\0')
+            {
+                app_wifi_store_add(s_connect_ssid, s_connect_password);
+            }
+            // 更新所有页面的 wifi_state 图标为已连接（勾）
+            _set_wifi_state_on_all_screens(LV_SYMBOL_OK);
             if (s_connecting)
             {
                 _finish_connect_attempt("连接成功", lv_color_hex(0x00C853));
@@ -341,9 +362,8 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
         case APP_WIFI_EVT_DISCONNECTED:
         {
             lv_subject_set_int(&wifi_is_connected, 0);
-            // 更新 wifi_state 图标为未连接（叉）
-            lv_obj_t *state = lv_obj_find_by_name(lv_screen_active(), "wifi_state");
-            if (state) lv_label_set_text(state, LV_SYMBOL_CLOSE);
+            // 更新所有页面的 wifi_state 图标为未连接（叉）
+            _set_wifi_state_on_all_screens(LV_SYMBOL_CLOSE);
             if (s_connecting)
             {
                 _finish_connect_attempt("密码错误", lv_color_hex(0xFF1744));
@@ -354,4 +374,25 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
         default:
             break;
     }
+}
+
+static void _set_wifi_state_on_screen(lv_obj_t *screen, const char *symbol)
+{
+    if (!screen || !symbol)
+    {
+        return;
+    }
+    lv_obj_t *state = lv_obj_find_by_name(screen, "wifi_state");
+    if (state)
+    {
+        lv_label_set_text(state, symbol);
+    }
+}
+
+static void _set_wifi_state_on_all_screens(const char *symbol)
+{
+    _set_wifi_state_on_screen(main_page, symbol);
+    _set_wifi_state_on_screen(weather, symbol);
+    _set_wifi_state_on_screen(ai_chat, symbol);
+    _set_wifi_state_on_screen(smart_home, symbol);
 }

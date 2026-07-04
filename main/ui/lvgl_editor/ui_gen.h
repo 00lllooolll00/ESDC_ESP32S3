@@ -62,6 +62,7 @@ extern lv_style_t style_user_text_label;
 extern lv_style_t style_volume_slider_main;
 extern lv_style_t style_volume_slider_knob;
 extern lv_style_t style_func_card;
+extern lv_style_t style_weather_card;
 
 /*----------------
  * Fonts
@@ -95,6 +96,7 @@ void show_volume_panel(lv_event_t * e);
 void action_wifi_start_scan(lv_event_t * e);
 void hide_wifi_panel(lv_event_t * e);
 void show_wifi_panel(lv_event_t * e);
+void action_weather_refresh(lv_event_t * e);
 
 /**
  * Initialize the component library

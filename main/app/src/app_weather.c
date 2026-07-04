@@ -1,4 +1,5 @@
 #include "common_header.h"
+#include <string.h>
 
 #include "app_weather.h"
 #include "ek_export.h"
@@ -12,12 +13,88 @@ static SemaphoreHandle_t s_mutex;
 static app_weather_ui_cb_t s_ui_cb;
 static void *s_ui_cb_arg;
 
+static const char *const s_type_names[] = {
+    [APP_WEATHER_TYPE_UNKNOWN] = "未知", [APP_WEATHER_TYPE_SUNNY] = "晴", [APP_WEATHER_TYPE_CLOUDY] = "多云",
+    [APP_WEATHER_TYPE_OVERCAST] = "阴",  [APP_WEATHER_TYPE_RAIN] = "雨",  [APP_WEATHER_TYPE_THUNDER] = "雷雨",
+    [APP_WEATHER_TYPE_SNOW] = "雪",
+};
+
+// 解析天气类型字符串为枚举
+static app_weather_type_t _parse_type(const char *s)
+{
+    if (!s)
+    {
+        return APP_WEATHER_TYPE_UNKNOWN;
+    }
+    if (strcmp(s, "sunny") == 0)
+    {
+        return APP_WEATHER_TYPE_SUNNY;
+    }
+    if (strcmp(s, "cloudy") == 0)
+    {
+        return APP_WEATHER_TYPE_CLOUDY;
+    }
+    if (strcmp(s, "overcast") == 0)
+    {
+        return APP_WEATHER_TYPE_OVERCAST;
+    }
+    if (strcmp(s, "rain") == 0)
+    {
+        return APP_WEATHER_TYPE_RAIN;
+    }
+    if (strcmp(s, "thunder") == 0)
+    {
+        return APP_WEATHER_TYPE_THUNDER;
+    }
+    if (strcmp(s, "snow") == 0)
+    {
+        return APP_WEATHER_TYPE_SNOW;
+    }
+    return APP_WEATHER_TYPE_UNKNOWN;
+}
+
+// 在持锁状态下从 temps 派生 max/min
+static void _derive_max_min(void)
+{
+    if (s_forecast.count <= 0)
+    {
+        return;
+    }
+    int16_t mx = s_forecast.temps[0];
+    int16_t mn = s_forecast.temps[0];
+    for (int i = 1; i < s_forecast.count; i++)
+    {
+        if (s_forecast.temps[i] > mx)
+        {
+            mx = s_forecast.temps[i];
+        }
+        if (s_forecast.temps[i] < mn)
+        {
+            mn = s_forecast.temps[i];
+        }
+    }
+    s_forecast.max_temp = mx;
+    s_forecast.min_temp = mn;
+}
+
+// 释放锁后触发 UI 回调（lv_lock 保护 LVGL 操作）
+static void _notify_ui(void)
+{
+    if (s_ui_cb)
+    {
+        lv_lock();
+        s_ui_cb(&s_forecast, s_ui_cb_arg);
+        lv_unlock();
+    }
+}
+
 void app_weather_init(void)
 {
     EK_LOG_INFO("ek_export: APP app_weather_init");
     s_mutex = xSemaphoreCreateMutex();
     assert(s_mutex);
-    s_forecast.count = 0;
+    memset(&s_forecast, 0, sizeof(s_forecast));
+    s_forecast.type = APP_WEATHER_TYPE_UNKNOWN;
     s_ui_cb = NULL;
     s_ui_cb_arg = NULL;
 }
@@ -41,17 +118,13 @@ void app_weather_set_forecast(const int16_t *temps, int count)
     xSemaphoreTake(s_mutex, portMAX_DELAY);
     memcpy(s_forecast.temps, temps, sizeof(int16_t) * count);
     s_forecast.count = count;
+    _derive_max_min();
     xSemaphoreGive(s_mutex);
 
     EK_LOG_INFO("forecast updated, count=%d", count);
 
-    // 触发 UI 回调，lv_lock 保护 LVGL 操作
-    if (s_ui_cb)
-    {
-        lv_lock();
-        s_ui_cb(&s_forecast, s_ui_cb_arg);
-        lv_unlock();
-    }
+    // 触发 UI 回调
+    _notify_ui();
 }
 
 int app_weather_inject_json(const char *json_str)
@@ -99,9 +172,41 @@ int app_weather_inject_json(const char *json_str)
         temps[i] = (int16_t)(val * 10.0 + 0.5);
     }
 
+    // 解析可选字段（root 仍有效）
+    app_weather_type_t type = APP_WEATHER_TYPE_UNKNOWN;
+    int16_t current_temp = 0;
+    uint8_t humidity = 0;
+    uint8_t wind_speed = 0;
+
+    cJSON *type_item = cJSON_GetObjectItem(root, "type");
+    if (type_item && cJSON_IsString(type_item))
+    {
+        type = _parse_type(type_item->valuestring);
+    }
+
+    cJSON *cur_item = cJSON_GetObjectItem(root, "current_temp");
+    if (cur_item)
+    {
+        current_temp = (int16_t)(cJSON_GetNumberValue(cur_item) * 10.0 + 0.5);
+    }
+
+    cJSON *hum_item = cJSON_GetObjectItem(root, "humidity");
+    if (hum_item)
+    {
+        humidity = (uint8_t)cJSON_GetNumberValue(hum_item);
+    }
+
+    cJSON *wind_item = cJSON_GetObjectItem(root, "wind_speed");
+    if (wind_item)
+    {
+        wind_speed = (uint8_t)cJSON_GetNumberValue(wind_item);
+    }
+
     cJSON_Delete(root);
 
+    // 先设预报（含 temps 派生 max/min），再设当前状态
     app_weather_set_forecast(temps, arr_size);
+    app_weather_set_current(type, current_temp, humidity, wind_speed);
     return 0;
 }
 
@@ -120,4 +225,33 @@ app_weather_forecast_t app_weather_get_forecast(void)
     snapshot = s_forecast;
     xSemaphoreGive(s_mutex);
     return snapshot;
+}
+
+void app_weather_set_current(app_weather_type_t type, int16_t current_temp, uint8_t humidity, uint8_t wind_speed)
+{
+    if (!s_mutex)
+    {
+        return;
+    }
+
+    xSemaphoreTake(s_mutex, portMAX_DELAY);
+    s_forecast.type = type;
+    s_forecast.current_temp = current_temp;
+    s_forecast.humidity = humidity;
+    s_forecast.wind_speed = wind_speed;
+    xSemaphoreGive(s_mutex);
+
+    EK_LOG_INFO("current weather updated: type=%d temp=%d hum=%d wind=%d", type, current_temp, humidity, wind_speed);
+
+    // 触发 UI 回调
+    _notify_ui();
+}
+
+const char *app_weather_type_name(app_weather_type_t t)
+{
+    if (t < 0 || t >= (int)(sizeof(s_type_names) / sizeof(s_type_names[0])))
+    {
+        return s_type_names[APP_WEATHER_TYPE_UNKNOWN];
+    }
+    return s_type_names[t];
 }

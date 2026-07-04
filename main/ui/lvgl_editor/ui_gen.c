@@ -64,6 +64,7 @@ lv_style_t style_user_text_label;
 lv_style_t style_volume_slider_main;
 lv_style_t style_volume_slider_knob;
 lv_style_t style_func_card;
+lv_style_t style_weather_card;
 
 /*----------------
  * Subjects
@@ -149,6 +150,12 @@ void ui_init_gen(const char * asset_path)
         lv_style_set_border_side(&style_func_card, LV_BORDER_SIDE_NONE);
         lv_style_set_border_color(&style_func_card, lv_color_hex(0xffffff));
 
+        lv_style_init(&style_weather_card);
+        lv_style_set_bg_color(&style_weather_card, lv_color_hex(0x2a4055));
+        lv_style_set_bg_opa(&style_weather_card, 255);
+        lv_style_set_radius(&style_weather_card, 8);
+        lv_style_set_border_width(&style_weather_card, 0);
+
         style_inited = true;
     }
 
@@ -180,6 +187,7 @@ void ui_init_gen(const char * asset_path)
     lv_xml_register_event_cb(NULL, "action_wifi_start_scan", action_wifi_start_scan);
     lv_xml_register_event_cb(NULL, "hide_wifi_panel", hide_wifi_panel);
     lv_xml_register_event_cb(NULL, "show_wifi_panel", show_wifi_panel);
+    lv_xml_register_event_cb(NULL, "action_weather_refresh", action_weather_refresh);
 #endif
 
     /* Register all the global assets so that they won't be created again when globals.xml is parsed.
@@ -243,6 +251,11 @@ void __attribute__((weak)) show_wifi_panel(lv_event_t * e)
 {
     LV_UNUSED(e);
     LV_LOG("show_wifi_panel was called\n");
+}
+void __attribute__((weak)) action_weather_refresh(lv_event_t * e)
+{
+    LV_UNUSED(e);
+    LV_LOG("action_weather_refresh was called\n");
 }
 #endif
 

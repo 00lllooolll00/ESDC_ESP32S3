@@ -3,8 +3,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/app/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/ui/CMakeLists.txt)
 
 # root 级别（main/ 自身）
-set(root_src_dirs .)
-set(root_include_dirs .)
+set(root_src_dirs . test)
+set(root_include_dirs . test)
 
 # 合并后统一注册
 set(all_src_dirs

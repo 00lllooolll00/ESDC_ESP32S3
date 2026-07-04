@@ -90,8 +90,7 @@ void app_wifi_store_add(const char *ssid, const char *password)
     // 不存在：满则整体前移淘汰最早的一条
     if (s_store.count >= APP_WIFI_STORE_MAX)
     {
-        memmove(&s_store.items[0], &s_store.items[1],
-                (APP_WIFI_STORE_MAX - 1) * sizeof(wifi_cred_t));
+        memmove(&s_store.items[0], &s_store.items[1], (APP_WIFI_STORE_MAX - 1) * sizeof(wifi_cred_t));
         s_store.count = APP_WIFI_STORE_MAX - 1;
         EK_LOG_INFO("store full, evicted oldest");
     }
@@ -115,8 +114,7 @@ bool app_wifi_store_remove(const char *ssid)
         if (strcmp(s_store.items[i].ssid, ssid) == 0)
         {
             // 后移覆盖被删项
-            memmove(&s_store.items[i], &s_store.items[i + 1],
-                    (s_store.count - i - 1) * sizeof(wifi_cred_t));
+            memmove(&s_store.items[i], &s_store.items[i + 1], (s_store.count - i - 1) * sizeof(wifi_cred_t));
             s_store.count--;
             _persist();
             EK_LOG_INFO("removed %s, count=%d", ssid, s_store.count);
@@ -144,4 +142,13 @@ bool app_wifi_store_find(const char *ssid, char *password_out, size_t len)
         }
     }
     return false;
+}
+
+const wifi_cred_t *app_wifi_store_get_all(int *count_out)
+{
+    if (count_out)
+    {
+        *count_out = s_store.count;
+    }
+    return s_store.items;
 }

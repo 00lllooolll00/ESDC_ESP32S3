@@ -204,10 +204,10 @@ static void _wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t 
         {
             wifi_event_sta_disconnected_t *disconn = (wifi_event_sta_disconnected_t *)event_data;
 
-            // 认证失败（密码错误等）不重试，立即通知上层
-            if (disconn->reason == WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT || disconn->reason == WIFI_REASON_AUTH_FAIL)
+            // 4-way 握手超时确定是密码错误，不重试
+            if (disconn->reason == WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT)
             {
-                EK_LOG_WARN("wifi auth failed, reason=%d", disconn->reason);
+                EK_LOG_WARN("wifi handshake timeout, reason=%d", disconn->reason);
                 plat_wifi_notify_state(&s_wifi_dev, PLAT_WIFI_DISCONNECTED);
             }
             else if (s_retry_count < IMPL_WIFI_MAX_RETRY)

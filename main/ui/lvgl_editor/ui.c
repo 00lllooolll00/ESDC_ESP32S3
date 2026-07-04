@@ -277,6 +277,7 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
 {
     // 图标 label：montserrat_24（通用）
     _set_widget_font_by_name(screen, "wifi_refresh_icon", &lv_font_montserrat_24);
+    _set_widget_font_by_name(screen, "weather_refresh_icon", &lv_font_montserrat_24);
     _set_widget_font_by_name(screen, "wifi_icon", &lv_font_montserrat_24);
     _set_widget_font_by_name(screen, "volume_icon", &lv_font_montserrat_24);
     _set_widget_font_by_name(screen, "volume_canel_icon", &lv_font_montserrat_24);
@@ -291,6 +292,7 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
 
     // 设置图标文本（EEZ 中通过 Flow 表达式设置，这里直接用 LVGL 符号宏）
     _set_widget_text_by_name(screen, "wifi_refresh_icon", LV_SYMBOL_REFRESH);
+    _set_widget_text_by_name(screen, "weather_refresh_icon", LV_SYMBOL_REFRESH);
     _set_widget_text_by_name(screen, "wifi_cancel_icon", LV_SYMBOL_CLOSE);
     _set_widget_text_by_name(screen, "wifi_icon", LV_SYMBOL_WIFI);
     _set_widget_text_by_name(screen, "wifi_state", LV_SYMBOL_CLOSE);

@@ -6,6 +6,7 @@ EK_LOG_FILE_TAG("app_ui.c");
 
 // weather 折线图初始化（定义在 main/ui/actions/weather_actions.c）
 extern void weather_ui_init(void);
+extern void wifi_actions_init(void);
 
 static void _app_ui_task(void *arg);
 
@@ -16,6 +17,7 @@ void app_ui_init(void)
     EK_LOG_INFO("ek_export: APP app_ui_init");
     ui_init("S:/");
     weather_ui_init();
+    wifi_actions_init();
     xTaskCreatePinnedToCore(_app_ui_task, "app gui", 10240, NULL, 5, &g_ui_handle, 1);
 }
 

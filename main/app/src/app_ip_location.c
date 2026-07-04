@@ -18,6 +18,8 @@ EK_LOG_FILE_TAG("app_ip_location");
 #define APP_IP_LOCATION_BUF_MAX    1024
 
 static char s_city[APP_IP_LOCATION_CITY_MAX];
+static float s_lat = 0;
+static float s_lon = 0;
 static SemaphoreHandle_t s_mutex;
 static app_ip_location_ui_cb_t s_ui_cb;
 static void *s_ui_cb_arg;
@@ -32,12 +34,14 @@ void app_ip_location_init(void)
     s_mutex = xSemaphoreCreateMutex();
     assert(s_mutex);
     s_city[0] = '\0';
+    s_lat = 0;
+    s_lon = 0;
     s_ui_cb = NULL;
     s_ui_cb_arg = NULL;
     s_task = NULL;
 
-    BaseType_t ok = xTaskCreate(_ip_loc_task, "ip_loc", APP_IP_LOCATION_TASK_STACK,
-                                NULL, APP_IP_LOCATION_TASK_PRIO, &s_task);
+    BaseType_t ok =
+        xTaskCreate(_ip_loc_task, "ip_loc", APP_IP_LOCATION_TASK_STACK, NULL, APP_IP_LOCATION_TASK_PRIO, &s_task);
     assert(ok == pdPASS);
 }
 
@@ -98,6 +102,24 @@ void app_ip_location_get_city(char *buf, size_t len)
     xSemaphoreTake(s_mutex, portMAX_DELAY);
     strncpy(buf, s_city, len - 1);
     buf[len - 1] = '\0';
+    xSemaphoreGive(s_mutex);
+}
+
+void app_ip_location_get_latlon(float *lat, float *lon)
+{
+    if (!lat || !lon)
+    {
+        return;
+    }
+    if (!s_mutex)
+    {
+        *lat = 0;
+        *lon = 0;
+        return;
+    }
+    xSemaphoreTake(s_mutex, portMAX_DELAY);
+    *lat = s_lat;
+    *lon = s_lon;
     xSemaphoreGive(s_mutex);
 }
 
@@ -188,8 +210,7 @@ static bool _do_http_fetch(char *out, size_t out_len)
     }
 
     cJSON *status_obj = cJSON_GetObjectItem(root, "status");
-    if (!status_obj || !cJSON_IsString(status_obj) ||
-        strcmp(status_obj->valuestring, "success") != 0)
+    if (!status_obj || !cJSON_IsString(status_obj) || strcmp(status_obj->valuestring, "success") != 0)
     {
         EK_LOG_WARN("ip-api status not success: %s",
                     (status_obj && cJSON_IsString(status_obj)) ? status_obj->valuestring : "(null)");
@@ -201,6 +222,20 @@ static bool _do_http_fetch(char *out, size_t out_len)
     {
         EK_LOG_WARN("missing city field");
         goto cleanup;
+    }
+
+    // 解析经纬度并持锁存储
+    cJSON *lat_obj = cJSON_GetObjectItem(root, "lat");
+    cJSON *lon_obj = cJSON_GetObjectItem(root, "lon");
+    if (lat_obj && lon_obj)
+    {
+        float parsed_lat = (float)cJSON_GetNumberValue(lat_obj);
+        float parsed_lon = (float)cJSON_GetNumberValue(lon_obj);
+        xSemaphoreTake(s_mutex, portMAX_DELAY);
+        s_lat = parsed_lat;
+        s_lon = parsed_lon;
+        xSemaphoreGive(s_mutex);
+        EK_LOG_INFO("lat=%.4f lon=%.4f", s_lat, s_lon);
     }
 
     strncpy(out, city_obj->valuestring, out_len - 1);

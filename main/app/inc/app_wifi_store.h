@@ -55,6 +55,14 @@ bool app_wifi_store_remove(const char *ssid);
  */
 bool app_wifi_store_find(const char *ssid, char *password_out, size_t len);
 
+/**
+ * @brief 获取凭据数组只读指针和数量
+ *
+ * @param count_out 输出已存凭据条数
+ * @return 凭据数组指针（模块内部存储，调用者不可修改）
+ */
+const wifi_cred_t *app_wifi_store_get_all(int *count_out);
+
 #ifdef __cplusplus
 }
 #endif

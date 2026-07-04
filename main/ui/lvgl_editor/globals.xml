@@ -50,6 +50,12 @@
                shadow_offset_x="2"
                border_side="none"
                border_color="0xffffff"/>
+
+        <style name="style_weather_card"
+               bg_color="0x2a4055"
+               bg_opa="255"
+               radius="8"
+               border_width="0"/>
     </styles>
 
     <subjects>

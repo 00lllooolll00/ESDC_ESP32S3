@@ -55,4 +55,11 @@ int app_wifi_send_cmd(const app_wifi_cmd_msg_t *msg, TickType_t timeout);
 void app_wifi_register_evt_cb(app_wifi_evt_cb_t cb, void *arg);
 void app_wifi_unregister_evt_cb(void);
 
+/**
+ * @brief 查询 WiFi 是否已连接
+ *
+ * @return true 已连接（PLAT_WIFI_CONNECTED），false 未连接/连接中
+ */
+bool app_wifi_is_connected(void);
+
 #endif // APP_WIFI_H

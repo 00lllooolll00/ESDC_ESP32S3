@@ -8,6 +8,7 @@
 
 // ek_utils 自动初始化
 #include "ek_export.h"
+#include "test_main.h"
 
 EK_LOG_FILE_TAG("main.c");
 
@@ -56,4 +57,7 @@ void app_main(void)
     // COMPONENTS:    led/key/rgblcd/touch/wifi/tts register → led/key dev_init
     // APP:           lv_init+tick → disp/touch port → weather → wifi/led/key → ui → mqtt → console
     ek_export_init();
+
+    // 统一测试入口：注释此行即可关闭所有测试
+    // test_run_all();
 }
