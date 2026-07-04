@@ -35,6 +35,7 @@
 ## Development Commands
 
 - `just build`：构建并输出 size 信息（实际调用 `idf.py build size`）。
+- **UI 改动构建规则**：只要改动涉及 `main/ui/lvgl_editor/` 下的 `XML` 文件或 `main/ui/actions/*.c`，必须使用 `just rebuild`（而非 `just build`）重新构建。原因：`just build` 的增量编译有时不会重新触发 LVGL Editor 代码生成和 `*_gen.c` 重编，导致 XML 改动不生效；`just rebuild` 会强制全量重新生成 UI 代码并重编，确保界面变更可靠落地。
 - `just flash`：仅烧录 app 分区（`idf.py app-flash -b 2000000`，2Mbps 高速；依赖 `build`）。
 - `just flash-full`：整片烧录（`idf.py flash -b 2000000`，2Mbps 高速；依赖 `build`）。
 - `just monitor`：打开串口监视。
