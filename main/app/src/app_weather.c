@@ -268,24 +268,17 @@ void app_weather_set_daily(const app_weather_daily_t *dailies, int count)
     _notify_ui();
 }
 
-void app_weather_set_index(const app_weather_index_t *indices, int count)
+void app_weather_set_ai_advice(const char *advice)
 {
-    if (!s_mutex || !indices || count <= 0)
+    if (!s_mutex || !advice)
     {
         return;
     }
-    if (count > APP_WEATHER_INDEX_MAX)
-    {
-        count = APP_WEATHER_INDEX_MAX;
-    }
     xSemaphoreTake(s_mutex, portMAX_DELAY);
-    s_forecast.index_count = count;
-    for (int i = 0; i < count; i++)
-    {
-        s_forecast.indices[i] = indices[i];
-    }
+    strncpy(s_forecast.ai_advice, advice, sizeof(s_forecast.ai_advice) - 1);
+    s_forecast.ai_advice[sizeof(s_forecast.ai_advice) - 1] = '\0';
     xSemaphoreGive(s_mutex);
-    EK_LOG_INFO("life index updated: count=%d", count);
+    EK_LOG_INFO("ai advice updated: %s", s_forecast.ai_advice);
     _notify_ui();
 }
 

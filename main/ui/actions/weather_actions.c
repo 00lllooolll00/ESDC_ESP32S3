@@ -15,7 +15,7 @@ static lv_obj_t *s_min_lbl;
 static lv_obj_t *s_hum_lbl;
 static lv_obj_t *s_wind_lbl;
 static lv_obj_t *s_daily_lbls[APP_WEATHER_DAILY_MAX];
-static lv_obj_t *s_index_lbls[APP_WEATHER_INDEX_MAX];
+static lv_obj_t *s_advice_lbl;
 static lv_obj_t *s_loading_overlay;
 static lv_timer_t *s_loading_timer;
 
@@ -71,15 +71,10 @@ static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
         }
     }
 
-    // 生活建议
-    for (int i = 0; i < fc->index_count && i < APP_WEATHER_INDEX_MAX; i++)
+    // AI 建议
+    if (s_advice_lbl)
     {
-        if (s_index_lbls[i])
-        {
-            char buf[96];
-            snprintf(buf, sizeof(buf), "%s: %s", fc->indices[i].name, fc->indices[i].text);
-            lv_label_set_text(s_index_lbls[i], buf);
-        }
+        lv_label_set_text(s_advice_lbl, fc->ai_advice);
     }
 
     // 当前温度
@@ -180,19 +175,16 @@ void weather_ui_init(void)
         }
     }
 
-    // 生活建议 label 动态创建
+    // AI 建议 label 动态创建
     lv_obj_t *index_card = lv_obj_find_by_name(weather, "weather_index_card");
     if (index_card)
     {
-        for (int i = 0; i < APP_WEATHER_INDEX_MAX; i++)
-        {
-            s_index_lbls[i] = lv_label_create(index_card);
-            lv_label_set_text(s_index_lbls[i], "");
-            lv_obj_set_style_text_color(s_index_lbls[i], lv_color_hex(0xa0b0c0), 0);
-            lv_obj_set_style_text_font(s_index_lbls[i], font_chinese_6500_14, 0);
-            lv_label_set_long_mode(s_index_lbls[i], LV_LABEL_LONG_WRAP);
-            lv_obj_set_width(s_index_lbls[i], 720);
-        }
+        s_advice_lbl = lv_label_create(index_card);
+        lv_label_set_text(s_advice_lbl, "");
+        lv_obj_set_style_text_color(s_advice_lbl, lv_color_hex(0xa0b0c0), 0);
+        lv_obj_set_style_text_font(s_advice_lbl, font_chinese_6500_14, 0);
+        lv_label_set_long_mode(s_advice_lbl, LV_LABEL_LONG_WRAP);
+        lv_obj_set_width(s_advice_lbl, 720);
     }
 
     // 缓存所有 label

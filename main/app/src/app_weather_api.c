@@ -2,6 +2,8 @@
 #include "app_weather_api.h"
 #include "app_ip_location.h"
 #include "app_wifi.h"
+#include "app_weather_store.h"
+#include "app_ai_advice.h"
 #include "ek_export.h"
 
 EK_LOG_FILE_TAG("app_weather_api");
@@ -91,20 +93,28 @@ static void _api_task(void *arg)
             {
                 app_weather_set_daily(fc.dailies, fc.daily_count);
             }
-            if (fc.index_count > 0)
-            {
-                app_weather_set_index(fc.indices, fc.index_count);
-            }
                 EK_LOG_INFO("weather api: data updated");
+                app_weather_store_save(&fc);
+                // AI 建议（DeepSeek）
+                if (app_ai_advice_request(&fc, fc.ai_advice, sizeof(fc.ai_advice)))
+                {
+                    app_weather_set_ai_advice(fc.ai_advice);
+                }
             }
             else
             {
-                EK_LOG_WARN("weather api: fetch failed, retry next cycle");
+                EK_LOG_WARN("weather api: fetch failed, retry in 30s");
+                // 网络偶发超时快速重试，不等 30 分钟
+                ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(30000));
+                continue;
             }
         }
         else
         {
-            EK_LOG_WARN("weather api: no location or provider, skip");
+            EK_LOG_WARN("weather api: no location, waiting for IP location...");
+            // 等待 IP 定位完成的通知（15s 超时），不进入 30 分钟长等待
+            ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(15000));
+            continue;
         }
 
         // 等 30 分钟或被 request 唤醒

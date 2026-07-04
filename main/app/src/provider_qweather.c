@@ -12,7 +12,7 @@ EK_LOG_FILE_TAG("provider_qweather");
 
 #define QWEATHER_API_KEY     "YOUR_QWEATHER_KEY"
 #define QWEATHER_API_HOST    "p52r6yxrx2.re.qweatherapi.com"
-#define QWEATHER_TIMEOUT_MS  10000
+#define QWEATHER_TIMEOUT_MS  30000
 #define QWEATHER_NOW_BUF_MAX 4096
 #define QWEATHER_24H_BUF_MAX 8192
 
@@ -224,6 +224,7 @@ static bool _http_get(const char *url, char *out, size_t out_len)
         total += n;
     }
     esp_http_client_cleanup(client);
+    vTaskDelay(pdMS_TO_TICKS(300)); // 等 AES DMA buffer 释放，避免连续请求内存不足
 
     if (total == 0)
     {
@@ -411,42 +412,6 @@ static bool _qweather_fetch(const weather_location_t *loc, app_weather_forecast_
     free(buf);
     buf = NULL;
 
-    // --- 生活指数 ---
-    snprintf(url, sizeof(url), "https://%s/v7/index?location=%.2f,%.2f&type=0", QWEATHER_API_HOST, loc->lon, loc->lat);
-    buf = malloc(QWEATHER_NOW_BUF_MAX);
-    if (buf && _http_get(url, buf, QWEATHER_NOW_BUF_MAX))
-    {
-        root = cJSON_Parse(buf);
-        if (root)
-        {
-            cJSON *daily = cJSON_GetObjectItem(root, "daily");
-            if (daily && cJSON_IsArray(daily))
-            {
-                int n = cJSON_GetArraySize(daily);
-                if (n > APP_WEATHER_INDEX_MAX)
-                {
-                    n = APP_WEATHER_INDEX_MAX;
-                }
-                out->index_count = n;
-                for (int i = 0; i < n; i++)
-                {
-                    cJSON *item = cJSON_GetArrayItem(daily, i);
-                    cJSON *nm = cJSON_GetObjectItem(item, "name");
-                    cJSON *tx = cJSON_GetObjectItem(item, "text");
-                    if (nm && nm->valuestring)
-                    {
-                        strncpy(out->indices[i].name, nm->valuestring, sizeof(out->indices[i].name) - 1);
-                    }
-                    if (tx && tx->valuestring)
-                    {
-                        strncpy(out->indices[i].text, tx->valuestring, sizeof(out->indices[i].text) - 1);
-                    }
-                }
-            }
-            cJSON_Delete(root);
-        }
-    }
-    free(buf);
     ok = true;
     return ok;
 }
