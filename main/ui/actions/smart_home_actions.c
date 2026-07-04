@@ -19,6 +19,7 @@ static const char *s_preset_names[] = {
 static lv_obj_t *s_edit_cont;
 static lv_obj_t *s_edit_ta;
 static lv_obj_t *s_edit_kb;
+static lv_obj_t *s_edit_bg;
 static int s_edit_idx;
 
 static void _refresh_btn(int idx);
@@ -72,6 +73,13 @@ static void _btn_long_press_cb(lv_event_t *e)
 
     s_edit_idx = idx;
 
+    // 全屏透明背景层：点击非键盘/非编辑器区域自动关闭弹窗（modal）
+    s_edit_bg = lv_obj_create(lv_screen_active());
+    lv_obj_set_size(s_edit_bg, 800, 480);
+    lv_obj_set_style_bg_opa(s_edit_bg, 0, 0);
+    lv_obj_set_style_border_width(s_edit_bg, 0, 0);
+    lv_obj_clear_flag(s_edit_bg, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_event_cb(s_edit_bg, _edit_cancel_cb, LV_EVENT_CLICKED, NULL);
     // 主容器
     s_edit_cont = lv_obj_create(lv_screen_active());
     lv_obj_set_size(s_edit_cont, 500, LV_SIZE_CONTENT);
@@ -158,6 +166,11 @@ static void _edit_cancel_cb(lv_event_t *e)
 // 清理弹窗（删 keyboard + 主容器，置 NULL）
 static void _edit_cleanup(void)
 {
+    if (s_edit_bg)
+    {
+        lv_obj_delete(s_edit_bg);
+        s_edit_bg = NULL;
+    }
     if (s_edit_kb)
     {
         lv_obj_delete(s_edit_kb);
