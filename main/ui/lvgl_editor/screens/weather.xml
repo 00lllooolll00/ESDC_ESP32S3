@@ -1,84 +1,148 @@
 <screen permanent="true">
     <view style_bg_color="0x1a2c42" style_bg_opa="255">
-        <!-- 当前天气主区：flex列容器，label垂直居中 -->
+        <!-- 当前天气主区：左温度 + 右城市/类型 -->
         <lv_obj name="weather_main_box" x="0" y="48" width="800" height="92"
                 scrollable="false"
-                style_layout="flex" style_flex_flow="column"
+                style_layout="flex" style_flex_flow="row"
                 style_flex_main_place="center" style_flex_cross_place="center"
                 style_bg_color="0x1a2c42" style_bg_opa="255"
                 style_border_width="0"
                 style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
-                style_pad_row="4">
-            <lv_label name="weather_city" width="content" height="content"
-                      text="" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
-            <lv_label name="weather_type" width="content" height="content"
-                      text="未知" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+                style_pad_column="16">
             <lv_label name="weather_temp" width="content" height="content"
                       text="--°" style_text_color="0xff9f43"/>
-            <lv_label name="weather_temp_hint" width="content" height="content"
-                      text="当前温度" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+            <lv_obj width="content" height="content"
+                    style_layout="flex" style_flex_flow="column"
+                    style_flex_main_place="center" style_flex_cross_place="start"
+                    style_bg_opa="0" style_border_width="0"
+                    style_pad_row="2">
+                <lv_label name="weather_city" width="content" height="content"
+                          text="" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                <lv_label name="weather_type" width="content" height="content"
+                          text="未知" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+            </lv_obj>
         </lv_obj>
-        <!-- 详情卡片 2×2，每卡 flex列容器，标签+值垂直排列 -->
+        <!-- 湿度卡：图标+文字列 -->
         <lv_obj name="weather_card_hum" x="16" y="148" width="370" height="46"
                 scrollable="false"
                 style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
-                style_layout="flex" style_flex_flow="column"
-                style_flex_main_place="center" style_flex_cross_place="start"
-                style_pad_left="16" style_pad_top="4" style_pad_right="0" style_pad_bottom="4">
-            <lv_label name="weather_humidity_lbl" width="content" height="content"
-                      text="湿度" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
-            <lv_label name="weather_humidity" width="content" height="content"
-                      text="--%" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                style_layout="flex" style_flex_flow="row"
+                style_flex_main_place="start" style_flex_cross_place="center"
+                style_pad_left="12" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
+                style_pad_column="8">
+            <lv_image name="weather_ic_hum" width="24" height="24"/>
+            <lv_obj width="content" height="content"
+                    style_layout="flex" style_flex_flow="column"
+                    style_flex_main_place="center" style_flex_cross_place="start"
+                    style_bg_opa="0" style_border_width="0"
+                    style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+                <lv_label name="weather_humidity_lbl" width="content" height="content"
+                          text="湿度" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+                <lv_label name="weather_humidity" width="content" height="content"
+                          text="--%" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+            </lv_obj>
         </lv_obj>
+        <!-- 风速卡 -->
         <lv_obj name="weather_card_wind" x="414" y="148" width="370" height="46"
                 scrollable="false"
                 style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
-                style_layout="flex" style_flex_flow="column"
-                style_flex_main_place="center" style_flex_cross_place="start"
-                style_pad_left="16" style_pad_top="4" style_pad_right="0" style_pad_bottom="4">
-            <lv_label name="weather_wind_lbl" width="content" height="content"
-                      text="风速" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
-            <lv_label name="weather_wind" width="content" height="content"
-                      text="--km/h" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+                style_layout="flex" style_flex_flow="row"
+                style_flex_main_place="start" style_flex_cross_place="center"
+                style_pad_left="12" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
+                style_pad_column="8">
+            <lv_image name="weather_ic_wind" width="24" height="24"/>
+            <lv_obj width="content" height="content"
+                    style_layout="flex" style_flex_flow="column"
+                    style_flex_main_place="center" style_flex_cross_place="start"
+                    style_bg_opa="0" style_border_width="0"
+                    style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+                <lv_label name="weather_wind_lbl" width="content" height="content"
+                          text="风速" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+                <lv_label name="weather_wind" width="content" height="content"
+                          text="--km/h" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
+            </lv_obj>
         </lv_obj>
+        <!-- 最高温卡 -->
         <lv_obj name="weather_card_max" x="16" y="200" width="370" height="46"
                 scrollable="false"
                 style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
-                style_layout="flex" style_flex_flow="column"
-                style_flex_main_place="center" style_flex_cross_place="start"
-                style_pad_left="16" style_pad_top="4" style_pad_right="0" style_pad_bottom="4">
-            <lv_label name="weather_max_label" width="content" height="content"
-                      text="最高温" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
-            <lv_label name="weather_max_temp" width="content" height="content"
-                      text="--°" style_text_color="0xff6b6b"/>
+                style_layout="flex" style_flex_flow="row"
+                style_flex_main_place="start" style_flex_cross_place="center"
+                style_pad_left="12" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
+                style_pad_column="8">
+            <lv_image name="weather_ic_max" width="24" height="24"/>
+            <lv_obj width="content" height="content"
+                    style_layout="flex" style_flex_flow="column"
+                    style_flex_main_place="center" style_flex_cross_place="start"
+                    style_bg_opa="0" style_border_width="0"
+                    style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+                <lv_label name="weather_max_label" width="content" height="content"
+                          text="最高温" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+                <lv_label name="weather_max_temp" width="content" height="content"
+                          text="--°" style_text_color="0xff6b6b"/>
+            </lv_obj>
         </lv_obj>
+        <!-- 最低温卡 -->
         <lv_obj name="weather_card_min" x="414" y="200" width="370" height="46"
                 scrollable="false"
                 style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
-                style_layout="flex" style_flex_flow="column"
-                style_flex_main_place="center" style_flex_cross_place="start"
-                style_pad_left="16" style_pad_top="4" style_pad_right="0" style_pad_bottom="4">
-            <lv_label name="weather_min_label" width="content" height="content"
-                      text="最低温" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
-            <lv_label name="weather_min_temp" width="content" height="content"
-                      text="--°" style_text_color="0x4dabf7"/>
+                style_layout="flex" style_flex_flow="row"
+                style_flex_main_place="start" style_flex_cross_place="center"
+                style_pad_left="12" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
+                style_pad_column="8">
+            <lv_image name="weather_ic_min" width="24" height="24"/>
+            <lv_obj width="content" height="content"
+                    style_layout="flex" style_flex_flow="column"
+                    style_flex_main_place="center" style_flex_cross_place="start"
+                    style_bg_opa="0" style_border_width="0"
+                    style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+                <lv_label name="weather_min_label" width="content" height="content"
+                          text="最低温" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
+                <lv_label name="weather_min_temp" width="content" height="content"
+                          text="--°" style_text_color="0x4dabf7"/>
+            </lv_obj>
         </lv_obj>
-        <!-- 3天预报卡：weather_actions.c 动态创建 label 于此容器内 -->
-        <lv_obj name="weather_daily_card" x="16" y="252" width="768" height="50"
+        <!-- 3天预报：3个独立卡片，weather_actions.c 动态创建 label -->
+        <lv_obj name="weather_daily_card_0" x="16" y="252" width="252" height="50"
                 scrollable="false"
                 style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
-                style_layout="flex" style_flex_flow="row"
-                style_flex_main_place="space_around" style_flex_cross_place="center"
-                style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0">
+                style_layout="flex" style_flex_flow="column"
+                style_flex_main_place="center" style_flex_cross_place="center"
+                style_pad_left="4" style_pad_top="4" style_pad_right="4" style_pad_bottom="4">
         </lv_obj>
-        <!-- 生活建议卡：weather_actions.c 动态创建 label 于此容器内 -->
-        <lv_obj name="weather_index_card" x="16" y="308" width="768" height="112"
-                scrollable="true"
+        <lv_obj name="weather_daily_card_1" x="274" y="252" width="252" height="50"
+                scrollable="false"
+                style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
+                style_layout="flex" style_flex_flow="column"
+                style_flex_main_place="center" style_flex_cross_place="center"
+                style_pad_left="4" style_pad_top="4" style_pad_right="4" style_pad_bottom="4">
+        </lv_obj>
+        <lv_obj name="weather_daily_card_2" x="532" y="252" width="252" height="50"
+                scrollable="false"
+                style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
+                style_layout="flex" style_flex_flow="column"
+                style_flex_main_place="center" style_flex_cross_place="center"
+                style_pad_left="4" style_pad_top="4" style_pad_right="4" style_pad_bottom="4">
+        </lv_obj>
+        <!-- AI建议卡：标题行 + 建议文字（weather_actions.c 动态创建 label） -->
+        <lv_obj name="weather_index_card" x="16" y="308" width="768" height="116"
+                scrollable="false"
                 style_bg_color="0x2a4055" style_bg_opa="255" style_radius="8" style_border_width="0"
                 style_layout="flex" style_flex_flow="column"
                 style_flex_main_place="start" style_flex_cross_place="start"
                 style_pad_left="16" style_pad_top="8" style_pad_right="16" style_pad_bottom="8"
-                style_pad_row="4">
+                style_pad_row="6">
+            <!-- 标题行 -->
+            <lv_obj name="weather_advice_title" width="content" height="content"
+                    scrollable="false"
+                    style_layout="flex" style_flex_flow="row"
+                    style_flex_main_place="start" style_flex_cross_place="center"
+                    style_bg_opa="0" style_border_width="0"
+                    style_pad_column="6">
+                <lv_image name="weather_ic_advice_img" width="20" height="20"/>
+                <lv_label name="weather_advice_title_lbl" width="content" height="content"
+                          text="AI 建议" style_text_color="0xff9f43" style_text_font="font_chinese_6500_14"/>
+            </lv_obj>
         </lv_obj>
         <wifi_btn/>
         <volume_slider/>

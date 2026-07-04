@@ -161,17 +161,20 @@ static void _city_ui_cb(const char *city, void *arg)
 
 void weather_ui_init(void)
 {
-    // 3 天预报 label 动态创建
-    lv_obj_t *daily_card = lv_obj_find_by_name(weather, "weather_daily_card");
-    if (daily_card)
+    // 3 天预报 label 动态创建（3个独立卡片）
+    static const char *daily_card_names[] = {"weather_daily_card_0", "weather_daily_card_1", "weather_daily_card_2"};
+    static const char *daily_titles[] = {"今天", "明天", "后天"};
+    for (int i = 0; i < APP_WEATHER_DAILY_MAX; i++)
     {
-        static const char *daily_titles[] = {"今天", "明天", "后天"};
-        for (int i = 0; i < APP_WEATHER_DAILY_MAX; i++)
+        lv_obj_t *card = lv_obj_find_by_name(weather, daily_card_names[i]);
+        if (card)
         {
-            s_daily_lbls[i] = lv_label_create(daily_card);
+            s_daily_lbls[i] = lv_label_create(card);
             lv_label_set_text(s_daily_lbls[i], daily_titles[i]);
             lv_obj_set_style_text_color(s_daily_lbls[i], lv_color_hex(0xa0b0c0), 0);
             lv_obj_set_style_text_font(s_daily_lbls[i], font_chinese_6500_14, 0);
+            lv_obj_set_style_text_align(s_daily_lbls[i], LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_set_width(s_daily_lbls[i], 240);
         }
     }
 
@@ -186,6 +189,19 @@ void weather_ui_init(void)
         lv_label_set_long_mode(s_advice_lbl, LV_LABEL_LONG_WRAP);
         lv_obj_set_width(s_advice_lbl, 720);
     }
+
+    // 卡片图标 src 设置（XML 不支持 VFS 路径，在 C 代码里设）
+    lv_obj_t *ic;
+    ic = lv_obj_find_by_name(weather, "weather_ic_hum");
+    if (ic) { lv_image_set_src(ic, "S:/images/weather_ic_humidity.bin"); lv_image_set_scale(ic, 128); }
+    ic = lv_obj_find_by_name(weather, "weather_ic_wind");
+    if (ic) { lv_image_set_src(ic, "S:/images/weather_ic_wind.bin"); lv_image_set_scale(ic, 128); }
+    ic = lv_obj_find_by_name(weather, "weather_ic_max");
+    if (ic) { lv_image_set_src(ic, "S:/images/weather_ic_max.bin"); lv_image_set_scale(ic, 128); }
+    ic = lv_obj_find_by_name(weather, "weather_ic_min");
+    if (ic) { lv_image_set_src(ic, "S:/images/weather_ic_min.bin"); lv_image_set_scale(ic, 128); }
+    ic = lv_obj_find_by_name(weather, "weather_ic_advice_img");
+    if (ic) { lv_image_set_src(ic, "S:/images/weather_ic_advice.bin"); lv_image_set_scale(ic, 107); }
 
     // 缓存所有 label
     s_city_lbl = lv_obj_find_by_name(weather, "weather_city");
@@ -203,11 +219,11 @@ void weather_ui_init(void)
     }
     if (s_max_lbl)
     {
-        lv_obj_set_style_text_font(s_max_lbl, &lv_font_montserrat_20, 0);
+        lv_obj_set_style_text_font(s_max_lbl, &lv_font_montserrat_16, 0);
     }
     if (s_min_lbl)
     {
-        lv_obj_set_style_text_font(s_min_lbl, &lv_font_montserrat_20, 0);
+        lv_obj_set_style_text_font(s_min_lbl, &lv_font_montserrat_16, 0);
     }
 
 
