@@ -1,7 +1,7 @@
 <screen permanent="true">
-    <view>
+    <view style_bg_color="0x1a2c42" style_bg_opa="255">
         <lv_label name="smart_home_title" x="300" y="220" width="content" height="content"
-                  text="智能家具" style_text_color="0x212121" style_text_font="chinese_3500_14"/>
+                  text="智能家具" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
         <wifi_btn/>
         <volume_slider/>
         <nav_bar/>

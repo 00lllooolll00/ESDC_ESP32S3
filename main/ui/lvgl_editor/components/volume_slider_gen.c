@@ -60,6 +60,7 @@ lv_obj_t * volume_slider_create(lv_obj_t * parent)
     lv_obj_set_style_pad_right(volume_panel, 0, 0);
     lv_obj_set_style_pad_bottom(volume_panel, 0, 0);
     lv_obj_set_style_border_width(volume_panel, 0, 0);
+    lv_obj_set_style_bg_color(volume_panel, lv_color_hex(0x1a2c42), 0);
     lv_obj_t * volume_canel = lv_button_create(volume_panel);
     lv_obj_set_name(volume_canel, "volume_canel");
     lv_obj_set_x(volume_canel, 374);
@@ -87,9 +88,9 @@ lv_obj_t * volume_slider_create(lv_obj_t * parent)
     lv_obj_set_style_flex_main_place(volume_slider, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_cross_place(volume_slider, LV_FLEX_ALIGN_CENTER, 0);
     lv_obj_set_style_flex_track_place(volume_slider, LV_FLEX_ALIGN_CENTER, 0);
-    lv_obj_set_style_bg_color(volume_slider, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_PART_KNOB);
+    lv_obj_set_style_bg_color(volume_slider, lv_color_hex(0x2a4055), LV_PART_INDICATOR | LV_PART_KNOB);
     lv_obj_set_style_outline_width(volume_slider, 1, LV_PART_KNOB);
-    lv_obj_set_style_outline_color(volume_slider, lv_color_hex(0x2d2c2c), LV_PART_KNOB);
+    lv_obj_set_style_outline_color(volume_slider, lv_color_hex(0xffffff), LV_PART_KNOB);
     lv_obj_set_style_pad_top(volume_slider, 3, LV_PART_KNOB);
     lv_obj_set_style_pad_bottom(volume_slider, 3, LV_PART_KNOB);
     lv_obj_set_style_pad_left(volume_slider, 3, LV_PART_KNOB);

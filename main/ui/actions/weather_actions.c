@@ -16,6 +16,8 @@ static lv_obj_t *s_max_lbl;
 static lv_obj_t *s_min_lbl;
 static lv_obj_t *s_hum_lbl;
 static lv_obj_t *s_wind_lbl;
+static lv_obj_t *s_loading_overlay;
+static lv_timer_t *s_loading_timer;
 
 // 定点温度格式化为 "25°" 或 "25.5°"（负温 "-5°"）
 static void _fmt_temp(char *buf, size_t len, int16_t temp_x10)
@@ -41,6 +43,17 @@ static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
     if (!fc)
     {
         return;
+    }
+
+    // 数据更新成功，隐藏 loading overlay
+    if (s_loading_overlay && !lv_obj_has_flag(s_loading_overlay, LV_OBJ_FLAG_HIDDEN))
+    {
+        lv_obj_add_flag(s_loading_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (s_loading_timer)
+    {
+        lv_timer_del(s_loading_timer);
+        s_loading_timer = NULL;
     }
 
     // 折线图刷新
@@ -98,6 +111,27 @@ static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
         snprintf(tbuf, sizeof(tbuf), "%dkm/h", fc->wind_speed);
         lv_label_set_text(s_wind_lbl, tbuf);
     }
+
+    // 同步更新主页面天气速览
+    lv_obj_t *main_temp = lv_obj_find_by_name(main_page, "main_weather_temp");
+    if (main_temp)
+    {
+        char tbuf[16];
+        _fmt_temp(tbuf, sizeof(tbuf), fc->current_temp);
+        lv_label_set_text(main_temp, tbuf);
+    }
+    lv_obj_t *main_type = lv_obj_find_by_name(main_page, "main_weather_type");
+    if (main_type)
+    {
+        lv_label_set_text(main_type, app_weather_type_name(fc->type));
+    }
+    // 同步更新主页面天气图标
+    lv_obj_t *main_icon = lv_obj_find_by_name(main_page, "func_weather_icon");
+    if (main_icon)
+    {
+        lv_image_set_src(main_icon, app_weather_type_icon_name(fc->type));
+        lv_image_set_scale(main_icon, 192);
+    }
 }
 
 // UI 回调：城市名更新时刷新 weather_city label
@@ -107,6 +141,12 @@ static void _city_ui_cb(const char *city, void *arg)
     if (s_city_lbl && city && city[0])
     {
         lv_label_set_text(s_city_lbl, city);
+    }
+    // 同步更新主页面城市名
+    lv_obj_t *main_city = lv_obj_find_by_name(main_page, "main_weather_city");
+    if (main_city && city && city[0])
+    {
+        lv_label_set_text(main_city, city);
     }
 }
 
@@ -201,13 +241,60 @@ void weather_ui_init(void)
     app_ip_location_get_city(city_buf, sizeof(city_buf));
     _city_ui_cb(city_buf, NULL);
 
+    // 创建 loading overlay（深蓝全屏 + 橙色 spinner + "加载中..." 文字）
+    s_loading_overlay = lv_obj_create(weather);
+    lv_obj_set_size(s_loading_overlay, 800, 480);
+    lv_obj_set_pos(s_loading_overlay, 0, 0);
+    lv_obj_set_style_bg_color(s_loading_overlay, lv_color_hex(0x1a2c42), 0);
+    lv_obj_set_style_bg_opa(s_loading_overlay, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(s_loading_overlay, 0, 0);
+    lv_obj_set_style_radius(s_loading_overlay, 0, 0);
+    lv_obj_add_flag(s_loading_overlay, LV_OBJ_FLAG_HIDDEN);
+
+    // spinner（8000ms 周期）
+    lv_obj_t *spinner = lv_spinner_create(s_loading_overlay);
+    lv_spinner_set_anim_params(spinner, 8000, 100);
+    lv_obj_set_size(spinner, 80, 80);
+    lv_obj_center(spinner);
+    lv_obj_set_style_arc_color(spinner, lv_color_hex(0x3a5066), LV_PART_MAIN);
+    lv_obj_set_style_arc_color(spinner, lv_color_hex(0xff9f43), LV_PART_INDICATOR);
+
+    // "加载中..." 文字
+    lv_obj_t *load_lbl = lv_label_create(s_loading_overlay);
+    lv_label_set_text(load_lbl, "加载中...");
+    lv_obj_set_style_text_font(load_lbl, chinese_3500_14, 0);
+    lv_obj_set_style_text_color(load_lbl, lv_color_hex(0xa0b0c0), 0);
+    lv_obj_align(load_lbl, LV_ALIGN_CENTER, 0, 60);
+
     EK_LOG_INFO("weather ui initialized");
 }
 
-// 刷新按钮回调：点击立即触发天气 API 拉取最新数据
+// loading 超时回调：15s 内数据未返回则隐藏 overlay
+static void _loading_timeout_cb(lv_timer_t *t)
+{
+    (void)t;
+    if (s_loading_overlay)
+    {
+        lv_obj_add_flag(s_loading_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+    s_loading_timer = NULL;
+    EK_LOG_WARN("weather: loading timeout");
+}
+
+// 刷新按钮回调：显示 loading overlay + 触发天气 API 拉取
 void action_weather_refresh(lv_event_t *e)
 {
     (void)e;
     EK_LOG_INFO("weather: manual refresh requested");
+    if (s_loading_overlay)
+    {
+        lv_obj_clear_flag(s_loading_overlay, LV_OBJ_FLAG_HIDDEN);
+        if (s_loading_timer)
+        {
+            lv_timer_del(s_loading_timer);
+        }
+        s_loading_timer = lv_timer_create(_loading_timeout_cb, 15000, NULL);
+        lv_timer_set_repeat_count(s_loading_timer, 1);
+    }
     app_weather_api_request();
 }

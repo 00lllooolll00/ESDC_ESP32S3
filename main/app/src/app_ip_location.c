@@ -7,6 +7,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdlib.h>
+#include "app_weather_api.h"
 
 EK_LOG_FILE_TAG("app_ip_location");
 
@@ -270,6 +271,8 @@ static void _ip_loc_task(void *arg)
         {
             EK_LOG_INFO("got city: %s", city_out);
             app_ip_location_set_city(city_out);
+            // 定位完成，通知天气 task 用新坐标拉取天气
+            app_weather_api_request();
         }
     }
 }

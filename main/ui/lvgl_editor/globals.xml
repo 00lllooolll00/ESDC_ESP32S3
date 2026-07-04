@@ -7,49 +7,33 @@
 
     <styles>
         <style name="style_user_btn"
-               border_color="0xffffff"
-               shadow_color="0x000000"
-               shadow_offset_y="5"
-               shadow_offset_x="2"
-               shadow_width="10"
-               bg_color="0x7c848a"
+               bg_color="0x3a5066"
                layout="flex"
                flex_main_place="center"
                flex_cross_place="center"
                flex_track_place="center"/>
 
         <style name="style_user_icon_label"
-               text_color="0x252424"/>
+               text_color="0xffffff"/>
 
         <style name="style_user_text_label"
-               text_color="0x212121"/>
+               text_color="0xffffff"/>
 
         <style name="style_volume_slider_main"
-               text_color="0x212121"
-               border_color="0xffffff"
-               shadow_width="25"
-               shadow_offset_x="2"
-               shadow_offset_y="5"
-               shadow_color="0x000000"
-               line_color="0x212121"/>
+               text_color="0xa0b0c0"
+               border_color="0x3a5066"/>
 
         <style name="style_volume_slider_knob"
-               line_color="0x000000"/>
+               line_color="0xffffff"/>
 
         <style name="style_func_card"
-               shadow_width="10"
-               bg_color="0x6b7682"
+               bg_color="0x2a4055"
                layout="flex"
                flex_main_place="center"
                flex_cross_place="center"
                flex_track_place="center"
                radius="12"
-               border_width="0"
-               shadow_color="0x000000"
-               shadow_offset_y="5"
-               shadow_offset_x="2"
-               border_side="none"
-               border_color="0xffffff"/>
+               border_width="0"/>
 
         <style name="style_weather_card"
                bg_color="0x2a4055"

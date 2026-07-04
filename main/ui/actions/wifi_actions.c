@@ -252,8 +252,8 @@ static void _show_connect_status(const char *text)
     s_connect_status_item = lv_label_create(s_wifi_list_panel);
     lv_label_set_text(s_connect_status_item, text);
     lv_obj_set_style_text_font(s_connect_status_item, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(s_connect_status_item, lv_color_hex(0x333333), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(s_connect_status_item, LV_OPA_80, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(s_connect_status_item, lv_color_hex(0x2a4055), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(s_connect_status_item, LV_OPA_COVER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(s_connect_status_item, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(s_connect_status_item, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(s_connect_status_item, LV_ALIGN_CENTER, 0, 0);
@@ -296,6 +296,8 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
                 char buf[48];
                 snprintf(buf, sizeof(buf), "%s", result->aps[i].ssid);
                 lv_obj_t *btn = lv_list_add_btn(list, LV_SYMBOL_WIFI, buf);
+                lv_obj_set_style_text_color(btn, lv_color_white(), 0);
+                lv_obj_set_style_bg_opa(btn, LV_OPA_TRANSP, 0);
                 lv_obj_t *label = lv_obj_get_child(btn, 1);
 
                 if (label)
@@ -316,6 +318,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
                     lv_obj_t *flbl = lv_label_create(forget_btn);
                     lv_label_set_text(flbl, "忘记");
                     lv_obj_set_style_text_font(flbl, chinese_3500_14, 0);
+                    lv_obj_set_style_text_color(flbl, lv_color_white(), 0);
                     lv_obj_center(flbl);
                     lv_obj_set_user_data(forget_btn, (void *)(uintptr_t)i);
                     lv_obj_add_event_cb(forget_btn, _wifi_forget_cb, LV_EVENT_CLICKED, NULL);
@@ -331,7 +334,8 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
             {
                 lv_obj_add_flag(s_wifi_loader, LV_OBJ_FLAG_HIDDEN);
             }
-            lv_list_add_btn(list, NULL, "扫描失败");
+            lv_obj_t *fail_btn = lv_list_add_btn(list, NULL, "扫描失败");
+            lv_obj_set_style_text_color(fail_btn, lv_color_white(), 0);
             break;
 
         case APP_WIFI_EVT_CONNECTING:

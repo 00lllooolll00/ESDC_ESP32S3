@@ -45,6 +45,8 @@ lv_obj_t * smart_home_create(void)
     if (smart_home == NULL) smart_home = lv_obj_create(NULL);
     lv_obj_t * lv_obj_0 = smart_home;
     lv_obj_set_name_static(lv_obj_0, "smart_home_#");
+    lv_obj_set_style_bg_color(lv_obj_0, lv_color_hex(0x1a2c42), 0);
+    lv_obj_set_style_bg_opa(lv_obj_0, 255, 0);
 
     lv_obj_t * smart_home_title = lv_label_create(lv_obj_0);
     lv_obj_set_name(smart_home_title, "smart_home_title");
@@ -53,7 +55,7 @@ lv_obj_t * smart_home_create(void)
     lv_obj_set_width(smart_home_title, LV_SIZE_CONTENT);
     lv_obj_set_height(smart_home_title, LV_SIZE_CONTENT);
     lv_label_set_text(smart_home_title, "智能家具");
-    lv_obj_set_style_text_color(smart_home_title, lv_color_hex(0x212121), 0);
+    lv_obj_set_style_text_color(smart_home_title, lv_color_hex(0xffffff), 0);
     lv_obj_set_style_text_font(smart_home_title, chinese_3500_14, 0);
 
     wifi_btn_create(lv_obj_0);

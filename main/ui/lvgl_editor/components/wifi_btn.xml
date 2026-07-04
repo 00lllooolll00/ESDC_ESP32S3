@@ -10,7 +10,7 @@
                 press_lock="false" scroll_chain_hor="false" scroll_chain_ver="false"
                 scroll_elastic="false" scroll_momentum="false" scroll_with_arrow="false"
                 snappable="false" click_focusable="false"
-                style_bg_color="0xeae9e7"
+                style_bg_color="0x1a2c42"
                 style_pad_left="0" style_pad_top="0" style_pad_right="0" style_pad_bottom="0"
                 style_border_width="0">
             <!-- 刷新按钮 -->
@@ -35,7 +35,7 @@
             <!-- WiFi 列表 -->
             <lv_obj name="wifi_list"
                      x="0" y="0" width="500" height="380"
-                     style_bg_color="0xd5d3d3"
+                     style_bg_color="0x2a4055"
                      style_pad_left="8" style_pad_top="8" style_pad_right="8" style_pad_bottom="8"
                      style_layout="flex" style_flex_flow="column" style_flex_main_place="start" style_flex_track_place="start" style_flex_cross_place="start">
             </lv_obj>

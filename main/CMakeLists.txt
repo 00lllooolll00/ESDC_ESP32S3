@@ -25,6 +25,9 @@ idf_component_register(
     WHOLE_ARCHIVE
 )
 
+# 确保编译 main 组件前先检查 UI 代码是否最新
+add_dependencies(${COMPONENT_LIB} lvgl_ui_gen)
+
 # LVGL editor 生成的代码需要 LV_LVGL_H_INCLUDE_SIMPLE 来正确 include lvgl.h
 target_compile_definitions(${COMPONENT_LIB} PUBLIC LV_LVGL_H_INCLUDE_SIMPLE)
 

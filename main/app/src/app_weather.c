@@ -255,3 +255,17 @@ const char *app_weather_type_name(app_weather_type_t t)
     }
     return s_type_names[t];
 }
+
+const char *app_weather_type_icon_name(app_weather_type_t t)
+{
+    switch (t)
+    {
+    case APP_WEATHER_TYPE_SUNNY:    return "S:/images/weather_sunny.bin";
+    case APP_WEATHER_TYPE_CLOUDY:   return "S:/images/weather_cloudy.bin";
+    case APP_WEATHER_TYPE_OVERCAST: return "S:/images/weather_overcast.bin";
+    case APP_WEATHER_TYPE_RAIN:     return "S:/images/weather_rain.bin";
+    case APP_WEATHER_TYPE_THUNDER:  return "S:/images/weather_thunder.bin";
+    case APP_WEATHER_TYPE_SNOW:     return "S:/images/weather_snow.bin";
+    default:                        return "S:/images/weather_unknown.bin";
+    }
+}

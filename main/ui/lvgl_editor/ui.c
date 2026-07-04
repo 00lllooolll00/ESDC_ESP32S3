@@ -58,9 +58,8 @@ void ui_init(const char *asset_path)
     lv_obj_t *wicon = lv_obj_find_by_name(main_page, "func_weather_icon");
     if (wicon)
     {
-        lv_image_set_src(wicon, "S:/images/weather.bin");
-        lv_obj_set_style_image_recolor(wicon, lv_color_white(), 0);
-        lv_obj_set_style_image_recolor_opa(wicon, LV_OPA_COVER, 0);
+        lv_image_set_src(wicon, "S:/images/weather_unknown.bin");
+        lv_image_set_scale(wicon, 192);
     }
     // AI 对话图标：从 vfs 加载 LVGL bin 图片
     lv_obj_t *aicon = lv_obj_find_by_name(main_page, "func_ai_chat_icon");
@@ -302,4 +301,7 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
     _set_widget_text_by_name(screen, "volume_canel_icon", LV_SYMBOL_CLOSE);
     // 功能卡片图标
     _set_widget_text_by_name(screen, "func_smart_home_icon", LV_SYMBOL_HOME);
+    // 主页面时钟和天气温度用大号字体
+    _set_widget_font_by_name(screen, "main_clock", &lv_font_montserrat_26);
+    _set_widget_font_by_name(screen, "main_weather_temp", &lv_font_montserrat_26);
 }

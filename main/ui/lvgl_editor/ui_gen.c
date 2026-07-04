@@ -106,49 +106,33 @@ void ui_init_gen(const char * asset_path)
 
     if (!style_inited) {
         lv_style_init(&style_user_btn);
-        lv_style_set_border_color(&style_user_btn, lv_color_hex(0xffffff));
-        lv_style_set_shadow_color(&style_user_btn, lv_color_hex(0x000000));
-        lv_style_set_shadow_offset_y(&style_user_btn, 5);
-        lv_style_set_shadow_offset_x(&style_user_btn, 2);
-        lv_style_set_shadow_width(&style_user_btn, 10);
-        lv_style_set_bg_color(&style_user_btn, lv_color_hex(0x7c848a));
+        lv_style_set_bg_color(&style_user_btn, lv_color_hex(0x3a5066));
         lv_style_set_layout(&style_user_btn, LV_LAYOUT_FLEX);
         lv_style_set_flex_main_place(&style_user_btn, LV_FLEX_ALIGN_CENTER);
         lv_style_set_flex_cross_place(&style_user_btn, LV_FLEX_ALIGN_CENTER);
         lv_style_set_flex_track_place(&style_user_btn, LV_FLEX_ALIGN_CENTER);
 
         lv_style_init(&style_user_icon_label);
-        lv_style_set_text_color(&style_user_icon_label, lv_color_hex(0x252424));
+        lv_style_set_text_color(&style_user_icon_label, lv_color_hex(0xffffff));
 
         lv_style_init(&style_user_text_label);
-        lv_style_set_text_color(&style_user_text_label, lv_color_hex(0x212121));
+        lv_style_set_text_color(&style_user_text_label, lv_color_hex(0xffffff));
 
         lv_style_init(&style_volume_slider_main);
-        lv_style_set_text_color(&style_volume_slider_main, lv_color_hex(0x212121));
-        lv_style_set_border_color(&style_volume_slider_main, lv_color_hex(0xffffff));
-        lv_style_set_shadow_width(&style_volume_slider_main, 25);
-        lv_style_set_shadow_offset_x(&style_volume_slider_main, 2);
-        lv_style_set_shadow_offset_y(&style_volume_slider_main, 5);
-        lv_style_set_shadow_color(&style_volume_slider_main, lv_color_hex(0x000000));
-        lv_style_set_line_color(&style_volume_slider_main, lv_color_hex(0x212121));
+        lv_style_set_text_color(&style_volume_slider_main, lv_color_hex(0xa0b0c0));
+        lv_style_set_border_color(&style_volume_slider_main, lv_color_hex(0x3a5066));
 
         lv_style_init(&style_volume_slider_knob);
-        lv_style_set_line_color(&style_volume_slider_knob, lv_color_hex(0x000000));
+        lv_style_set_line_color(&style_volume_slider_knob, lv_color_hex(0xffffff));
 
         lv_style_init(&style_func_card);
-        lv_style_set_shadow_width(&style_func_card, 10);
-        lv_style_set_bg_color(&style_func_card, lv_color_hex(0x6b7682));
+        lv_style_set_bg_color(&style_func_card, lv_color_hex(0x2a4055));
         lv_style_set_layout(&style_func_card, LV_LAYOUT_FLEX);
         lv_style_set_flex_main_place(&style_func_card, LV_FLEX_ALIGN_CENTER);
         lv_style_set_flex_cross_place(&style_func_card, LV_FLEX_ALIGN_CENTER);
         lv_style_set_flex_track_place(&style_func_card, LV_FLEX_ALIGN_CENTER);
         lv_style_set_radius(&style_func_card, 12);
         lv_style_set_border_width(&style_func_card, 0);
-        lv_style_set_shadow_color(&style_func_card, lv_color_hex(0x000000));
-        lv_style_set_shadow_offset_y(&style_func_card, 5);
-        lv_style_set_shadow_offset_x(&style_func_card, 2);
-        lv_style_set_border_side(&style_func_card, LV_BORDER_SIDE_NONE);
-        lv_style_set_border_color(&style_func_card, lv_color_hex(0xffffff));
 
         lv_style_init(&style_weather_card);
         lv_style_set_bg_color(&style_weather_card, lv_color_hex(0x2a4055));

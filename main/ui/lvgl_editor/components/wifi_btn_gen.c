@@ -65,7 +65,7 @@ lv_obj_t * wifi_btn_create(lv_obj_t * parent)
     lv_obj_set_flag(wifi_list_panel, LV_OBJ_FLAG_SCROLL_WITH_ARROW, false);
     lv_obj_set_flag(wifi_list_panel, LV_OBJ_FLAG_SNAPPABLE, false);
     lv_obj_set_flag(wifi_list_panel, LV_OBJ_FLAG_CLICK_FOCUSABLE, false);
-    lv_obj_set_style_bg_color(wifi_list_panel, lv_color_hex(0xeae9e7), 0);
+    lv_obj_set_style_bg_color(wifi_list_panel, lv_color_hex(0x1a2c42), 0);
     lv_obj_set_style_pad_left(wifi_list_panel, 0, 0);
     lv_obj_set_style_pad_top(wifi_list_panel, 0, 0);
     lv_obj_set_style_pad_right(wifi_list_panel, 0, 0);
@@ -111,7 +111,7 @@ lv_obj_t * wifi_btn_create(lv_obj_t * parent)
     lv_obj_set_y(wifi_list, 0);
     lv_obj_set_width(wifi_list, 500);
     lv_obj_set_height(wifi_list, 380);
-    lv_obj_set_style_bg_color(wifi_list, lv_color_hex(0xd5d3d3), 0);
+    lv_obj_set_style_bg_color(wifi_list, lv_color_hex(0x2a4055), 0);
     lv_obj_set_style_pad_left(wifi_list, 8, 0);
     lv_obj_set_style_pad_top(wifi_list, 8, 0);
     lv_obj_set_style_pad_right(wifi_list, 8, 0);

@@ -75,6 +75,14 @@ void app_weather_set_current(app_weather_type_t type, int16_t current_temp, uint
 const char *app_weather_type_name(app_weather_type_t t);
 
 /**
+ * @brief 天气类型枚举转对应图标文件路径
+ *
+ * @param t 天气类型枚举
+ * @return VFS 路径，如 "S:/images/weather_sunny.bin"
+ */
+const char *app_weather_type_icon_name(app_weather_type_t t);
+
+/**
  * @brief 串口测试入口：解析 JSON 并注入预报数据
  *
  * @param json_str JSON 字符串，格式 {"current_temp":25.5,"type":"sunny","humidity":65,"wind_speed":12,"temps":[...]}（仅 temps 必填，其余可选；max/min 从 temps 派生）

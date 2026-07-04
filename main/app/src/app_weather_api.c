@@ -60,7 +60,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 static void _api_task(void *arg)
 {
     (void)arg;
-    vTaskDelay(pdMS_TO_TICKS(APP_WEATHER_API_FIRST_DELAY_MS));
+    ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(APP_WEATHER_API_FIRST_DELAY_MS));
 
     while (1)
     {
