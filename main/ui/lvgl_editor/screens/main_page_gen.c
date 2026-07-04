@@ -66,7 +66,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(main_date, 20);
     lv_label_set_text(main_date, "");
     lv_obj_set_style_text_color(main_date, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(main_date, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(main_date, font_chinese_6500_14, 0);
     lv_obj_set_style_text_align(main_date, LV_TEXT_ALIGN_CENTER, 0);
 
     lv_obj_t * func_weather = lv_button_create(lv_obj_0);
@@ -93,7 +93,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(main_weather_city, LV_SIZE_CONTENT);
     lv_label_set_text(main_weather_city, "定位中...");
     lv_obj_set_style_text_color(main_weather_city, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(main_weather_city, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(main_weather_city, font_chinese_6500_14, 0);
 
     lv_obj_t * main_weather_temp = lv_label_create(func_weather);
     lv_obj_set_name(main_weather_temp, "main_weather_temp");
@@ -108,7 +108,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(main_weather_type, LV_SIZE_CONTENT);
     lv_label_set_text(main_weather_type, "--");
     lv_obj_set_style_text_color(main_weather_type, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(main_weather_type, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(main_weather_type, font_chinese_6500_14, 0);
 
     lv_obj_add_screen_load_event(func_weather, LV_EVENT_CLICKED, weather, LV_SCREEN_LOAD_ANIM_MOVE_LEFT, 500, 0);
 
@@ -132,15 +132,15 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(func_smart_home_label, LV_SIZE_CONTENT);
     lv_label_set_text(func_smart_home_label, "智能家具");
     lv_obj_set_style_text_color(func_smart_home_label, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(func_smart_home_label, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(func_smart_home_label, font_chinese_6500_14, 0);
 
     lv_obj_t * func_smart_home_desc = lv_label_create(func_smart_home);
     lv_obj_set_name(func_smart_home_desc, "func_smart_home_desc");
     lv_obj_set_width(func_smart_home_desc, LV_SIZE_CONTENT);
     lv_obj_set_height(func_smart_home_desc, LV_SIZE_CONTENT);
-    lv_label_set_text(func_smart_home_desc, "灯光或传感器");
+    lv_label_set_text(func_smart_home_desc, "灯光、传感器");
     lv_obj_set_style_text_color(func_smart_home_desc, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(func_smart_home_desc, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(func_smart_home_desc, font_chinese_6500_14, 0);
 
     lv_obj_add_screen_load_event(func_smart_home, LV_EVENT_CLICKED, smart_home, LV_SCREEN_LOAD_ANIM_MOVE_LEFT, 500, 0);
 
@@ -163,7 +163,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(func_ai_chat_label, LV_SIZE_CONTENT);
     lv_label_set_text(func_ai_chat_label, "AI对话");
     lv_obj_set_style_text_color(func_ai_chat_label, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(func_ai_chat_label, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(func_ai_chat_label, font_chinese_6500_14, 0);
 
     lv_obj_t * func_ai_chat_desc = lv_label_create(func_ai_chat);
     lv_obj_set_name(func_ai_chat_desc, "func_ai_chat_desc");
@@ -171,7 +171,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(func_ai_chat_desc, LV_SIZE_CONTENT);
     lv_label_set_text(func_ai_chat_desc, "智能语音助手");
     lv_obj_set_style_text_color(func_ai_chat_desc, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(func_ai_chat_desc, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(func_ai_chat_desc, font_chinese_6500_14, 0);
 
     lv_obj_add_screen_load_event(func_ai_chat, LV_EVENT_CLICKED, ai_chat, LV_SCREEN_LOAD_ANIM_MOVE_LEFT, 500, 0);
 
@@ -198,7 +198,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(main_wifi_ssid, LV_SIZE_CONTENT);
     lv_label_set_text(main_wifi_ssid, "WiFi: --");
     lv_obj_set_style_text_color(main_wifi_ssid, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(main_wifi_ssid, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(main_wifi_ssid, font_chinese_6500_14, 0);
 
     lv_obj_t * main_ip_addr = lv_label_create(main_status_bar);
     lv_obj_set_name(main_ip_addr, "main_ip_addr");
@@ -206,7 +206,7 @@ lv_obj_t * main_page_create(void)
     lv_obj_set_height(main_ip_addr, LV_SIZE_CONTENT);
     lv_label_set_text(main_ip_addr, "IP: --");
     lv_obj_set_style_text_color(main_ip_addr, lv_color_hex(0xa0b0c0), 0);
-    lv_obj_set_style_text_font(main_ip_addr, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(main_ip_addr, font_chinese_6500_14, 0);
 
     volume_slider_create(lv_obj_0);
 

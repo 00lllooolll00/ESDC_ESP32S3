@@ -362,6 +362,91 @@ static bool _qweather_fetch(const weather_location_t *loc, app_weather_forecast_
     cJSON_Delete(root);
     free(buf);
 
+
+    // --- 3 天预报 ---
+    snprintf(url, sizeof(url), "https://%s/v7/weather/3d?location=%.2f,%.2f", QWEATHER_API_HOST, loc->lon, loc->lat);
+    buf = malloc(QWEATHER_NOW_BUF_MAX);
+    if (buf && _http_get(url, buf, QWEATHER_NOW_BUF_MAX))
+    {
+        root = cJSON_Parse(buf);
+        if (root)
+        {
+            cJSON *daily = cJSON_GetObjectItem(root, "daily");
+            if (daily && cJSON_IsArray(daily))
+            {
+                int n = cJSON_GetArraySize(daily);
+                if (n > APP_WEATHER_DAILY_MAX)
+                {
+                    n = APP_WEATHER_DAILY_MAX;
+                }
+                out->daily_count = n;
+                for (int i = 0; i < n; i++)
+                {
+                    cJSON *item = cJSON_GetArrayItem(daily, i);
+                    cJSON *tmax = cJSON_GetObjectItem(item, "tempMax");
+                    cJSON *tmin = cJSON_GetObjectItem(item, "tempMin");
+                    cJSON *txd = cJSON_GetObjectItem(item, "textDay");
+                    if (tmax && tmax->valuestring)
+                    {
+                        out->dailies[i].temp_max = (int16_t)(atoi(tmax->valuestring) * 10);
+                    }
+                    if (tmin && tmin->valuestring)
+                    {
+                        out->dailies[i].temp_min = (int16_t)(atoi(tmin->valuestring) * 10);
+                    }
+                    if (txd && txd->valuestring)
+                    {
+                        strncpy(out->dailies[i].text_day, txd->valuestring, sizeof(out->dailies[i].text_day) - 1);
+                    }
+                }
+                if (n > 0)
+                {
+                    out->max_temp = out->dailies[0].temp_max;
+                    out->min_temp = out->dailies[0].temp_min;
+                }
+            }
+            cJSON_Delete(root);
+        }
+    }
+    free(buf);
+    buf = NULL;
+
+    // --- 生活指数 ---
+    snprintf(url, sizeof(url), "https://%s/v7/index?location=%.2f,%.2f&type=0", QWEATHER_API_HOST, loc->lon, loc->lat);
+    buf = malloc(QWEATHER_NOW_BUF_MAX);
+    if (buf && _http_get(url, buf, QWEATHER_NOW_BUF_MAX))
+    {
+        root = cJSON_Parse(buf);
+        if (root)
+        {
+            cJSON *daily = cJSON_GetObjectItem(root, "daily");
+            if (daily && cJSON_IsArray(daily))
+            {
+                int n = cJSON_GetArraySize(daily);
+                if (n > APP_WEATHER_INDEX_MAX)
+                {
+                    n = APP_WEATHER_INDEX_MAX;
+                }
+                out->index_count = n;
+                for (int i = 0; i < n; i++)
+                {
+                    cJSON *item = cJSON_GetArrayItem(daily, i);
+                    cJSON *nm = cJSON_GetObjectItem(item, "name");
+                    cJSON *tx = cJSON_GetObjectItem(item, "text");
+                    if (nm && nm->valuestring)
+                    {
+                        strncpy(out->indices[i].name, nm->valuestring, sizeof(out->indices[i].name) - 1);
+                    }
+                    if (tx && tx->valuestring)
+                    {
+                        strncpy(out->indices[i].text, tx->valuestring, sizeof(out->indices[i].text) - 1);
+                    }
+                }
+            }
+            cJSON_Delete(root);
+        }
+    }
+    free(buf);
     ok = true;
     return ok;
 }

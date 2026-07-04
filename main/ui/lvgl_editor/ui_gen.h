@@ -68,7 +68,7 @@ extern lv_style_t style_weather_card;
  * Fonts
  *----------------*/
 
-extern lv_font_t * chinese_3500_14;
+extern lv_font_t * font_chinese_6500_14;
 
 /*----------------
  * Images

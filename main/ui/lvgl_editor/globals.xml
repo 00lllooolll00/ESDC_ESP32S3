@@ -51,6 +51,6 @@
     </images>
 
     <fonts>
-        <bin as_file="true" name="chinese_3500_14" src_path="../assets/ui_font_chinese_3500_14.bin" size="14" bpp="4"/>
+        <bin as_file="true" name="font_chinese_6500_14" src_path="../assets/font_chinese_6500_14.bin" size="14" bpp="4"/>
     </fonts>
 </globals>

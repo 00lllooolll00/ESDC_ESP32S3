@@ -11,6 +11,24 @@ extern "C"
 // 最多 24 个温度点（24 小时预报）
 #define APP_WEATHER_MAX_POINTS 24
 
+#define APP_WEATHER_DAILY_MAX 3
+#define APP_WEATHER_INDEX_MAX 5
+
+// 单日预报（3天预报中的一天）
+typedef struct
+{
+    int16_t temp_max;  // 最高温 ×10
+    int16_t temp_min;  // 最低温 ×10
+    char text_day[16]; // 白天天气描述 "晴"
+} app_weather_daily_t;
+
+// 生活指数（穿衣、运动等）
+typedef struct
+{
+    char name[16]; // 指数名称 "穿衣指数"
+    char text[64]; // 建议 "建议穿短袖..."
+} app_weather_index_t;
+
 typedef enum
 {
     APP_WEATHER_TYPE_UNKNOWN = 0,
@@ -37,6 +55,10 @@ typedef struct
     uint8_t humidity;
     uint8_t wind_speed;
     app_weather_type_t type;
+    app_weather_daily_t dailies[APP_WEATHER_DAILY_MAX];
+    int daily_count;
+    app_weather_index_t indices[APP_WEATHER_INDEX_MAX];
+    int index_count;
 } app_weather_forecast_t;
 
 /**
@@ -68,6 +90,22 @@ void app_weather_set_forecast(const int16_t *temps, int count);
  * @param wind_speed 风速 km/h
  */
 void app_weather_set_current(app_weather_type_t type, int16_t current_temp, uint8_t humidity, uint8_t wind_speed);
+
+/**
+ * @brief 设置 3 天预报数据
+ *
+ * @param dailies 预报数组；超过 APP_WEATHER_DAILY_MAX 截断
+ * @param count 数组长度
+ */
+void app_weather_set_daily(const app_weather_daily_t *dailies, int count);
+
+/**
+ * @brief 设置生活指数数据
+ *
+ * @param indices 指数数组；超过 APP_WEATHER_INDEX_MAX 截断
+ * @param count 数组长度
+ */
+void app_weather_set_index(const app_weather_index_t *indices, int count);
 
 /**
  * @brief 天气类型枚举转中文名称

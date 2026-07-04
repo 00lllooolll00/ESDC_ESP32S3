@@ -56,7 +56,7 @@ lv_obj_t * smart_home_create(void)
     lv_obj_set_height(smart_home_title, LV_SIZE_CONTENT);
     lv_label_set_text(smart_home_title, "智能家具");
     lv_obj_set_style_text_color(smart_home_title, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(smart_home_title, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(smart_home_title, font_chinese_6500_14, 0);
 
     wifi_btn_create(lv_obj_0);
 

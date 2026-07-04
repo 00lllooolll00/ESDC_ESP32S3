@@ -7,8 +7,6 @@
 
 EK_LOG_FILE_TAG("weather_actions");
 
-static lv_chart_series_t *s_temp_series;
-static lv_obj_t *s_chart;
 static lv_obj_t *s_city_lbl;
 static lv_obj_t *s_type_lbl;
 static lv_obj_t *s_temp_lbl;
@@ -16,6 +14,8 @@ static lv_obj_t *s_max_lbl;
 static lv_obj_t *s_min_lbl;
 static lv_obj_t *s_hum_lbl;
 static lv_obj_t *s_wind_lbl;
+static lv_obj_t *s_daily_lbls[APP_WEATHER_DAILY_MAX];
+static lv_obj_t *s_index_lbls[APP_WEATHER_INDEX_MAX];
 static lv_obj_t *s_loading_overlay;
 static lv_timer_t *s_loading_timer;
 
@@ -56,16 +56,30 @@ static void _weather_ui_cb(const app_weather_forecast_t *fc, void *arg)
         s_loading_timer = NULL;
     }
 
-    // 折线图刷新
-    if (s_chart && s_temp_series && fc->count > 0)
+    // 3 天预报
+    static const char *daily_titles[] = {"今天", "明天", "后天"};
+    for (int i = 0; i < fc->daily_count && i < APP_WEATHER_DAILY_MAX; i++)
     {
-        int32_t buf[APP_WEATHER_MAX_POINTS];
-        for (int i = 0; i < fc->count; i++)
+        if (s_daily_lbls[i])
         {
-            buf[i] = fc->temps[i];
+            char tmax[8], tmin[8];
+            _fmt_temp(tmax, sizeof(tmax), fc->dailies[i].temp_max);
+            _fmt_temp(tmin, sizeof(tmin), fc->dailies[i].temp_min);
+            char buf[48];
+            snprintf(buf, sizeof(buf), "%s %s %s/%s", daily_titles[i], fc->dailies[i].text_day, tmax, tmin);
+            lv_label_set_text(s_daily_lbls[i], buf);
         }
-        lv_chart_set_series_values(s_chart, s_temp_series, buf, fc->count);
-        lv_chart_refresh(s_chart);
+    }
+
+    // 生活建议
+    for (int i = 0; i < fc->index_count && i < APP_WEATHER_INDEX_MAX; i++)
+    {
+        if (s_index_lbls[i])
+        {
+            char buf[96];
+            snprintf(buf, sizeof(buf), "%s: %s", fc->indices[i].name, fc->indices[i].text);
+            lv_label_set_text(s_index_lbls[i], buf);
+        }
     }
 
     // 当前温度
@@ -152,49 +166,34 @@ static void _city_ui_cb(const char *city, void *arg)
 
 void weather_ui_init(void)
 {
-    // 找折线图卡片容器，找不到回退到 weather 屏
-    lv_obj_t *card = lv_obj_find_by_name(weather, "weather_chart_card");
-    lv_obj_t *parent = card ? card : weather;
-
-    // 在卡片内创建折线图
-    s_chart = lv_chart_create(parent);
-    if (!s_chart)
+    // 3 天预报 label 动态创建
+    lv_obj_t *daily_card = lv_obj_find_by_name(weather, "weather_daily_card");
+    if (daily_card)
     {
-        EK_LOG_ERROR("failed to create weather chart");
-        return;
+        static const char *daily_titles[] = {"今天", "明天", "后天"};
+        for (int i = 0; i < APP_WEATHER_DAILY_MAX; i++)
+        {
+            s_daily_lbls[i] = lv_label_create(daily_card);
+            lv_label_set_text(s_daily_lbls[i], daily_titles[i]);
+            lv_obj_set_style_text_color(s_daily_lbls[i], lv_color_hex(0xa0b0c0), 0);
+            lv_obj_set_style_text_font(s_daily_lbls[i], font_chinese_6500_14, 0);
+        }
     }
 
-    // 位置和尺寸（卡片内留 8px 边距）
-    lv_obj_set_pos(s_chart, 8, 8);
-    lv_obj_set_size(s_chart, lv_obj_get_width(parent) - 16, lv_obj_get_height(parent) - 16);
-
-    // 不透明实色背景（和卡片同色，无 alpha 混合）
-    lv_obj_set_style_bg_opa(s_chart, LV_OPA_COVER, 0);
-    lv_obj_set_style_bg_color(s_chart, lv_color_hex(0x2a4055), 0);
-    lv_obj_set_style_radius(s_chart, 0, 0);
-    lv_obj_set_style_border_width(s_chart, 0, 0);
-    lv_obj_set_style_pad_all(s_chart, 8, 0);
-
-    // 配置折线图
-    lv_chart_set_type(s_chart, LV_CHART_TYPE_LINE);
-    lv_chart_set_point_count(s_chart, APP_WEATHER_MAX_POINTS);
-    // Y 轴范围：-10.0°C..50.0°C（×10）
-    lv_chart_set_axis_range(s_chart, LV_CHART_AXIS_PRIMARY_Y, -100, 500);
-    // 5 条水平网格线，0 条垂直
-    lv_chart_set_div_line_count(s_chart, 5, 0);
-
-    // 添加温度数据系列（暖橙色折线）
-    s_temp_series = lv_chart_add_series(s_chart, lv_color_hex(0xff9f43), LV_CHART_AXIS_PRIMARY_Y);
-    if (!s_temp_series)
+    // 生活建议 label 动态创建
+    lv_obj_t *index_card = lv_obj_find_by_name(weather, "weather_index_card");
+    if (index_card)
     {
-        EK_LOG_ERROR("failed to add chart series");
-        return;
+        for (int i = 0; i < APP_WEATHER_INDEX_MAX; i++)
+        {
+            s_index_lbls[i] = lv_label_create(index_card);
+            lv_label_set_text(s_index_lbls[i], "");
+            lv_obj_set_style_text_color(s_index_lbls[i], lv_color_hex(0xa0b0c0), 0);
+            lv_obj_set_style_text_font(s_index_lbls[i], font_chinese_6500_14, 0);
+            lv_label_set_long_mode(s_index_lbls[i], LV_LABEL_LONG_WRAP);
+            lv_obj_set_width(s_index_lbls[i], 720);
+        }
     }
-
-    // 折线样式：加粗线 + 数据点 + 网格线色
-    lv_obj_set_style_line_width(s_chart, 3, LV_PART_ITEMS);
-    lv_obj_set_style_size(s_chart, 4, 4, LV_PART_INDICATOR);
-    lv_obj_set_style_line_color(s_chart, lv_color_hex(0x3a5060), LV_PART_MAIN);
 
     // 缓存所有 label
     s_city_lbl = lv_obj_find_by_name(weather, "weather_city");
@@ -219,14 +218,6 @@ void weather_ui_init(void)
         lv_obj_set_style_text_font(s_min_lbl, &lv_font_montserrat_20, 0);
     }
 
-    // 天气图标（可选装饰，找不到则跳过）
-    lv_obj_t *icon = lv_obj_find_by_name(weather, "weather_icon");
-    if (icon)
-    {
-        lv_image_set_src(icon, "S:/images/weather.bin");
-        lv_obj_set_style_image_recolor(icon, lv_color_white(), 0);
-        lv_obj_set_style_image_recolor_opa(icon, LV_OPA_COVER, 0);
-    }
 
     // 注册天气数据回调
     app_weather_register_ui_cb(_weather_ui_cb, NULL);
@@ -262,7 +253,7 @@ void weather_ui_init(void)
     // "加载中..." 文字
     lv_obj_t *load_lbl = lv_label_create(s_loading_overlay);
     lv_label_set_text(load_lbl, "加载中...");
-    lv_obj_set_style_text_font(load_lbl, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(load_lbl, font_chinese_6500_14, 0);
     lv_obj_set_style_text_color(load_lbl, lv_color_hex(0xa0b0c0), 0);
     lv_obj_align(load_lbl, LV_ALIGN_CENTER, 0, 60);
 

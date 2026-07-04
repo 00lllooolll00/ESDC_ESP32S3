@@ -5,7 +5,7 @@
                   text="--:--" style_text_color="0xffffff" style_text_align="center"/>
         <!-- 日期 -->
         <lv_label name="main_date" x="300" y="36" width="200" height="20"
-                  text="" style_text_color="0xa0b0c0" style_text_font="chinese_3500_14" style_text_align="center"/>
+                  text="" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14" style_text_align="center"/>
         <!-- 天气速览卡片：城市 + 温度 + 天气类型，点击进天气详情 -->
         <lv_button name="func_weather"
                    x="60" y="60" width="680" height="110"
@@ -15,11 +15,11 @@
             <style name="style_func_card"/>
             <lv_image name="func_weather_icon" width="48" height="48"/>
             <lv_label name="main_weather_city" width="content" height="content"
-                      text="定位中..." style_text_color="0xa0b0c0" style_text_font="chinese_3500_14"/>
+                      text="定位中..." style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
             <lv_label name="main_weather_temp" width="content" height="content"
                       text="--°" style_text_color="0xff9f43"/>
             <lv_label name="main_weather_type" width="content" height="content"
-                      text="--" style_text_color="0xa0b0c0" style_text_font="chinese_3500_14"/>
+                      text="--" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
             <screen_load_event screen="weather" trigger="clicked" anim_type="move_left" duration="500"/>
         </lv_button>
         <!-- 智能家具功能卡片 -->
@@ -30,9 +30,9 @@
             <lv_label name="func_smart_home_icon" width="content" height="content"
                       style_text_color="0xffffff"/>
             <lv_label name="func_smart_home_label" width="content" height="content"
-                      text="智能家具" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
+                      text="智能家具" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
             <lv_label name="func_smart_home_desc" width="content" height="content"
-                      text="灯光或传感器" style_text_color="0xa0b0c0" style_text_font="chinese_3500_14"/>
+                      text="灯光、传感器" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
             <screen_load_event screen="smart_home" trigger="clicked" anim_type="move_left" duration="500"/>
         </lv_button>
         <!-- AI对话功能卡片 -->
@@ -42,9 +42,9 @@
             <style name="style_func_card"/>
             <lv_image name="func_ai_chat_icon" width="36" height="36"/>
             <lv_label name="func_ai_chat_label" width="content" height="content"
-                      text="AI对话" style_text_color="0xffffff" style_text_font="chinese_3500_14"/>
+                      text="AI对话" style_text_color="0xffffff" style_text_font="font_chinese_6500_14"/>
             <lv_label name="func_ai_chat_desc" width="content" height="content"
-                      text="智能语音助手" style_text_color="0xa0b0c0" style_text_font="chinese_3500_14"/>
+                      text="智能语音助手" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
             <screen_load_event screen="ai_chat" trigger="clicked" anim_type="move_left" duration="500"/>
         </lv_button>
         <!-- 底部状态栏 -->
@@ -55,9 +55,9 @@
                 style_flex_main_place="space_between" style_flex_cross_place="center"
                 style_pad_left="16" style_pad_right="16">
             <lv_label name="main_wifi_ssid" width="content" height="content"
-                      text="WiFi: --" style_text_color="0xa0b0c0" style_text_font="chinese_3500_14"/>
+                      text="WiFi: --" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
             <lv_label name="main_ip_addr" width="content" height="content"
-                      text="IP: --" style_text_color="0xa0b0c0" style_text_font="chinese_3500_14"/>
+                      text="IP: --" style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"/>
         </lv_obj>
         <!-- 音量组件 -->
         <volume_slider/>

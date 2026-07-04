@@ -87,6 +87,14 @@ static void _api_task(void *arg)
                     app_weather_set_forecast(fc.temps, fc.count);
                 }
                 app_weather_set_current(fc.type, fc.current_temp, fc.humidity, fc.wind_speed);
+            if (fc.daily_count > 0)
+            {
+                app_weather_set_daily(fc.dailies, fc.daily_count);
+            }
+            if (fc.index_count > 0)
+            {
+                app_weather_set_index(fc.indices, fc.index_count);
+            }
                 EK_LOG_INFO("weather api: data updated");
             }
             else

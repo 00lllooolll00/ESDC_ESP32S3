@@ -247,6 +247,48 @@ void app_weather_set_current(app_weather_type_t type, int16_t current_temp, uint
     _notify_ui();
 }
 
+void app_weather_set_daily(const app_weather_daily_t *dailies, int count)
+{
+    if (!s_mutex || !dailies || count <= 0)
+    {
+        return;
+    }
+    if (count > APP_WEATHER_DAILY_MAX)
+    {
+        count = APP_WEATHER_DAILY_MAX;
+    }
+    xSemaphoreTake(s_mutex, portMAX_DELAY);
+    s_forecast.daily_count = count;
+    for (int i = 0; i < count; i++)
+    {
+        s_forecast.dailies[i] = dailies[i];
+    }
+    xSemaphoreGive(s_mutex);
+    EK_LOG_INFO("daily forecast updated: count=%d", count);
+    _notify_ui();
+}
+
+void app_weather_set_index(const app_weather_index_t *indices, int count)
+{
+    if (!s_mutex || !indices || count <= 0)
+    {
+        return;
+    }
+    if (count > APP_WEATHER_INDEX_MAX)
+    {
+        count = APP_WEATHER_INDEX_MAX;
+    }
+    xSemaphoreTake(s_mutex, portMAX_DELAY);
+    s_forecast.index_count = count;
+    for (int i = 0; i < count; i++)
+    {
+        s_forecast.indices[i] = indices[i];
+    }
+    xSemaphoreGive(s_mutex);
+    EK_LOG_INFO("life index updated: count=%d", count);
+    _notify_ui();
+}
+
 const char *app_weather_type_name(app_weather_type_t t)
 {
     if (t < 0 || t >= (int)(sizeof(s_type_names) / sizeof(s_type_names[0])))

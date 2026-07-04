@@ -56,7 +56,7 @@ lv_obj_t * ai_chat_create(void)
     lv_obj_set_height(ai_chat_title, LV_SIZE_CONTENT);
     lv_label_set_text(ai_chat_title, "AI对话");
     lv_obj_set_style_text_color(ai_chat_title, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(ai_chat_title, chinese_3500_14, 0);
+    lv_obj_set_style_text_font(ai_chat_title, font_chinese_6500_14, 0);
 
     wifi_btn_create(lv_obj_0);
 

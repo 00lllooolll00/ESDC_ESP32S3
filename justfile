@@ -20,7 +20,7 @@ clean:
 flash:build
     idf.py app-flash -b 2000000  
 
-flash-full:build
+flash-full:rebuild
     idf.py flash -b 2000000  
 
 monitor:

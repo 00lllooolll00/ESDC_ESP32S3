@@ -152,7 +152,7 @@ static void _wifi_btn_click_cb(lv_event_t *e)
     // 标题
     lv_obj_t *label = lv_label_create(s_password_cont);
     lv_label_set_text_fmt(label, "输入密码: %s", s_connect_ssid);
-    lv_obj_set_style_text_font(label, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(label, font_chinese_6500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
 
     // 密码输入框
@@ -160,7 +160,7 @@ static void _wifi_btn_click_cb(lv_event_t *e)
     lv_textarea_set_one_line(s_password_ta, true);
     lv_textarea_set_password_mode(s_password_ta, true);
     lv_textarea_set_placeholder_text(s_password_ta, "请输入密码");
-    lv_obj_set_style_text_font(s_password_ta, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(s_password_ta, font_chinese_6500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_width(s_password_ta, 460);
     lv_obj_align(s_password_ta, LV_ALIGN_TOP_MID, 0, 30);
 
@@ -251,7 +251,7 @@ static void _show_connect_status(const char *text)
 
     s_connect_status_item = lv_label_create(s_wifi_list_panel);
     lv_label_set_text(s_connect_status_item, text);
-    lv_obj_set_style_text_font(s_connect_status_item, chinese_3500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(s_connect_status_item, font_chinese_6500_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(s_connect_status_item, lv_color_hex(0x2a4055), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(s_connect_status_item, LV_OPA_COVER, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(s_connect_status_item, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -302,7 +302,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 
                 if (label)
                 {
-                    lv_obj_set_style_text_font(label, chinese_3500_14, 0);
+                    lv_obj_set_style_text_font(label, font_chinese_6500_14, 0);
                 }
 
                 lv_obj_set_user_data(btn, (void *)(uintptr_t)i);
@@ -317,7 +317,7 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
                     lv_obj_set_style_bg_color(forget_btn, lv_color_hex(0xFF1744), 0);
                     lv_obj_t *flbl = lv_label_create(forget_btn);
                     lv_label_set_text(flbl, "忘记");
-                    lv_obj_set_style_text_font(flbl, chinese_3500_14, 0);
+                    lv_obj_set_style_text_font(flbl, font_chinese_6500_14, 0);
                     lv_obj_set_style_text_color(flbl, lv_color_white(), 0);
                     lv_obj_center(flbl);
                     lv_obj_set_user_data(forget_btn, (void *)(uintptr_t)i);
