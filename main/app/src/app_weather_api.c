@@ -89,10 +89,10 @@ static void _api_task(void *arg)
                     app_weather_set_forecast(fc.temps, fc.count);
                 }
                 app_weather_set_current(fc.type, fc.current_temp, fc.humidity, fc.wind_speed);
-            if (fc.daily_count > 0)
-            {
-                app_weather_set_daily(fc.dailies, fc.daily_count);
-            }
+                if (fc.daily_count > 0)
+                {
+                    app_weather_set_daily(fc.dailies, fc.daily_count);
+                }
                 EK_LOG_INFO("weather api: data updated");
                 app_weather_store_save(&fc);
                 // AI 建议（DeepSeek）

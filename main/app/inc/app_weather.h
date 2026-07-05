@@ -11,13 +11,13 @@ extern "C"
 // 最多 24 个温度点（24 小时预报）
 #define APP_WEATHER_MAX_POINTS 24
 
-#define APP_WEATHER_DAILY_MAX 3
+#define APP_WEATHER_DAILY_MAX  3
 
 // 单日预报（3天预报中的一天）
 typedef struct
 {
-    int16_t temp_max;  // 最高温 ×10
-    int16_t temp_min;  // 最低温 ×10
+    int16_t temp_max; // 最高温 ×10
+    int16_t temp_min; // 最低温 ×10
     char text_day[16]; // 白天天气描述 "晴"
 } app_weather_daily_t;
 

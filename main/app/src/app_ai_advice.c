@@ -10,10 +10,10 @@
 #include <stdlib.h>
 #include "secrets.h"
 #ifndef DEEPSEEK_API_KEY
-#error "DEEPSEEK_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
+#    error "DEEPSEEK_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
 #endif
 #ifndef DEEPSEEK_API_URL
-#error "DEEPSEEK_API_URL not defined. Copy main/secrets.h.example to main/secrets.h and fill in your URL."
+#    error "DEEPSEEK_API_URL not defined. Copy main/secrets.h.example to main/secrets.h and fill in your URL."
 #endif
 
 EK_LOG_FILE_TAG("app_ai_advice");
@@ -35,7 +35,8 @@ bool app_ai_advice_request(const app_weather_forecast_t *fc, char *out, size_t o
     char city[32] = { 0 };
     app_ip_location_get_city(city, sizeof(city));
     char user_msg[256];
-    snprintf(user_msg, sizeof(user_msg),
+    snprintf(user_msg,
+             sizeof(user_msg),
              "今天%s%s，温度%.1f度，湿度%d%%，风速%dkm/h。请给50字以内的生活建议，直接输出建议内容。",
              city,
              app_weather_type_name(fc->type),
@@ -43,13 +44,15 @@ bool app_ai_advice_request(const app_weather_forecast_t *fc, char *out, size_t o
              fc->humidity,
              fc->wind_speed);
     char body[768];
-    snprintf(body, sizeof(body),
-             "{\"model\":\"deepseek-v4-flash\","
-             "\"messages\":["
-             "{\"role\":\"system\",\"content\":\"你是天气助手，根据天气数据给出50字以内的生活建议，直接输出建议内容。\"},"
-             "{\"role\":\"user\",\"content\":\"%s\"}"
-             "],\"stream\":false,\"max_tokens\":100}",
-             user_msg);
+    snprintf(
+        body,
+        sizeof(body),
+        "{\"model\":\"deepseek-v4-flash\","
+        "\"messages\":["
+        "{\"role\":\"system\",\"content\":\"你是天气助手，根据天气数据给出50字以内的生活建议，直接输出建议内容。\"},"
+        "{\"role\":\"user\",\"content\":\"%s\"}"
+        "],\"stream\":false,\"max_tokens\":100}",
+        user_msg);
 
     // HTTP POST
     esp_http_client_config_t cfg = {

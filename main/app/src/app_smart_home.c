@@ -10,7 +10,7 @@ EK_LOG_FILE_TAG("app_smart_home");
 
 #define APP_SMART_HOME_NVS_NS  "ek_shome"
 #define APP_SMART_HOME_NVS_KEY "io_cfg"
-#define APP_SMART_HOME_MAGIC   0x53484F4E  // "SHON"（bump 以丢弃旧版默认名）
+#define APP_SMART_HOME_MAGIC   0x53484F4E // "SHON"（bump 以丢弃旧版默认名）
 
 // 持久化结构：magic + 7 路 {名字, 电平}，整体作为 NVS blob 存取
 typedef struct
@@ -22,8 +22,7 @@ typedef struct
 
 // idx 0..6 ↔ EXIO9..15（硬件引脚不变，仅显示名重新编号为 IO1~IO7）
 static const bsp_exio_pin_num_t s_pins[APP_SMART_HOME_COUNT] = {
-    BSP_EXIO_NUM9, BSP_EXIO_NUM10, BSP_EXIO_NUM11,
-    BSP_EXIO_NUM12, BSP_EXIO_NUM13, BSP_EXIO_NUM14, BSP_EXIO_NUM15,
+    BSP_EXIO_NUM9, BSP_EXIO_NUM10, BSP_EXIO_NUM11, BSP_EXIO_NUM12, BSP_EXIO_NUM13, BSP_EXIO_NUM14, BSP_EXIO_NUM15,
 };
 
 static const char *s_default_names[APP_SMART_HOME_COUNT] = {

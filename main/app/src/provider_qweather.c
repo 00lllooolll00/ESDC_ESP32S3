@@ -9,10 +9,10 @@
 #include <string.h>
 #include "secrets.h"
 #ifndef QWEATHER_API_KEY
-#error "QWEATHER_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
+#    error "QWEATHER_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
 #endif
 #ifndef QWEATHER_API_HOST
-#error "QWEATHER_API_HOST not defined. Copy main/secrets.h.example to main/secrets.h and fill in your host."
+#    error "QWEATHER_API_HOST not defined. Copy main/secrets.h.example to main/secrets.h and fill in your host."
 #endif
 
 EK_LOG_FILE_TAG("provider_qweather");
@@ -367,7 +367,6 @@ static bool _qweather_fetch(const weather_location_t *loc, app_weather_forecast_
     }
     cJSON_Delete(root);
     free(buf);
-
 
     // --- 3 天预报 ---
     snprintf(url, sizeof(url), "https://%s/v7/weather/3d?location=%.2f,%.2f", QWEATHER_API_HOST, loc->lon, loc->lat);

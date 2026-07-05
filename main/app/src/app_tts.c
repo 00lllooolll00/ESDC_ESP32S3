@@ -40,7 +40,8 @@ void app_tts_say(const char *text)
 
     if (s_tts_handle == NULL)
     {
-        BaseType_t ok = xTaskCreate(_app_tts_task, "app tts", APP_TTS_STACK_SIZE, NULL, APP_TTS_PRIORITY, &s_tts_handle);
+        BaseType_t ok =
+            xTaskCreate(_app_tts_task, "app tts", APP_TTS_STACK_SIZE, NULL, APP_TTS_PRIORITY, &s_tts_handle);
         if (ok != pdPASS)
         {
             s_tts_handle = NULL;
