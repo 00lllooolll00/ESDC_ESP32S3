@@ -11,8 +11,8 @@ extern "C"
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
 
-#define BSP_I2C0_SDA_PIN GPIO_NUM_41
-#define BSP_I2C0_SCL_PIN GPIO_NUM_42
+#define BSP_I2C0_SDA_PIN GPIO_NUM_42
+#define BSP_I2C0_SCL_PIN GPIO_NUM_41
 #define BSP_I2C1_SDA_PIN GPIO_NUM_38
 #define BSP_I2C1_SCL_PIN GPIO_NUM_39
 
