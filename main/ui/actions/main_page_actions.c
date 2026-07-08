@@ -6,19 +6,54 @@
 #include "esp_wifi.h"
 #include "esp_netif.h"
 #include <time.h>
+#include <sys/time.h>
+#include "nvs.h"
 
 EK_LOG_FILE_TAG("main_page_actions");
 
+#define TIME_STORE_NVS_NS  "ek_time"
+#define TIME_STORE_NVS_KEY "ts"
+#define TIME_STORE_TS_MIN  1700000000 // 2023 年时间戳下限，小于此值视为无效
+
 static lv_timer_t *s_clock_timer;
 
-// SNTP 同步完成标志：由回调设置一次后永久为 true，不受 sntp_get_sync_status() 一次性重置影响
-static volatile bool s_time_synced = false;
+// 时间可用标志：NVS 恢复或 SNTP 同步后置 true，不受 sntp_get_sync_status() 一次性重置影响
+static volatile bool s_time_ready = false;
+
+// 从 NVS 恢复上次保存的时间戳，设为系统时间（WiFi 未连也先有时钟显示）
+static void _restore_stored_time(void)
+{
+    nvs_handle_t h;
+    if (nvs_open(TIME_STORE_NVS_NS, NVS_READONLY, &h) != ESP_OK)
+    {
+        return;
+    }
+    int64_t stored_ts = 0;
+    esp_err_t err = nvs_get_i64(h, TIME_STORE_NVS_KEY, &stored_ts);
+    nvs_close(h);
+    if (err != ESP_OK || stored_ts < (int64_t)TIME_STORE_TS_MIN)
+    {
+        return;
+    }
+    struct timeval tv = { .tv_sec = (time_t)stored_ts, .tv_usec = 0 };
+    settimeofday(&tv, NULL);
+    s_time_ready = true;
+    EK_LOG_INFO("restored time from NVS: unix timestamp=%lld", (long long)stored_ts);
+}
 
 // SNTP 时间同步回调：每次 SNTP 成功同步时由 lwip 线程调用
 static void _sntp_sync_cb(struct timeval *tv)
 {
-    s_time_synced = true;
+    s_time_ready = true;
     EK_LOG_INFO("SNTP time synced, unix timestamp=%lld", (long long)tv->tv_sec);
+    // 持久化到 NVS 供下次上电使用
+    nvs_handle_t h;
+    if (nvs_open(TIME_STORE_NVS_NS, NVS_READWRITE, &h) == ESP_OK)
+    {
+        nvs_set_i64(h, TIME_STORE_NVS_KEY, (int64_t)tv->tv_sec);
+        nvs_commit(h);
+        nvs_close(h);
+    }
 }
 
 // 时钟更新回调：每秒刷新时间和日期
@@ -26,8 +61,8 @@ static void _clock_timer_cb(lv_timer_t *t)
 {
     (void)t;
 
-    // SNTP 未同步时不显示（用持久标志替代一次性 sntp_get_sync_status()）
-    if (!s_time_synced)
+    // 时间未就绪时不显示（NVS 恢复或 SNTP 同步后才有值）
+    if (!s_time_ready)
     {
         return;
     }
@@ -103,9 +138,14 @@ static void _wifi_evt_cb(app_wifi_evt_t evt, void *data, void *arg)
 
 void main_page_actions_init(void)
 {
-    // 设时区 CST-8 + 启动 SNTP
+    // 设时区 CST-8
     setenv("TZ", "CST-8", 1);
     tzset();
+
+    // 从 NVS 恢复上次保存的时间戳（WiFi 未连也先有时钟显示）
+    _restore_stored_time();
+
+    // 启动 SNTP（WiFi 连上后自动同步并更新时间）
     esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
     esp_sntp_setservername(0, "pool.ntp.org");
     esp_sntp_set_time_sync_notification_cb(_sntp_sync_cb);
