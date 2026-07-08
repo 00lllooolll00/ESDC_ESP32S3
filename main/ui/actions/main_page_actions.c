@@ -11,13 +11,23 @@ EK_LOG_FILE_TAG("main_page_actions");
 
 static lv_timer_t *s_clock_timer;
 
+// SNTP 同步完成标志：由回调设置一次后永久为 true，不受 sntp_get_sync_status() 一次性重置影响
+static volatile bool s_time_synced = false;
+
+// SNTP 时间同步回调：每次 SNTP 成功同步时由 lwip 线程调用
+static void _sntp_sync_cb(struct timeval *tv)
+{
+    s_time_synced = true;
+    EK_LOG_INFO("SNTP time synced, unix timestamp=%lld", (long long)tv->tv_sec);
+}
+
 // 时钟更新回调：每秒刷新时间和日期
 static void _clock_timer_cb(lv_timer_t *t)
 {
     (void)t;
 
-    // SNTP 未同步时不显示
-    if (sntp_get_sync_status() != SNTP_SYNC_STATUS_COMPLETED)
+    // SNTP 未同步时不显示（用持久标志替代一次性 sntp_get_sync_status()）
+    if (!s_time_synced)
     {
         return;
     }
@@ -98,6 +108,7 @@ void main_page_actions_init(void)
     tzset();
     esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
     esp_sntp_setservername(0, "pool.ntp.org");
+    esp_sntp_set_time_sync_notification_cb(_sntp_sync_cb);
     esp_sntp_init();
 
     // 启动时钟定时器（每秒更新）
