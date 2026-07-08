@@ -10,6 +10,7 @@ extern void weather_ui_init(void);
 extern void wifi_actions_init(void);
 extern void main_page_actions_init(void);
 extern void smart_home_actions_init(void);
+extern void ai_chat_actions_init(void);
 
 static void _app_ui_task(void *arg);
 
@@ -23,6 +24,7 @@ void app_ui_init(void)
     wifi_actions_init();
     main_page_actions_init();
     smart_home_actions_init();
+    ai_chat_actions_init();
     EK_LOG_INFO("after ui init: internal free=%u, total free=%u",
                 (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
                 (unsigned)esp_get_free_heap_size());

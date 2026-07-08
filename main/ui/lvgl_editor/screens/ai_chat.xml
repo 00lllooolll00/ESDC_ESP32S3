@@ -1,7 +1,33 @@
 <screen permanent="true">
     <view style_bg_color="0x1a2c42" style_bg_opa="255">
-        <lv_label name="ai_chat_title" x="300" y="220" width="content" height="content"
-          text="AI对话" style_text_color="0xffffff" style_text_font="font_chinese_3500_18"/>
+        <!-- 标题 -->
+        <lv_label name="ai_chat_title" x="340" y="6" width="120" height="28"
+          text="AI对话" style_text_color="0xffffff" style_text_font="font_chinese_3500_18"
+          style_text_align="center"/>
+        <!-- 消息列表容器（可滚动，flex column，底部对齐在 C 代码中设置） -->
+        <lv_obj name="ai_chat_msg_list" x="10" y="38" width="780" height="380"
+                scrollable="true"
+                style_bg_opa="0" style_border_width="0"
+                style_pad_left="8" style_pad_right="8" style_pad_top="4" style_pad_bottom="4"
+                style_layout="flex" style_flex_flow="column"/>
+        <!-- AI正在回复提示 -->
+        <lv_label name="ai_chat_loading" x="340" y="200" width="120" height="20"
+                  text="AI正在回复..." hidden="true"
+                  style_text_color="0xa0b0c0" style_text_font="font_chinese_6500_14"
+                  style_text_align="center"/>
+        <!-- 底部长按录音按钮（flex 居中） -->
+        <lv_obj name="ai_chat_voice_cont" x="0" y="430" width="800" height="40"
+                scrollable="false"
+                style_bg_opa="0" style_border_width="0" style_pad_all="0"
+                style_layout="flex" style_flex_flow="row"
+                style_flex_main_place="center" style_flex_cross_place="center">
+            <lv_button name="ai_chat_voice_btn" width="600" height="40">
+                <style name="style_user_btn"/>
+                <lv_label name="ai_chat_voice_label" width="content" height="content"
+                          text="按住说话" style_text_color="0xffffff"
+                          style_text_font="font_chinese_6500_14"/>
+            </lv_button>
+        </lv_obj>
         <wifi_btn/>
         <volume_slider/>
         <nav_bar/>
