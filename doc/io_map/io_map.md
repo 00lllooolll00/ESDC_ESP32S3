@@ -1,6 +1,6 @@
 # ESP32-S3 IO 引脚分布图
 
-> 基于 `io_map_new.md`（新版 PCB 引脚分配）。
+> 当前固件唯一引脚映射事实来源（与 `components/bsp/*/bsp_*.h` 引脚宏一致）。
 
 ---
 
@@ -46,8 +46,8 @@
 
 | MCU引脚号 | MCU引脚名 | 网络名 | 功能 | 连接目标 |
 |---|---|---|---|---|
-| 34 | IO41 | I2C0_SCL | I2C时钟 | U2 Pin22 (XL9555 SCL), U6 Pin28 (ES8388 CCLK) |
-| 35 | IO42 | I2C0_SDA | I2C数据 | U2 Pin23 (XL9555 SDA), U6 Pin27 (ES8388 CDATA) |
+| 34 | IO2 | I2C0_SCL | I2C时钟 | U2 Pin22 (XL9555 SCL), U6 Pin28 (ES8388 CCLK) |
+| 35 | IO1 | I2C0_SDA | I2C数据 | U2 Pin23 (XL9555 SDA), U6 Pin27 (ES8388 CDATA) |
 
 ---
 
@@ -56,8 +56,8 @@
 | MCU引脚号 | MCU引脚名 | 网络名 | 功能 |
 |---|---|---|---|
 | 13 | IO19 | XL_INT | XL9555中断输出到MCU |
-| 34 | IO41 | I2C0_SCL | I2C时钟（共用总线） |
-| 35 | IO42 | I2C0_SDA | I2C数据（共用总线） |
+| 34 | IO2 | I2C0_SCL | I2C时钟（共用总线） |
+| 35 | IO1 | I2C0_SDA | I2C数据（共用总线） |
 
 **XL9555 扩展 IO 分配表：**
 
@@ -89,8 +89,8 @@
 | 24 | IO47 | I2S_SDOUT | 数据输出(MCU到ES8388) | Pin6 (DSDIN), 经R16(22R)串联 |
 | 25 | IO48 | I2S_LRCK | 左右声道时钟 | Pin7 (LRCK), 经R15(22R)串联 |
 | 26 | IO45 | I2S_SDIN | 数据输入(ES8388到MCU) | Pin8 (ASDOUT), 经R14(22R)串联 |
-| 28 | IO35 | I2S_SCK | 位时钟(BCLK) | Pin5 (SCLK), 经R13(22R)串联 |
-| 29 | IO36 | I2S_MCLK | 主时钟 | Pin1 (MCLK) |
+| 28 | IO41 | I2S_SCK | 位时钟(BCLK) | Pin5 (SCLK), 经R13(22R)串联 |
+| 29 | IO42 | I2S_MCLK | 主时钟 | Pin1 (MCLK) |
 
 **音频信号链路：**
 - 扬声器输出：ES8388 LOUT2/ROUT2 (Pin15/14) 经 C18/C19(1uF) 耦合到 SPK_IN，再经 R18(5.6K) 到 U7 (MD8002A)，驱动 SPK1 扬声器
@@ -143,7 +143,7 @@
 | MCU引脚号 | MCU引脚名 | 网络名 | 状态 |
 |---|---|---|---|
 | 30 | IO37 | (空) | 未连接 |
-| 38 | IO2 | (空) | 未连接 |
-| 39 | IO1 | (空) | 未连接 |
+| 38 | IO35 | (空) | 未连接 |
+| 39 | IO36 | (空) | 未连接 |
 
 ---

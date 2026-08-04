@@ -11,8 +11,9 @@ extern "C"
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
 
-#define BSP_I2C0_SDA_PIN GPIO_NUM_42
-#define BSP_I2C0_SCL_PIN GPIO_NUM_41
+// 新板：I2C0 (XL9555 + ES8388) 走 IO1(SDA)/IO2(SCL)，IO41/42 让给 I2S SCK/MCLK
+#define BSP_I2C0_SDA_PIN GPIO_NUM_1
+#define BSP_I2C0_SCL_PIN GPIO_NUM_2
 #define BSP_I2C1_SDA_PIN GPIO_NUM_38
 #define BSP_I2C1_SCL_PIN GPIO_NUM_39
 
