@@ -1,25 +1,21 @@
-#include "common_header.h"
-
 #include "app_ai_chat.h"
+#include "secrets.h"
 #include "esp_http_client.h"
 #include "esp_crt_bundle.h"
 #include "cJSON.h"
-#include <string.h>
-#include <stdlib.h>
-#include "secrets.h"
 
-#ifndef DEEPSEEK_API_KEY
-#error "DEEPSEEK_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
+#ifndef LLM_API_KEY
+#    error "LLM_API_KEY not defined. Copy main/secrets.h.example to main/secrets.h and fill in your key."
 #endif
-#ifndef DEEPSEEK_API_URL
-#error "DEEPSEEK_API_URL not defined. Copy main/secrets.h.example to main/secrets.h and fill in your URL."
+#ifndef LLM_API_URL
+#    error "LLM_API_URL not defined. Copy main/secrets.h.example to main/secrets.h and fill in your URL."
 #endif
 
 EK_LOG_FILE_TAG("app_ai_chat");
 
-#define DEEPSEEK_MODEL        "deepseek-v4-flash"
-#define DEEPSEEK_TIMEOUT_MS   30000
-#define DEEPSEEK_BUF_MAX      4096
+#define APP_AI_CHAT_MODEL      "gpt-5.6-luna"
+#define APP_AI_CHAT_TIMEOUT    30000
+#define APP_AI_CHAT_BUF_SIZE   4096
 #define APP_AI_CHAT_QUEUE_LEN  4
 #define APP_AI_CHAT_STACK_SIZE 8192
 #define APP_AI_CHAT_PRIORITY   3
@@ -27,14 +23,16 @@ EK_LOG_FILE_TAG("app_ai_chat");
 // JSON 转义后单条消息最大长度
 #define APP_AI_CHAT_MAX_ESCAPED 512
 
-typedef struct {
+typedef struct
+{
     char text[APP_AI_CHAT_MAX_TEXT];
     app_ai_chat_reply_cb cb;
     void *arg;
 } ai_chat_msg_t;
 
 // 对话历史
-typedef struct {
+typedef struct
+{
     char role[8]; // "user" or "assistant"
     char content[APP_AI_CHAT_MAX_TEXT];
 } chat_msg_t;
@@ -54,44 +52,44 @@ static void _json_escape(const char *src, char *dst, size_t dst_len)
     {
         switch (src[i])
         {
-        case '"':
-            if (j < dst_len - 3)
-            {
-                dst[j++] = '\\';
-                dst[j++] = '"';
-            }
-            break;
-        case '\\':
-            if (j < dst_len - 3)
-            {
-                dst[j++] = '\\';
-                dst[j++] = '\\';
-            }
-            break;
-        case '\n':
-            if (j < dst_len - 3)
-            {
-                dst[j++] = '\\';
-                dst[j++] = 'n';
-            }
-            break;
-        case '\r':
-            if (j < dst_len - 3)
-            {
-                dst[j++] = '\\';
-                dst[j++] = 'r';
-            }
-            break;
-        case '\t':
-            if (j < dst_len - 3)
-            {
-                dst[j++] = '\\';
-                dst[j++] = 't';
-            }
-            break;
-        default:
-            dst[j++] = src[i];
-            break;
+            case '"':
+                if (j < dst_len - 3)
+                {
+                    dst[j++] = '\\';
+                    dst[j++] = '"';
+                }
+                break;
+            case '\\':
+                if (j < dst_len - 3)
+                {
+                    dst[j++] = '\\';
+                    dst[j++] = '\\';
+                }
+                break;
+            case '\n':
+                if (j < dst_len - 3)
+                {
+                    dst[j++] = '\\';
+                    dst[j++] = 'n';
+                }
+                break;
+            case '\r':
+                if (j < dst_len - 3)
+                {
+                    dst[j++] = '\\';
+                    dst[j++] = 'r';
+                }
+                break;
+            case '\t':
+                if (j < dst_len - 3)
+                {
+                    dst[j++] = '\\';
+                    dst[j++] = 't';
+                }
+                break;
+            default:
+                dst[j++] = src[i];
+                break;
         }
     }
     dst[j] = '\0';
@@ -102,15 +100,12 @@ static void _add_history(const char *role, const char *content)
 {
     if (s_history_count >= APP_AI_CHAT_MAX_HISTORY)
     {
-        memmove(&s_history[0], &s_history[1],
-                (APP_AI_CHAT_MAX_HISTORY - 1) * sizeof(chat_msg_t));
+        memmove(&s_history[0], &s_history[1], (APP_AI_CHAT_MAX_HISTORY - 1) * sizeof(chat_msg_t));
         s_history_count = APP_AI_CHAT_MAX_HISTORY - 1;
     }
-    strncpy(s_history[s_history_count].role, role,
-            sizeof(s_history[0].role) - 1);
+    strncpy(s_history[s_history_count].role, role, sizeof(s_history[0].role) - 1);
     s_history[s_history_count].role[sizeof(s_history[0].role) - 1] = '\0';
-    strncpy(s_history[s_history_count].content, content,
-            APP_AI_CHAT_MAX_TEXT - 1);
+    strncpy(s_history[s_history_count].content, content, APP_AI_CHAT_MAX_TEXT - 1);
     s_history[s_history_count].content[APP_AI_CHAT_MAX_TEXT - 1] = '\0';
     s_history_count++;
 }
@@ -131,9 +126,8 @@ void app_ai_chat_send(const char *text, app_ai_chat_reply_cb cb, void *arg)
     // 延迟创建任务，避免启动期抢占内存（同 app_tts.c 模式）
     if (s_task == NULL)
     {
-        BaseType_t ok = xTaskCreate(_app_ai_chat_task, "app_ai_ch",
-                                    APP_AI_CHAT_STACK_SIZE, NULL,
-                                    APP_AI_CHAT_PRIORITY, &s_task);
+        BaseType_t ok =
+            xTaskCreate(_app_ai_chat_task, "app_ai_ch", APP_AI_CHAT_STACK_SIZE, NULL, APP_AI_CHAT_PRIORITY, &s_task);
         if (ok != pdPASS)
         {
             s_task = NULL;
@@ -157,7 +151,7 @@ void app_ai_chat_clear_history(void)
 static void _app_ai_chat_task(void *arg)
 {
     // 任务启动时一次性分配缓冲区，循环复用
-    char *body = malloc(DEEPSEEK_BUF_MAX);
+    char *body = malloc(APP_AI_CHAT_BUF_SIZE);
     char *escaped = malloc(APP_AI_CHAT_MAX_ESCAPED);
     char *reply_buf = malloc(APP_AI_CHAT_MAX_REPLY);
 
@@ -186,23 +180,26 @@ static void _app_ai_chat_task(void *arg)
         _add_history("user", msg.text);
 
         // 构建 JSON body：system + 对话历史
-        int offset = snprintf(body, DEEPSEEK_BUF_MAX,
+        int offset = snprintf(
+            body,
+            APP_AI_CHAT_BUF_SIZE,
             "{\"model\":\"%s\",\"messages\":["
             "{\"role\":\"system\",\"content\":\"你是一个智能助手，用简洁的中文回答问题，每次回答不超过100字。\"}",
-            DEEPSEEK_MODEL);
+            APP_AI_CHAT_MODEL);
 
-        for (int i = 0; i < s_history_count && offset < DEEPSEEK_BUF_MAX - 256; i++)
+        for (int i = 0; i < s_history_count && offset < APP_AI_CHAT_BUF_SIZE - 256; i++)
         {
             _json_escape(s_history[i].content, escaped, APP_AI_CHAT_MAX_ESCAPED);
-            offset += snprintf(body + offset, DEEPSEEK_BUF_MAX - offset,
-                ",{\"role\":\"%s\",\"content\":\"%s\"}",
-                s_history[i].role, escaped);
+            offset += snprintf(body + offset,
+                               APP_AI_CHAT_BUF_SIZE - offset,
+                               ",{\"role\":\"%s\",\"content\":\"%s\"}",
+                               s_history[i].role,
+                               escaped);
         }
 
-        offset += snprintf(body + offset, DEEPSEEK_BUF_MAX - offset,
-            "],\"stream\":false,\"max_tokens\":200}");
+        offset += snprintf(body + offset, APP_AI_CHAT_BUF_SIZE - offset, "],\"stream\":false,\"max_tokens\":200}");
 
-        if (offset >= DEEPSEEK_BUF_MAX)
+        if (offset >= APP_AI_CHAT_BUF_SIZE)
         {
             EK_LOG_WARN("app_ai_chat: body too long");
             msg.cb("消息过长，请缩短后重试", msg.arg);
@@ -211,9 +208,9 @@ static void _app_ai_chat_task(void *arg)
 
         // HTTP POST
         esp_http_client_config_t cfg = {
-            .url = DEEPSEEK_API_URL,
+            .url = LLM_API_URL,
             .method = HTTP_METHOD_POST,
-            .timeout_ms = DEEPSEEK_TIMEOUT_MS,
+            .timeout_ms = APP_AI_CHAT_TIMEOUT,
             .crt_bundle_attach = esp_crt_bundle_attach,
         };
         esp_http_client_handle_t client = esp_http_client_init(&cfg);
@@ -225,7 +222,7 @@ static void _app_ai_chat_task(void *arg)
         }
 
         esp_http_client_set_header(client, "Content-Type", "application/json");
-        esp_http_client_set_header(client, "Authorization", "Bearer " DEEPSEEK_API_KEY);
+        esp_http_client_set_header(client, "Authorization", "Bearer " LLM_API_KEY);
 
         esp_err_t err = esp_http_client_open(client, strlen(body));
         if (err != ESP_OK)
@@ -257,10 +254,9 @@ static void _app_ai_chat_task(void *arg)
 
         // 读取响应
         int total = 0;
-        while (total < DEEPSEEK_BUF_MAX - 1)
+        while (total < APP_AI_CHAT_BUF_SIZE - 1)
         {
-            int n = esp_http_client_read(client, body + total,
-                                        DEEPSEEK_BUF_MAX - 1 - total);
+            int n = esp_http_client_read(client, body + total, APP_AI_CHAT_BUF_SIZE - 1 - total);
             if (n <= 0)
             {
                 break;
@@ -295,8 +291,7 @@ static void _app_ai_chat_task(void *arg)
                         cJSON *content = cJSON_GetObjectItem(message, "content");
                         if (content && content->valuestring)
                         {
-                            strncpy(reply_buf, content->valuestring,
-                                    APP_AI_CHAT_MAX_REPLY - 1);
+                            strncpy(reply_buf, content->valuestring, APP_AI_CHAT_MAX_REPLY - 1);
                             reply_buf[APP_AI_CHAT_MAX_REPLY - 1] = '\0';
                             ok = true;
                             EK_LOG_INFO("app_ai_chat: reply = %s", reply_buf);

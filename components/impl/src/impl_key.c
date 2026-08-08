@@ -48,7 +48,7 @@ EK_EXPORT_COMPONENTS(impl_key_register, 0);
 static void _auto_key_dev_init(void)
 {
     EK_LOG_INFO("ek_export: COMPONENTS _auto_key_dev_init");
-    (void)plat_key_dev_init(&s_key_dev);
+    plat_key_dev_init(&s_key_dev);
 }
 EK_EXPORT_COMPONENTS(_auto_key_dev_init, 1);
 

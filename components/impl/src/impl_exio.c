@@ -15,7 +15,7 @@ int impl_exio_init(void)
 static void impl_exio_auto_init(void)
 {
     EK_LOG_INFO("ek_export: HARDWARE impl_exio_auto_init");
-    (void)impl_exio_init();
+    impl_exio_init();
 }
 
 EK_EXPORT_HARDWARE(impl_exio_auto_init, 0);

@@ -69,7 +69,6 @@ static int _lcd_flush(int16_t x0, int16_t y0, int16_t x1, int16_t y1, const void
 
 static void *_lcd_get_fb(uint8_t index)
 {
-    (void)index;
     return NULL;
 }
 

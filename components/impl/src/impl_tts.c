@@ -115,6 +115,23 @@ static int _tts_dev_init(void)
         return -1;
     }
     EK_LOG_INFO("esp_tts ready");
+
+    /* 诊断：回读 ES8388 关键寄存器，确认配置生效 */
+    {
+        uint8_t r = 0;
+        static const uint8_t regs[] = { 0x02, 0x04, 0x08, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x27, 0x2A, 0x2E, 0x2F, 0x30, 0x31 };
+        for (size_t i = 0; i < sizeof(regs); i++)
+        {
+            if (bsp_audio_read_reg(regs[i], &r) == ESP_OK)
+            {
+                EK_LOG_INFO("ES8388 reg[0x%02X] = 0x%02X", regs[i], r);
+            }
+            else
+            {
+                EK_LOG_WARN("ES8388 read reg[0x%02X] failed", regs[i]);
+            }
+        }
+    }
     return 0;
 }
 
@@ -133,6 +150,8 @@ static int _tts_speak(const char *text)
     if (esp_tts_parse_chinese(s_tts_handle, text))
     {
         int len[1] = { 0 };
+        int total_samples = 0;
+        int total_tx = 0;
         do
         {
             short *pcm = esp_tts_stream_play(s_tts_handle, len, TTS_SPEED);
@@ -148,11 +167,18 @@ static int _tts_speak(const char *text)
                         stereo[2 * i] = pcm[i]; /* L */
                         stereo[2 * i + 1] = pcm[i]; /* R */
                     }
-                    bsp_i2s_tx_write((uint8_t *)stereo, (uint32_t)(n * 2 * sizeof(short)));
+                    size_t written = bsp_i2s_tx_write((uint8_t *)stereo, (uint32_t)(n * 2 * sizeof(short)));
+                    total_samples += n;
+                    total_tx += (int)written;
                     free(stereo);
                 }
             }
+            else
+            {
+                EK_LOG_WARN("stream_play len=0 (no pcm data)");
+            }
         } while (len[0] > 0);
+        EK_LOG_INFO("tts play done: samples=%d, i2s_tx_bytes=%d", total_samples, total_tx);
     }
     vTaskDelay(pdMS_TO_TICKS(50));
     _tts_enable_amp(0);
@@ -171,7 +197,15 @@ static int _tts_enable_amp(int enable)
     // MD8002A SHUTDOWN 当前板级连接为低电平驱动喇叭
     uint8_t level = enable ? 0 : 1;
     bsp_exio_write_pin(BSP_EXIO_NUM3, level);
-    EK_LOG_INFO("PA_EN(EXIO3)=%d, amp_enable=%d", level, enable ? 1 : 0);
+
+    /* 诊断：写后回读 EXIO3 输出寄存器，确认电平真正生效 */
+    uint16_t out_val = 0;
+    if (bsp_exio_read_out(&out_val) != ESP_OK)
+    {
+        EK_LOG_WARN("exio read out failed");
+    }
+    int actual = (out_val & BSP_EXIO_NUM3) ? 1 : 0;
+    EK_LOG_INFO("PA_EN(EXIO3): want=%d, actual(out)=%d, amp_enable=%d", level, actual, enable ? 1 : 0);
     return 0;
 }
 

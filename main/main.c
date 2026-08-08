@@ -8,9 +8,9 @@
 
 // ek_utils 自动初始化
 #include "ek_export.h"
-#include "test_main.h"
 
 EK_LOG_FILE_TAG("main.c");
+
 
 // 启动总线：仅保留 NVS / VFS / PM 这三项必须在自动初始化前完成的基础设施，
 // 其余所有外设注册、设备 init、LVGL 端口、应用任务均由各模块自行 EK_EXPORT_*
@@ -58,6 +58,11 @@ void app_main(void)
     // APP:           lv_init+tick → disp/touch port → weather → wifi/led/key → ui → mqtt → console
     ek_export_init();
 
-    // 统一测试入口：注释此行即可关闭所有测试
+
     // test_run_all();
+}
+
+uint32_t _ek_log_get_tick(void)
+{
+    return xTaskGetTickCount();
 }
