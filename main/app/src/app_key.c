@@ -15,7 +15,7 @@ void app_key_intit(void)
     xTaskCreate(_app_key_task, "app key", 2048, NULL, 2, &g_key_handle);
 }
 
-EK_EXPORT_APP(app_key_intit, 3);
+// EK_EXPORT_APP(app_key_intit, 3);
 
 static void _app_key_task(void *arg)
 {

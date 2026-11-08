@@ -111,4 +111,4 @@ void app_weather_store_save(const app_weather_forecast_t *fc)
     nvs_close(h);
 }
 
-EK_EXPORT_APP(app_weather_store_init, 3);
+// EK_EXPORT_APP(app_weather_store_init, 3);

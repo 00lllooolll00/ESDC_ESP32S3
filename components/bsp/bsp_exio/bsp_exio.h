@@ -9,7 +9,7 @@ extern "C"
 #include "common_header.h"
 
 // 超时等待时间
-#define BSP_EXIO_TIMEOUT   100
+#define BSP_EXIO_TIMEOUT   500
 #define BSP_EXIO_INT_STACK 2048
 
 // GPIO 映射
@@ -96,6 +96,7 @@ esp_err_t bsp_exio_get_directoin(uint16_t *value);
 
 esp_err_t bsp_exio_read(uint16_t *value);
 esp_err_t bsp_exio_write(uint16_t value);
+esp_err_t bsp_exio_read_out(uint16_t *value);
 
 void bsp_exio_conifg_pin(bsp_exio_pin_config_t *config);
 void bsp_exio_write_pin(bsp_exio_pin_num_t pin, uint8_t value);

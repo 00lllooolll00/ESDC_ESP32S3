@@ -31,7 +31,7 @@ void app_weather_api_init(void)
     app_wifi_register_evt_cb(_wifi_evt_cb, NULL);
 }
 
-EK_EXPORT_APP(app_weather_api_init, 5);
+// EK_EXPORT_APP(app_weather_api_init, 5);
 
 void app_weather_api_request(void)
 {

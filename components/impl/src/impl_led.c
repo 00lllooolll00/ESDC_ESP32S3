@@ -65,7 +65,7 @@ static void impl_led_register(void)
     plat_led_dev_register(&s_led_b_dev, "led_b", &s_led_base_ops, &s_led_b_ops, NULL);
 }
 
-EK_EXPORT_COMPONENTS(impl_led_register, 0);
+// EK_EXPORT_COMPONENTS(impl_led_register, 0);
 
 static void _auto_led_dev_init(void)
 {
@@ -75,7 +75,7 @@ static void _auto_led_dev_init(void)
     plat_led_dev_init(&s_led_b_dev);
 }
 
-EK_EXPORT_COMPONENTS(_auto_led_dev_init, 1);
+// EK_EXPORT_COMPONENTS(_auto_led_dev_init, 1);
 
 static int _led_dev_init(void)
 {

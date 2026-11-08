@@ -52,7 +52,7 @@ void app_ip_location_init(void)
     assert(ok == pdPASS);
 }
 
-EK_EXPORT_APP(app_ip_location_init, 2);
+// EK_EXPORT_APP(app_ip_location_init, 2);
 
 void app_ip_location_request(void)
 {

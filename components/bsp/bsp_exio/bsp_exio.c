@@ -36,12 +36,15 @@ void bsp_exio_init(void)
     bsp_i2c_init(I2C_NUM_0);
     bsp_i2c_dev_register(I2C_NUM_0, EK_FREQ_K(400), BSP_EXIO_DEV_ADDR, &s_exio_i2c_handle);
 
-    // 上电后读取一次清除中断
-    uint16_t temp;
+    // 上电后读取一次清除中断，并记录寄存器上电状态。
+    uint16_t temp = 0;
+    uint16_t output = 0;
+    uint16_t direction = 0;
 
     ESP_ERROR_CHECK(bsp_exio_read(&temp));
-
-    EK_LOG_INFO("bsp exio init ok");
+    ESP_ERROR_CHECK(bsp_exio_read_out(&output));
+    ESP_ERROR_CHECK(bsp_exio_get_directoin(&direction));
+    EK_LOG_INFO("exio boot state: output=0x%04x, direction=0x%04x", output, direction);
 }
 
 /**
@@ -136,6 +139,14 @@ esp_err_t bsp_exio_read(uint16_t *value)
 }
 
 /**
+ * @brief 读取XL9555输出寄存器（读-改-写必须用这个，不能用输入寄存器）
+ */
+esp_err_t bsp_exio_read_out(uint16_t *value)
+{
+    return _exio_i2c_read(BSP_EXIO_OUTPUT_PORT0_REG, (uint8_t *)value, 2);
+}
+
+/**
  * @brief 写入XL9555所有GPIO输出状态
  *
  * @param value 输出状态值，对应位为1输出高电平，为0输出低电平
@@ -158,13 +169,21 @@ esp_err_t bsp_exio_write(uint16_t value)
 void bsp_exio_conifg_pin(bsp_exio_pin_config_t *config)
 {
     uint16_t directon_value = 0;
-    ESP_ERROR_CHECK(bsp_exio_get_directoin(&directon_value));
+    // 容错：I2C 瞬时繁忙时读取失败则跳过本次配置，避免崩溃
+    if (bsp_exio_get_directoin(&directon_value) != ESP_OK)
+    {
+        EK_LOG_WARN("exio config pin: get direction failed, pin=0x%04x", (unsigned)config->pin);
+        return;
+    }
 
     uint16_t cfg_value = directon_value;
     if (config->mode == BSP_EXIO_PIN_MODE_OUTPUT) cfg_value &= ~(config->pin);
     else cfg_value |= config->pin;
 
-    ESP_ERROR_CHECK(bsp_exio_set_directoin(cfg_value));
+    if (bsp_exio_set_directoin(cfg_value) != ESP_OK)
+    {
+        EK_LOG_WARN("exio config pin: set direction failed, pin=0x%04x", (unsigned)config->pin);
+    }
 }
 
 /**
@@ -176,11 +195,22 @@ void bsp_exio_conifg_pin(bsp_exio_pin_config_t *config)
 void bsp_exio_write_pin(bsp_exio_pin_num_t pin, uint8_t value)
 {
     uint16_t old_value = 0;
-    ESP_ERROR_CHECK(bsp_exio_read(&old_value));
+    // 读-改-写必须读 OUTPUT 寄存器（0x02），读取当前输出状态。
+    // 之前误读 INPUT 寄存器（0x00），导致写回时把其他输出位清零，
+    // 例如 LED 任务写 EXIO0/1/2 会把功放控制位 EXIO3 冲掉。
+    // 容错：I2C 瞬时繁忙时读取失败则跳过本次写，避免崩溃
+    if (_exio_i2c_read(BSP_EXIO_OUTPUT_PORT0_REG, (uint8_t *)&old_value, 2) != ESP_OK)
+    {
+        EK_LOG_WARN("exio write pin: read failed, pin=0x%04x", (unsigned)pin);
+        return;
+    }
     uint16_t new_value = old_value;
     if (value) new_value |= pin;
     else new_value &= ~pin;
-    ESP_ERROR_CHECK(bsp_exio_write(new_value));
+    if (bsp_exio_write(new_value) != ESP_OK)
+    {
+        EK_LOG_WARN("exio write pin: write failed, pin=0x%04x", (unsigned)pin);
+    }
 }
 
 /**
@@ -192,7 +222,13 @@ void bsp_exio_write_pin(bsp_exio_pin_num_t pin, uint8_t value)
 uint8_t bsp_exio_read_pin(bsp_exio_pin_num_t pin)
 {
     uint16_t value = 0;
-    ESP_ERROR_CHECK(bsp_exio_read(&value));
+    // 容错：I2C 总线繁忙（如 TTS 播放期间多任务并发）导致读超时时
+    // 返回 0 而不是 ESP_ERROR_CHECK 崩溃，避免无关任务把系统打挂
+    if (bsp_exio_read(&value) != ESP_OK)
+    {
+        EK_LOG_WARN("exio read pin failed, pin=0x%04x", (unsigned)pin);
+        return 0;
+    }
     return (value & pin) != 0;
 }
 

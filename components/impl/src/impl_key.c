@@ -43,14 +43,14 @@ static void impl_key_register(void)
     plat_key_dev_register(&s_key_dev, "key", &s_key_base_ops, &s_key_ops, NULL);
 }
 
-EK_EXPORT_COMPONENTS(impl_key_register, 0);
+// EK_EXPORT_COMPONENTS(impl_key_register, 0);
 // 设备 init：建锁 + bsp 初始化，依赖 register 完成
 static void _auto_key_dev_init(void)
 {
     EK_LOG_INFO("ek_export: COMPONENTS _auto_key_dev_init");
     plat_key_dev_init(&s_key_dev);
 }
-EK_EXPORT_COMPONENTS(_auto_key_dev_init, 1);
+// EK_EXPORT_COMPONENTS(_auto_key_dev_init, 1);
 
 static int _key_dev_init(void)
 {

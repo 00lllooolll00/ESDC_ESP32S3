@@ -27,4 +27,6 @@ idf_component_register(
             LDFRAGMENTS linker.lf
 )
 
-
+target_compile_options(${COMPONENT_LIB} PUBLIC
+            -Wno-unused-const-variable
+)

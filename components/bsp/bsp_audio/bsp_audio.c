@@ -39,8 +39,8 @@ int bsp_audio_init(void)
     temp |= _write_reg(0x18, 0x02); /* DAC配置 MCLK/采样率=256 */
     temp |= _write_reg(0x1A, 0x00); /* DAC数字音量控制将信号衰减 L  设置为最小！！！ */
     temp |= _write_reg(0x1B, 0x00); /* DAC数字音量控制将信号衰减 R  设置为最小！！！ */
-    temp |= _write_reg(0x27, 0xB8); /* L混频器 */
-    temp |= _write_reg(0x2A, 0xB8); /* R混频器 */
+    temp |= _write_reg(0x27, 0xB8); /* 左 DAC 与左输入混音器，参考路由 */
+    temp |= _write_reg(0x2A, 0xB8); /* 右 DAC 与右输入混音器，参考路由 */
     vTaskDelay(pdMS_TO_TICKS(100));
 
     if (temp != ESP_OK)
@@ -238,6 +238,11 @@ void bsp_audio_input_cfg(uint8_t in)
 static esp_err_t _write_reg(uint8_t reg_addr, uint8_t data)
 {
     return bsp_i2c_mem_write(s_audio_i2c_handle, reg_addr, &data, 1, BSP_AUDIO_TIMEOUT);
+}
+
+esp_err_t bsp_audio_read_reg(uint8_t reg_addr, uint8_t *pdata)
+{
+    return bsp_i2c_mem_read(s_audio_i2c_handle, reg_addr, pdata, 1, BSP_AUDIO_TIMEOUT);
 }
 
 static esp_err_t _read_reg(uint8_t reg_addr, uint8_t *pdata)

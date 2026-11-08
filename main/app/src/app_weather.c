@@ -99,7 +99,7 @@ void app_weather_init(void)
     s_ui_cb_arg = NULL;
 }
 
-EK_EXPORT_APP(app_weather_init, 2);
+// EK_EXPORT_APP(app_weather_init, 2);
 
 void app_weather_set_forecast(const int16_t *temps, int count)
 {

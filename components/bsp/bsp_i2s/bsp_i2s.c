@@ -2,13 +2,16 @@
 EK_LOG_FILE_TAG("bsp_i2s");
 
 static i2s_chan_handle_t s_bsp_tx_handle;
-static i2s_chan_handle_t s_bsp_rx_handle;
 static i2s_std_config_t s_cfg;
 
 void bsp_i2s_init(void)
 {
     i2s_chan_config_t ch_cfg = I2S_CHANNEL_DEFAULT_CONFIG(BSP_I2S, I2S_ROLE_MASTER);
-    i2s_new_channel(&ch_cfg, &s_bsp_tx_handle, &s_bsp_rx_handle);
+    // 当前仅 TTS 播放使用 I2S（TX），不创建 RX 通道。
+    // 原因：I2S DMA 描述符必须分配在内部 RAM，WiFi 启动后内部 RAM 紧张，
+    // 同时创建 TX+RX 会导致 RX 通道 i2s_channel_init_std_mode 返回 ESP_ERR_NO_MEM。
+    // 若未来需要录音（麦克风），再恢复 RX 通道（i2s_new_channel 第 3 参传 &s_bsp_rx_handle）。
+    ESP_ERROR_CHECK(i2s_new_channel(&ch_cfg, &s_bsp_tx_handle, NULL));
     i2s_std_config_t std_cfg = {
         /* 标准通信模式配置 */
         .clk_cfg  = {
@@ -19,18 +22,17 @@ void bsp_i2s_init(void)
         },
 
         .slot_cfg = {
-         /* 声道配置,可用I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_STEREO)宏函数辅助配置(支持16位宽采样数据) */
-            .data_bit_width = I2S_DATA_BIT_WIDTH_16BIT,     /* 声道支持16位宽的采样数据 */
-            .slot_bit_width = I2S_SLOT_BIT_WIDTH_AUTO,      /* 通道位宽 */
-            .slot_mode      = I2S_SLOT_MODE_STEREO,         /* 立体声 */
-            .slot_mask      = I2S_STD_SLOT_BOTH,            /* 启用通道 */
-            .ws_width       = I2S_DATA_BIT_WIDTH_16BIT,     /* WS信号位宽 */
-            .ws_pol         = false,                        /* WS信号极性 */
-            .bit_shift      = true,                         /* 位移位(Philips模式下配置) */
-            .left_align     = true,                         /* 左对齐 */
-            .big_endian     = false,                        /* 小端模式 */
-            .bit_order_lsb  = false                         /* MSB */
-        }, 
+            .data_bit_width = I2S_DATA_BIT_WIDTH_16BIT,
+            .slot_bit_width = I2S_SLOT_BIT_WIDTH_AUTO,
+            .slot_mode = I2S_SLOT_MODE_STEREO,
+            .slot_mask = I2S_STD_SLOT_BOTH,
+            .ws_width       = I2S_DATA_BIT_WIDTH_16BIT,
+            .ws_pol = false,
+            .bit_shift = true,
+            .left_align = true,
+            .big_endian = false,
+            .bit_order_lsb = false,
+        },
         
         .gpio_cfg = {
         /* 引脚配置 */
@@ -49,9 +51,7 @@ void bsp_i2s_init(void)
     s_cfg = std_cfg;
 
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_bsp_tx_handle, &std_cfg)); /* 初始化TX通道 */
-    ESP_ERROR_CHECK(i2s_channel_init_std_mode(s_bsp_rx_handle, &std_cfg)); /* 初始化RX通道 */
     ESP_ERROR_CHECK(i2s_channel_enable(s_bsp_tx_handle)); /* 启用TX通道 */
-    ESP_ERROR_CHECK(i2s_channel_enable(s_bsp_rx_handle)); /* 启用RX通道 */
 
     // 加大 I2S 输出引脚驱动能力,改善走线信号质量
     gpio_set_drive_capability(BSP_I2S_MCK_PIN, GPIO_DRIVE_CAP_3);
@@ -69,7 +69,6 @@ void bsp_i2s_init(void)
 void bsp_i2s_deinit(void)
 {
     ESP_ERROR_CHECK(i2s_del_channel(s_bsp_tx_handle));
-    ESP_ERROR_CHECK(i2s_del_channel(s_bsp_rx_handle));
 }
 
 /**
@@ -80,7 +79,6 @@ void bsp_i2s_deinit(void)
 void bsp_i2s_trx_start(void)
 {
     ESP_ERROR_CHECK(i2s_channel_enable(s_bsp_tx_handle));
-    ESP_ERROR_CHECK(i2s_channel_enable(s_bsp_rx_handle));
 }
 
 /**
@@ -91,7 +89,6 @@ void bsp_i2s_trx_start(void)
 void bsp_i2s_trx_stop(void)
 {
     ESP_ERROR_CHECK(i2s_channel_disable(s_bsp_tx_handle));
-    ESP_ERROR_CHECK(i2s_channel_disable(s_bsp_rx_handle));
 }
 
 /**
@@ -107,10 +104,8 @@ void bsp_i2s_set_samplerate_bits_sample(int samplerate, int bits_sample)
     /* 如果需要更新声道或时钟配置,需要在更新前先禁用通道 */
     s_cfg.slot_cfg.ws_width = bits_sample; /* 位宽 */
     ESP_ERROR_CHECK(i2s_channel_reconfig_std_slot(s_bsp_tx_handle, &s_cfg.slot_cfg));
-    ESP_ERROR_CHECK(i2s_channel_reconfig_std_slot(s_bsp_rx_handle, &s_cfg.slot_cfg));
     s_cfg.clk_cfg.sample_rate_hz = samplerate; /* 设置采样率 */
     ESP_ERROR_CHECK(i2s_channel_reconfig_std_clock(s_bsp_tx_handle, &s_cfg.clk_cfg));
-    ESP_ERROR_CHECK(i2s_channel_reconfig_std_clock(s_bsp_rx_handle, &s_cfg.clk_cfg));
     bsp_i2s_trx_start();
 }
 
@@ -135,7 +130,6 @@ size_t bsp_i2s_tx_write(uint8_t *buffer, uint32_t frame_size)
  */
 size_t bsp_i2s_rx_read(uint8_t *buffer, uint32_t frame_size)
 {
-    size_t bytes_written;
-    ESP_ERROR_CHECK(i2s_channel_read(s_bsp_rx_handle, buffer, frame_size, &bytes_written, 1000));
-    return bytes_written;
+    // RX 通道未创建（当前仅 TTS 播放），返回 0 表示无数据可读
+    return 0;
 }

@@ -33,9 +33,6 @@ static void _hide_all_panels(lv_obj_t *screen);
  *  STATIC VARIABLES
  **********************/
 
-EK_LOG_FILE_TAG("ui");
-
-
 // 屏幕导航历史栈（用于 nav_back 返回上一页）
 static ek_stack_t *s_nav_stack;
 
@@ -51,7 +48,6 @@ void ui_init(const char *asset_path)
 {
     // 调用生成的 init（创建 permanent screens、styles、subjects）
     ui_init_gen(asset_path);
-
 
     // 为所有 permanent screen 设置字体和图标
     _set_fonts_and_icons(main_page);
@@ -98,8 +94,7 @@ void nav_back(lv_event_t *e)
 {
     lv_obj_t *current;
     // 弹出当前屏幕
-    if (ek_stack_pop(s_nav_stack, &current) != EK_ERR_NONE)
-        return;
+    if (ek_stack_pop(s_nav_stack, &current) != EK_ERR_NONE) return;
 
     // 栈空了说明没有上一页，把当前 push 回去
     if (ek_stack_empty(s_nav_stack))
@@ -110,8 +105,7 @@ void nav_back(lv_event_t *e)
 
     // peek 栈顶作为返回目标
     lv_obj_t *prev = _nav_peek();
-    if (prev)
-        lv_screen_load_anim(prev, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 500, 0, false);
+    if (prev) lv_screen_load_anim(prev, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 500, 0, false);
 }
 
 // 屏幕加载时调用（在 LV_EVENT_SCREEN_LOAD_START 中推入历史栈）
@@ -128,8 +122,7 @@ void _on_screen_loaded(lv_obj_t *screen)
     }
 
     // 去重：如果栈顶已经是同一屏幕就不重复推
-    if (_nav_peek() == screen)
-        return;
+    if (_nav_peek() == screen) return;
 
     ek_stack_push(s_nav_stack, &screen);
 }
@@ -158,7 +151,6 @@ static void _hide_panel_anim_ready(lv_anim_t *a)
 {
     lv_obj_add_flag((lv_obj_t *)a->var, (lv_obj_flag_t)(intptr_t)a->user_data);
 }
-
 
 // 切换屏幕时自动收起所有浮窗（音量面板 + WiFi 面板）
 static void _hide_all_panels(lv_obj_t *screen)
@@ -311,7 +303,6 @@ static void _set_fonts_and_icons(lv_obj_t *screen)
     _set_widget_font_by_name(screen, "wifi_state", &lv_font_montserrat_20);
     _set_widget_font_by_name(screen, "nav_back_icon", &lv_font_montserrat_20);
     _set_widget_font_by_name(screen, "nav_home_icon", &lv_font_montserrat_20);
-
 
     // 设置图标文本（EEZ 中通过 Flow 表达式设置，这里直接用 LVGL 符号宏）
     _set_widget_text_by_name(screen, "wifi_refresh_icon", LV_SYMBOL_REFRESH);

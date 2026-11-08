@@ -18,7 +18,7 @@ void app_led_init(void)
     xTaskCreate(_app_led_task, "app led", 2048, NULL, 1, &g_led_handle);
 }
 
-EK_EXPORT_APP(app_led_init, 3);
+// EK_EXPORT_APP(app_led_init, 3);
 
 static void _app_led_task(void *arg)
 {

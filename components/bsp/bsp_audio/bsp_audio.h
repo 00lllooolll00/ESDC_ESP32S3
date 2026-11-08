@@ -14,6 +14,7 @@ extern "C"
 
 int bsp_audio_init(void);
 esp_err_t bsp_audio_deinit(void);
+esp_err_t bsp_audio_read_reg(uint8_t reg_addr, uint8_t *pdata);
 void bsp_audio_i2s_cfg(uint8_t fmt, uint8_t len);
 void bsp_audio_hpvol_set(uint8_t volume);
 void bsp_audio_spkvol_set(uint8_t volume);

@@ -8,7 +8,7 @@
 EK_LOG_FILE_TAG("app_tts.c");
 
 #define APP_TTS_QUEUE_LEN  4
-#define APP_TTS_STACK_SIZE 8192
+#define APP_TTS_STACK_SIZE 4096
 #define APP_TTS_PRIORITY   3
 #define APP_TTS_MAX_TEXT   128
 
@@ -29,7 +29,7 @@ void app_tts_init(void)
     assert(s_tts_queue);
 }
 
-EK_EXPORT_APP(app_tts_init, 5);
+// EK_EXPORT_APP(app_tts_init, 5);
 
 void app_tts_say(const char *text)
 {

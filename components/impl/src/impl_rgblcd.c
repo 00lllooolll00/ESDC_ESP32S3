@@ -43,7 +43,7 @@ static void impl_rgblcd_register(void)
     plat_lcd_dev_register(&s_lcd_dev, "lcd", &s_lcd_base_ops, &s_lcd_ops, BSP_RGBLCD_WIDTH, BSP_RGBLCD_HEIGHT, NULL);
 }
 
-EK_EXPORT_COMPONENTS(impl_rgblcd_register, 0);
+// EK_EXPORT_COMPONENTS(impl_rgblcd_register, 0);
 
 static int _lcd_dev_init(void)
 {

@@ -66,7 +66,7 @@ void app_wifi_store_init(void)
 }
 
 // 在 UI 初始化前加载，供 wifi_actions 查询
-EK_EXPORT_APP(app_wifi_store_init, 1);
+// EK_EXPORT_APP(app_wifi_store_init, 1);
 
 void app_wifi_store_add(const char *ssid, const char *password)
 {

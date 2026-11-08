@@ -108,7 +108,7 @@ void app_smart_home_init(void)
     }
 }
 
-EK_EXPORT_APP(app_smart_home_init, 3);
+// EK_EXPORT_APP(app_smart_home_init, 3);
 
 int app_smart_home_toggle(int idx)
 {

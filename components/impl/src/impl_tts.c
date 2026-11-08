@@ -48,7 +48,7 @@ static void impl_tts_register(void)
     plat_tts_dev_register(&s_tts_dev, "tts", &s_tts_base_ops, &s_tts_ops, NULL);
 }
 
-EK_EXPORT_COMPONENTS(impl_tts_register, 0);
+// EK_EXPORT_COMPONENTS(impl_tts_register, 0);
 
 #define TTS_VOICE_PATH  "/vfs/esp_tts_voice_data_xiaole.dat"
 #define TTS_SAMPLE_RATE 16000
